@@ -1,0 +1,24 @@
+units real
+boundary p p p
+atom_style atomic
+lattice fcc 5.25
+region box block 0 4 0 4 0 4
+create_box 1 box
+create_atoms 1 box
+mass 1 39.948
+pair_style lj/cut 8.5
+pair_coeff 1 1 0.2381 3.405
+neighbor 2.0 bin
+thermo 100
+thermo_style custom step pe etotal fnorm press lx
+thermo_modify format float %.12g
+fix 1 all box/relax iso 0.0 vmax 0.001
+min_style cg
+minimize 1.0e-8 1.0e-10 2000 20000
+unfix 1
+minimize 1.0e-8 1.0e-10 2000 20000
+variable a equal lx/4
+variable em equal pe/atoms
+print "EVLIVE_A0 $(v_a)"
+print "EVLIVE_EMOL $(v_em)"
+print "EVLIVE_DONE ok"

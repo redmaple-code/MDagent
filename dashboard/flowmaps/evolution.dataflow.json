@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "演化层数据流:观测 → 提案 → 门禁 → 生效",
+    "subtitle": "kit 账本 + pipeline 事件 + friction 软失败 → 提案(策略/蜂群) → 门禁/用户闸 → 生效",
+    "locale": "zh-CN",
+    "viewBox": [
+      1080,
+      880
+    ],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "observe-path",
+        "label": "观测入账",
+        "focus": [
+          "cron",
+          "kit-db",
+          "decisions",
+          "pipe-events",
+          "observe",
+          "atoms"
+        ],
+        "note": "cron 每 37 分钟驱动 observe(带间隔闸),把已结账结果、管线失效与软失败记入训练记忆。"
+      },
+      {
+        "id": "proposal-gate",
+        "label": "提案与门禁",
+        "focus": [
+          "streak",
+          "swarm",
+          "draft",
+          "gate",
+          "user-gates",
+          "ledger"
+        ],
+        "note": "连败起草案过 apply_proposal 双层门禁;策略耗尽走蜂群联网研究,新机制提案进用户闸等人工。"
+      },
+      {
+        "id": "effect-path",
+        "label": "生效压制",
+        "focus": [
+          "adj",
+          "select",
+          "kit-db"
+        ],
+        "note": "只写 strategy_adjustments,select_strategy 打分减 penalty,单写字段无竞争。"
+      }
+    ]
+  },
+  "stages": [
+    {
+      "label": "数据源"
+    },
+    {
+      "label": "观测"
+    },
+    {
+      "label": "决策"
+    },
+    {
+      "label": "门禁"
+    },
+    {
+      "label": "生效"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "cron",
+      "type": "cloud",
+      "label": "cron */37min",
+      "sublabel": "observe 间隔闸",
+      "stage": 0,
+      "row": 0,
+      "tag": "驱动"
+    },
+    {
+      "id": "pipe-events",
+      "type": "database",
+      "label": "事件流+friction",
+      "sublabel": "pipeline/friction",
+      "stage": 0,
+      "row": 3,
+      "tag": "CRITICAL/软失败"
+    },
+    {
+      "id": "kit-db",
+      "type": "database",
+      "label": "策略库 db",
+      "sublabel": ".v3.3 history/strategies",
+      "stage": 0,
+      "row": 2,
+      "tag": "kit 自写"
+    },
+    {
+      "id": "decisions",
+      "type": "database",
+      "label": "决策日志",
+      "sublabel": "strategy_decisions.jsonl",
+      "stage": 0,
+      "row": 4,
+      "tag": "只读"
+    },
+    {
+      "id": "observe",
+      "type": "backend",
+      "label": "observe_kit()",
+      "sublabel": "连败/连胜检测 14d 窗",
+      "stage": 1,
+      "row": 1,
+      "tag": "演化层"
+    },
+    {
+      "id": "atoms",
+      "type": "database",
+      "label": "训练记忆 atoms",
+      "sublabel": "record_atom 幂等",
+      "stage": 2,
+      "row": 0,
+      "tag": "refs 含 case_id"
+    },
+    {
+      "id": "streak",
+      "type": "backend",
+      "label": "尾部连败 ≥2",
+      "sublabel": "_tail_streak 同口径",
+      "stage": 2,
+      "row": 2,
+      "tag": "检测"
+    },
+    {
+      "id": "swarm",
+      "type": "backend",
+      "label": "蜂群研究",
+      "sublabel": "联网研究→模板映射",
+      "stage": 2,
+      "row": 3,
+      "tag": "策略耗尽触发"
+    },
+    {
+      "id": "draft",
+      "type": "messagebus",
+      "label": "提案草稿",
+      "sublabel": "proposal.md + diff.patch",
+      "stage": 3,
+      "row": 1,
+      "tag": "auto 类"
+    },
+    {
+      "id": "gate",
+      "type": "security",
+      "label": "apply_proposal 门禁",
+      "sublabel": "白名单 · ≤12 行 · 人工",
+      "stage": 3,
+      "row": 3,
+      "tag": "fail-closed"
+    },
+    {
+      "id": "adj",
+      "type": "database",
+      "label": "adjustments 段",
+      "sublabel": "penalty +0.15 / 封顶 0.6",
+      "stage": 4,
+      "row": 1,
+      "tag": "演化唯一写入"
+    },
+    {
+      "id": "select",
+      "type": "backend",
+      "label": "select_strategy",
+      "sublabel": "打分减 penalty",
+      "stage": 4,
+      "row": 3,
+      "tag": "压制生效"
+    },
+    {
+      "id": "ledger",
+      "type": "database",
+      "label": "LEDGER + 备份",
+      "sublabel": "审计留痕 · --rollback",
+      "stage": 4,
+      "row": 4,
+      "tag": "可回滚"
+    },
+    {
+      "id": "user-gates",
+      "type": "security",
+      "label": "用户闸队列",
+      "sublabel": "human 提案·等人工",
+      "stage": 3,
+      "row": 4,
+      "tag": "永不自动批"
+    }
+  ],
+  "flows": [
+    {
+      "id": "f-cron-observe",
+      "from": "cron",
+      "to": "observe",
+      "label": "周期驱动",
+      "classification": "调度",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-db-observe",
+      "from": "kit-db",
+      "to": "observe",
+      "classification": "只读",
+      "variant": "default",
+      "label": "已结账 history",
+      "labelAt": [
+        320,
+        330
+      ]
+    },
+    {
+      "id": "f-dec-observe",
+      "from": "decisions",
+      "to": "observe",
+      "classification": "只读",
+      "variant": "dashed",
+      "label": "决策日志",
+      "labelAt": [
+        320,
+        690
+      ]
+    },
+    {
+      "id": "f-pipe-observe",
+      "from": "pipe-events",
+      "to": "observe",
+      "classification": "只读",
+      "variant": "dashed",
+      "label": "失效/软失败",
+      "labelAt": [
+        320,
+        510
+      ]
+    },
+    {
+      "id": "f-observe-atoms",
+      "from": "observe",
+      "to": "atoms",
+      "label": "outcome 入账",
+      "classification": "训练记忆",
+      "variant": "default"
+    },
+    {
+      "id": "f-observe-streak",
+      "from": "observe",
+      "to": "streak",
+      "label": "同 (策略,根因)",
+      "classification": "窗口检测",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-streak-draft",
+      "from": "streak",
+      "to": "draft",
+      "label": "连败起草案 / 连胜减压",
+      "classification": "proposal",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-streak-swarm",
+      "from": "streak",
+      "to": "swarm",
+      "label": "标准工具箱尽没",
+      "classification": "耗尽",
+      "variant": "security",
+      "labelAt": [
+        530,
+        428
+      ]
+    },
+    {
+      "id": "f-swarm-gates",
+      "from": "swarm",
+      "to": "user-gates",
+      "label": "新机制 human 提案",
+      "classification": "模板外",
+      "variant": "security"
+    },
+    {
+      "id": "f-draft-gate",
+      "from": "draft",
+      "to": "gate",
+      "label": "diff.patch",
+      "classification": "unified diff",
+      "variant": "security",
+      "labelDy": 24
+    },
+    {
+      "id": "f-gate-adj",
+      "from": "gate",
+      "to": "adj",
+      "label": "AUTO_APPLIED",
+      "classification": "回归红自动回滚",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f-gate-ledger",
+      "from": "gate",
+      "to": "ledger",
+      "label": "全程留痕",
+      "classification": "审计",
+      "variant": "dashed"
+    },
+    {
+      "id": "f-adj-select",
+      "from": "adj",
+      "to": "select",
+      "label": "penalty 参与打分",
+      "classification": "压制",
+      "variant": "emphasis",
+      "labelAt": [
+        960,
+        210
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "单写字段纪律",
+      "items": [
+        "kit 自写 strategies/history;演化通道只写 strategy_adjustments",
+        "无写竞争,演化贡献显式可审计",
+        "压制闭环:下一 case 选策略即被减分(select_strategy ← adjustments)"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "门禁与回滚",
+      "items": [
+        "auto 类限 .v3.3_strategy_db.json 单文件 ≤12 行,apply 为人工操作",
+        "上下文过期/空 diff 一律 REJECTED fail-closed;LEDGER + 备份链可 --rollback",
+        "human 类提案进用户闸队列,永不自动批准任何东西"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "证据口径与蜂群",
+      "items": [
+        "连败窗 14 天、未来 ts >1h 容差排除,kit 后验与 observe 同口径",
+        "L2 证据晋升:install/promote/demote 三门(内容禁闭+血统+沙盒试跑),canary 4 账 3 胜晋升 / 3 连败降级+墓碑",
+        "策略耗尽→蜂群联网研究→模板映射出参数或新机制 human 提案;剧集回灌 repair_kb.jsonl 构成闭环"
+      ]
+    }
+  ]
+}

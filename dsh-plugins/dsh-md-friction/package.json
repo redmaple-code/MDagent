@@ -1,0 +1,24 @@
+{
+  "name": "dsh-md-friction",
+  "version": "0.1.0",
+  "description": "Turn-level friction signal collector: counts user aborts, tool errors, approval denials and LLM retries per turn and appends one JSON row per turn/end for evolution/observe.py (experience sedimentation).",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  }
+}

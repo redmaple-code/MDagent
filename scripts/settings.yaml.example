@@ -1,0 +1,38 @@
+# ============================================================
+# 全新独立 dsh 实例 —— 分子模拟(LAMMPS/ReaxFF)助手专用
+# 与 C:\Users\ymy\.dsh(zerocarbon 零碳园区)、G:\AI智能体-DSH(量化)彻底隔离
+# DSH_HOME 由 run-dsh.ps1 / run-dsh.sh 锁定为 <数据根>/dsh-home(数据根外置 2026-08-29)
+# ============================================================
+
+# 模型配置遵循 dsh-llm-pi-ai 0.1.0-rc.6；Key 单独保存在 .credentials.yaml。
+# DeepSeek 官方模型 ID/API 地址核对于 2026-10-12；安装器可更换为兼容服务。
+llm-pi-ai:
+  providers:
+    deepseek:
+      apiKeyEnv: DEEPSEEK_API_KEY
+      api: openai-completions
+      baseURL: https://api.deepseek.com
+      models:
+        - id: deepseek-flash
+          contextWindow: 1048576
+          maxTokens: 8192
+          reasoningEfforts:
+            off: null
+            low: low
+            high: high
+            max: max
+      compat:
+        thinkingFormat: deepseek
+agent-default-model:
+  provider: deepseek
+  model: deepseek-flash
+
+# 主题
+ui-theme:
+  preference: dark
+
+# 默认预设 = 分子模拟助手(目录名必须 ascii-slug: md-sim-assistant;中文显示名在 preset.yml 的 name:)
+agent-presets:
+  default: md-sim-assistant
+ui-onboarding:
+  welcomeNoticeVersion: 2026-08-13.1

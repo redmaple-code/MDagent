@@ -1,0 +1,14 @@
+# 故意错误的拉伸配置(演示用,不会被执行):
+# 各向同性恒压控压 + 变形 + 全周期 -> 应力被压回,拉不断
+units metal
+boundary p p p
+lattice fcc 3.615
+region box block 0 10 0 10 0 10
+create_box 1 box
+create_atoms 1 box
+pair_style eam
+pair_coeff * * Cu_u3.eam
+fix 1 all npt temp 300 300 0.1 iso 0.0 0.0 1.0
+fix 2 all deform 1 x erate 1e-4 units box remap x
+dump 1 all atom 1000 dump.tensile
+run 50000

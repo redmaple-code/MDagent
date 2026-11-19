@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "bio.ssh-connection.v1",
+  "hostAlias": "bio-compute",
+  "configFile": "/opt/mdagent/bio-agent/operator-config/ssh_config",
+  "knownHosts": "/opt/mdagent/bio-agent/operator-config/known_hosts",
+  "projectsRoot": "/REPLACE_COMPUTE_USER/bio-agent/projects",
+  "releaseRoot": "/REPLACE_COMPUTE_USER/bio-agent/releases/REPLACE_RELEASE",
+  "python": "/REPLACE_EXISTING_COMPUTE_ENV/bin/python"
+}

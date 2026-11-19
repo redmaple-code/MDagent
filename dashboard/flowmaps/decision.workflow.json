@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "AI 决策过程:每 tick 裁决 + MONITOR 30 秒决策环",
+    "subtitle": "should-run 裁决 → 观测 → 分析 → 检测 → 评估 → 决策 → 选路(继续 / 预修复 / 根因研判)",
+    "locale": "zh-CN",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "decision-loop",
+        "label": "决策环主链",
+        "focus": ["shouldrun", "observe", "analyze", "detect", "evaluate", "decide", "cont"],
+        "note": "每 tick 顶部先出 should-run 裁决(纯咨询),再进 30 秒一轮的感知-研判闭环,正常即回到观测继续。"
+      },
+      {
+        "id": "escalation",
+        "label": "升级路径",
+        "focus": ["decide", "preempt", "research"],
+        "note": "risk≥60 预防性恢复;重异常/失活进 RESEARCH 根因研判(熔断开闸时恢复转移被压制)。"
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "sense", "label": "感知" },
+    { "id": "judge", "label": "研判" },
+    { "id": "act", "label": "行动", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "loop", "label": "决策环(30s)", "fromCol": 1, "toCol": 5, "variant": "emphasis" }
+  ],
+  "mainPath": ["shouldrun", "observe", "analyze", "detect", "evaluate", "decide"],
+  "nodes": [
+    { "id": "shouldrun", "lane": "sense", "col": 0, "type": "security", "label": "SHOULD-RUN 裁决", "sublabel": "ACT/IDLE/WAIT_HUMAN · 纯咨询", "tag": "每 tick", "width": 168 },
+    { "id": "observe", "lane": "sense", "col": 1, "type": "backend", "label": "OBSERVE 观测", "sublabel": "thermo / pids / 日志", "width": 150 },
+    { "id": "analyze", "lane": "sense", "col": 2, "type": "backend", "label": "ANALYZE 分析", "sublabel": "趋势 · 目标温度程序偏离", "width": 150 },
+    { "id": "detect", "lane": "judge", "col": 3, "type": "backend", "label": "DETECT 检测", "sublabel": "失温 / 失活 / 跑飞", "width": 150 },
+    { "id": "evaluate", "lane": "judge", "col": 4, "type": "backend", "label": "EVALUATE 评估", "sublabel": "risk_score 0-100", "width": 150 },
+    { "id": "decide", "lane": "judge", "col": 5, "type": "security", "label": "DECIDE 决策", "sublabel": "选路 · 熔断压制恢复转移", "tag": "门禁", "width": 168 },
+    { "id": "cont", "lane": "act", "col": 5, "type": "messagebus", "label": "继续监控", "sublabel": "正常 · 回到观测", "width": 132 },
+    { "id": "preempt", "lane": "act", "col": 4, "type": "messagebus", "label": "PREEMPTIVE 预修复", "sublabel": "risk≥60 轻度异常", "width": 150 },
+    { "id": "research", "lane": "act", "col": 3, "type": "messagebus", "label": "RESEARCH 研判", "sublabel": "重异常 / 失活根因", "width": 150 }
+  ],
+  "edges": [
+    { "id": "e-sr-o", "from": "shouldrun", "to": "observe", "label": "ACT", "variant": "default" },
+    { "id": "e-oa", "from": "observe", "to": "analyze", "variant": "emphasis" },
+    { "id": "e-ad", "from": "analyze", "to": "detect", "variant": "emphasis" },
+    { "id": "e-de", "from": "detect", "to": "evaluate", "variant": "emphasis" },
+    { "id": "e-ed", "from": "evaluate", "to": "decide", "variant": "emphasis" },
+    { "id": "e-dc", "from": "decide", "to": "cont", "label": "正常", "variant": "default" },
+    { "id": "e-co", "from": "cont", "to": "observe", "label": "下一轮", "variant": "dashed", "role": "return" },
+    { "id": "e-dp", "from": "decide", "to": "preempt", "label": "risk≥60", "variant": "security", "role": "error" },
+    { "id": "e-dr", "from": "decide", "to": "research", "label": "重异常", "variant": "security", "role": "error" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "同口径判据",
+      "items": [
+        "偏离判定对齐目标温度程序(paths.load_schedule,与看板同口径)",
+        "失活判定看 lmp_mpi 进程 + 日志推进,双信号"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "决策纪律",
+      "items": [
+        "should-run 每 tick 顶部裁决(ACT/IDLE/WAIT_HUMAN/SUPPRESSED),纯咨询永不拦派发",
+        "risk≥60 才触发预修复,轻异常不过度反应;熔断开闸只压恢复转移,检测永不受压",
+        "重异常/失活进 RESEARCH 判根因,再由 RECOVER 执行策略"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "与学习衔接",
+      "items": [
+        "决策全程写 strategy_decisions.jsonl(看板交互流可见)",
+        "恢复结果真学习结账,连败触发演化层压制提案;耗尽触发蜂群研究"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务全流程 · 从上传文献到模拟运行</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#f5f6f7; color:#353638; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; padding:28px 20px 60px; }
+  .wrap { max-width:1080px; margin:0 auto; }
+  h1 { font-size:22px; color:#0f1115; margin-bottom:4px; }
+  h1 .tag { font-size:12px; color:#22c55e; border:1px solid #bbe9c9; border-radius:4px; padding:2px 8px; margin-left:10px; vertical-align:middle; font-weight:normal; }
+  .sub { color:#81868c; font-size:13px; margin-bottom:30px; }
+
+  .phase { display:flex; gap:18px; margin-bottom:6px; }
+  .rail { display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:44px; }
+  .rail .dot { width:34px; height:34px; border-radius:50%; background:#4176e6; color:#f5f6f7; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .rail .line { width:2px; flex:1; background:#e1e5ee; margin:4px 0; min-height:14px; }
+  .phase:last-child .rail .line { display:none; }
+  .phase.green .dot { background:#22c55e; } .phase.orange .dot { background:#f59e0b; }
+  .phase.red .dot { background:#ef4444; } .phase.purple .dot { background:#8b5cf6; }
+
+  .body { flex:1; background:#ffffff; border:1px solid #e1e5ee; border-radius:8px; padding:14px 18px; margin-bottom:14px; }
+  .body h2 { font-size:15px; color:#0f1115; margin-bottom:3px; }
+  .body h2 .who { font-size:11.5px; font-weight:normal; color:#81868c; margin-left:8px; }
+  .body .detail { font-size:12.5px; color:#43454a; line-height:1.9; margin-top:6px; }
+  .body .detail b { color:#353638; }
+  .code { font-family:Consolas,monospace; font-size:11.5px; color:#4176e6; background:#eef2fb; padding:0 5px; border-radius:3px; }
+  .gate { margin-top:9px; font-size:12px; border-left:3px solid #f59e0b; background:#fef5e7; padding:7px 12px; border-radius:0 6px 6px 0; color:#dd8629; }
+  .gate.blue { border-color:#4176e6; background:#eff6ff; color:#4176e6; }
+  .gate.green { border-color:#22c55e; background:#e6faed; color:#22c55e; }
+  .gate.red { border-color:#ef4444; background:#fef2f2; color:#ef4444; }
+  .tools { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+  .tools span { font-family:Consolas,monospace; font-size:11px; background:#eef2fb; border:1px solid #c9d9f7; border-radius:4px; padding:1px 7px; color:#4176e6; }
+
+  .branch { margin:2px 0 14px 62px; background:#f7f8fa; border:1px dashed #d5dae3; border-radius:8px; padding:12px 16px; font-size:12.5px; color:#43454a; line-height:1.9; }
+  .branch b { color:#f59e0b; }
+  .branch.gmx b { color:#8b5cf6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>任务全流程 <span class="tag">v1.5.15+20260914 · 双引擎 LAMMPS + GROMACS</span></h1>
+  <div class="sub">dsh 承担 orchestrator 的判断角色:每步真读返回、合格才进下一步 · 高危动作一律先讲后果等确认 · 长任务后台+持续盯 · <b>不走编排器不能跑</b>(野跑闸代码强制) · 全程留痕(TOKEN_LOG/决策账/审计)</div>
+
+  <!-- 主工作流五段对照 -->
+  <div class="branch" style="border-color:#c9d9f7; background:#f2f6ff; margin-bottom:22px">
+    <b style="color:#4176e6">主工作流·五段总纲 ↔ 本页步骤:</b>
+    <b>① 物理感知</b>(按是否断键成键选引擎)= 步骤 1–3 ·
+    <b>② 建模</b>(packmol 构型打包 + moltemplate 拓扑组装)= 步骤 4 ·
+    <b>③ 动力学</b>(力场/系综/时间/续跑)= 步骤 5–7 ·
+    <b>④ 管线监管</b>(编排器;遇错蜂群讨论→决策;L2 沉淀)= 步骤 8 + 异常支路 ·
+    <b>⑤ 分析</b>(专科手产物为准)= 步骤 10<br>
+    <b style="color:#ef4444">规模铁律:小体系验证成功后才大体系运行</b> —— 新体系/新力场/新参数组合一律先小体系(500–5000 原子量级)全链走通才放大
+  </div>
+
+  <!-- 0 -->
+  <div class="phase purple">
+    <div class="rail"><div class="dot">0</div><div class="line"></div></div>
+    <div class="body">
+      <h2>上传文献<span class="who">用户动作</span></h2>
+      <div class="detail">用户把 PDF/txt/md/docx 丢进对话(或给路径),说一句"解读一下 / 按这篇建模 / 出动力学方案 / 完全复现"。</div>
+      <div class="tools"><span>dsh-files 上传</span><span>或直接给 case 路径</span></div>
+    </div>
+  </div>
+
+  <!-- 1 -->
+  <div class="phase purple">
+    <div class="rail"><div class="dot">1</div><div class="line"></div></div>
+    <div class="body">
+      <h2>读文献 · 抓四样<span class="who">read_paper</span></h2>
+      <div class="detail">抓<b>研究体系 / 目标性质 / 已报道方法 / 关键数值</b>,引用标原文出处。然后<b>确认意图</b>:复现还是改进?关注哪个性质/工况?有实质歧义先问清,不臆测。回忆型问题("上次 QEq 怎么修好的")先用 <span class="code">sim_search_sessions</span> 查历史会话档拿真实片段,不凭印象编造。</div>
+      <div class="tools"><span>mcp__mdsim__read_paper</span><span>mcp__mdsim__sim_search_sessions</span></div>
+      <div class="gate blue">意图确认门:复现 vs 改进、目标性质、工况 —— 用户答清才往下走</div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="phase purple">
+    <div class="rail"><div class="dot">2</div><div class="line"></div></div>
+    <div class="body">
+      <h2>蜂群拆解 · 四面子代理并行<span class="who">subagent 只读只推理,绝不执行</span></h2>
+      <div class="detail">
+        <b>结构建模面</b>:构型/组分/密度目标/端基,预防 close contacts &lt;0.8Å ·
+        <b>力场面</b>:ReaxFF 元素覆盖与 QEq 中性,或 GROMACS 经典力场(CHARMM/AMBER/GAFF)可得性 ·
+        <b>动力学面</b>:min→平衡→生产;ReaxFF timestep 0.1–0.25 fs;GROMACS 对齐文献 mdp 口径 ·
+        <b>分析面</b>:密度/RDF/键/氢键/扩散/承载,对应 analyze_agent / gmx 分析件
+      </div>
+      <div class="tools"><span>subagent × 4</span><span>web_search_pro / web_fetch_pro 辅助</span></div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="phase purple">
+    <div class="rail"><div class="dot">3</div><div class="line"></div></div>
+    <div class="body">
+      <h2>综合输出方案 · 物理感知选引擎<span class="who">五段总纲第①段 · 建模思路 + 动力学思路</span></h2>
+      <div class="detail">明标<b>"方案骨架非最终输入"</b>;文献数值标出处;方案对齐本系统已有 case 并注明差异。<b>引擎选型(按物理,不按习惯)</b>:是否断键成键——ReaxFF 化学/高温炭化 → LAMMPS 轨;含水体系 300K 经典力学 → GROMACS 轨(本机 ReaxFF 液态水实测 665-705K 不可信)。物理没读透不带病建模。引擎只这两个,建模工具只 packmol/moltemplate。</div>
+      <div class="gate">用户拍板门(红线 7):改化学模型/力场 = 科研方向级决策,dsh 出带证据的建议书,绝不自己开跑</div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">4</div><div class="line"></div></div>
+    <div class="body">
+      <h2>建盒建模<span class="who">五段总纲第②段 · packmol / moltemplate 经审计通道</span></h2>
+      <div class="detail">用户确认后,经 <span class="code">sim_exec</span> 逐步落地:packmol 构型打包 → moltemplate 拓扑组装(.lt)或 gro/top(GROMACS)。每步 description 写清目的,进审计日志。<b>建模过程即上看板</b>:有建模产物(packed.xyz/.gro/packmol 日志)就上榜,原子数/盒子/键/角/二面角逐项对照 <span class="code">model_spec.json</span> 标 ✓/✗。</div>
+      <div class="tools"><span>mcp__mdsim__sim_exec</span><span>packmol</span><span>moltemplate</span><span>gmx insert/editconf</span></div>
+      <div class="gate red">小体系先行(铁律):新体系/新力场/新参数组合先建 500–5000 原子量级小体系,全链走通才放大</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">5</div><div class="line"></div></div>
+    <div class="body">
+      <h2>PREFLIGHT 预检<span class="who">专科手 #1 · 不合格先修</span></h2>
+      <div class="detail">LAMMPS:<span class="code">preflight_agent.py</span> 扫近接触/缺陷 + <span class="code">preflight_agent_v2.py</span> 查元素组成+力场匹配 → {missing_elements, pass};缺元素先进 REBUILD 分支。GROMACS:<span class="code">gmx grompp</span> 过不去不进生产。</div>
+      <div class="tools"><span>python3 preflight_agent.py input.json result.json</span><span>必须真读 result.json</span></div>
+      <div class="gate red">pass=false → 停下讲清 issues,修复或重建,绝不带病进 LAUNCH</div>
+    </div>
+  </div>
+
+  <!-- 6 VALIDATE -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">6</div><div class="line"></div></div>
+    <div class="body">
+      <h2>VALIDATE 试跑验收<span class="who">小体系试运行 · 不过不放行生产</span></h2>
+      <div class="detail">把生产输入截到首个 run、强制固定热力学列短跑 N 步(默认 10,最多 4 核不抢生产),按固定六项清单验收:<b>完成收尾 / 无 ERROR / 原子守恒 / 无 NaN / 步数到位 / 温度不越程序最高温 4 倍</b>。全过才放行 LAUNCH;不过落 FAILED + 飞书,报告留 <span class="code">validate_report.json</span>(validate.in/stdout 可复查)。</div>
+      <div class="tools"><span>validate_agent.py</span><span>task["validate_steps"] 可调</span></div>
+      <div class="gate red">验收门(代码强制):六项任一不过 → 不进生产;小体系验证成功是大体系运行的前置条件</div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">7</div><div class="line"></div></div>
+    <div class="body">
+      <h2>LAUNCH 启动<span class="who">唯一入口 · 启动即接管</span></h2>
+      <div class="detail">LAMMPS:<span class="code">launch_agent.py</span> → {success, pids},回报 <b>PID + 日志路径</b>,动手前确认核数余量(本机 64 核)。GROMACS:唯一入口 <span class="code">gmx_agent.py</span>——四道硬校验(dir 在 enabled 监控根下 / tpr 存在 / 无在跑 mdrun / loadavg1&lt;核数),<b>先 adopt 原子写注册表再 spawn</b>。</div>
+      <div class="tools"><span>launch_agent.py</span><span>mpirun -np N lmp_mpi</span><span>gmx_agent.py → gmx_mpi mdrun</span></div>
+      <div class="gate red">野跑闸(代码强制):绕过入口的 mdrun,推送驱动每 10 min 巡检直接 SIGTERM(.cpt 可续跑)——要放行先把 dir 加进 gmx_adopted.json 再重启</div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="phase orange">
+    <div class="rail"><div class="dot">8</div><div class="line"></div></div>
+    <div class="body">
+      <h2>MONITOR 监控循环<span class="who">五段总纲第④段 · 双通道互验 + should-run 裁决</span></h2>
+      <div class="detail">LAMMPS:<span class="code">monitor_agent.py</span> {status, step, risk_score, 温度/能量/异常} 与 <span class="code">sim_status</span> 互验,risk≥60 = 预防介入线。GROMACS:<span class="code">sim_gmx_status</span> 看阶段/步数/进度/温度(2018.1 换行能量表已按定宽列解析,爆炸检测不失明)。编排器每 tick 出 <b>should-run 裁决</b>(ACT/IDLE/WAIT_HUMAN/SUPPRESSED)进 strategy_decisions.jsonl。看板活跃卡/归档折叠区实时可见,点开详情有流水线链+日志尾。</div>
+      <div class="tools"><span>monitor_agent.py</span><span>sim_status</span><span>sim_gmx_status</span><span>看板 :8080</span></div>
+    </div>
+  </div>
+
+  <!-- 异常分支 -->
+  <div class="branch">
+    <b>⚠ 异常 / CRITICAL / risk≥60 → 进 Mode C 修复支路:</b>
+    ① 确诊(四真相源 + 直读 log.lammps / 阶段日志,找第一根因,不重复已失败策略)→
+    ② subagent 蜂群四路联网搜证(官方文档/邮件列表/社区帖/本体系已知坑)→
+    ③ AI 比选(机理对本 case 是否成立 + 来源置信度,比选过程对话可见)→
+    ④ 逐项执行铁律:一次一变量、先备份、ffield 永不改、每项判【成/败/不确定】、修复日志.md 记一笔、预算 3 项 →
+    ⑤ 全败停下汇总,请用户决策。修好 → 回到 ⑧ 继续监控;策略耗尽触发熔断退避(只压恢复不压检测)并蜂群联网研究。
+  </div>
+
+  <!-- 9 -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">9</div><div class="line"></div></div>
+    <div class="body">
+      <h2>DONE 验收<span class="who">跑完判定 · 终态接领养队列</span></h2>
+      <div class="detail">步数到位、日志正常收尾、无 lost atoms / 爆炸痕迹。定时巡检通道把"跑完"推给处理层/微信;GROMACS 中途停止(活→死未满程)属严重告警。终态不闲着:DONE/FAILED 发现 <span class="code">pending_adopts.jsonl</span> 有待领养任务,归档旧 task 转 IDLE 下一 tick 领养。</div>
+      <div class="tools"><span>md_push_driver(每 10 min)</span></div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="phase green">
+    <div class="rail"><div class="dot">10</div><div class="line"></div></div>
+    <div class="body">
+      <h2>ANALYZE 分析 · 文献对照<span class="who">五段总纲第⑤段 · 专科手 #3 + 交付标准 §3</span></h2>
+      <div class="detail"><span class="code">analyze_agent.py</span> → char_yield / p_retention;<span class="code">cp_calculator.py</span> 比热;GROMACS 体系出 RDF/氢键/扩散/承载。复现任务按<b>交付标准 §3</b> 逐指标对照文献数值,偏离项如实标 ⚠️/✗ 不润色(红线:数字必来自工具真实返回)。</div>
+      <div class="tools"><span>analyze_agent.py</span><span>cp_calculator.py</span><span>指标对比.md / 复现对照表.md</span></div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="phase">
+    <div class="rail"><div class="dot">11</div><div class="line"></div></div>
+    <div class="body">
+      <h2>归档 + 沉淀<span class="who">任务文件夹 + 归纳说明 + 经验回流(记忆纪律)</span></h2>
+      <div class="detail">按 <span class="code">&lt;项目&gt;/&lt;任务&gt;_&lt;时间戳&gt;/</span> 管理;每个文件夹生成<b>归纳说明.md</b>;PROCESS_LOG 记过程(时间/动作/命令/返回/判断)、TOKEN_LOG 记 token 花费——过程记录与结果同等重要。教训沉淀进 <span class="code">memory/notes/</span> 与 atoms.jsonl,沉淀经验按<b>验证时的条件</b>定界(附 APPLY/DON'T APPLY 例对),未入账(atoms+LEDGER)不算数;看板不活跃 run 自动收进"📁 归档"折叠区。审计流水 <span class="code">claude_operations.jsonl</span> 全程留痕。</div>
+      <div class="gate green">终点:一张汇总表(方案/执行/曲线数字/文献对照/成败/证据出处)+ 结论与下一步建议</div>
+    </div>
+  </div>
+
+  <!-- 进化回流 -->
+  <div class="branch gmx">
+    <b>⟳ 进化回流(L2,全程自动但永不自动批准):</b>
+    你的打断/否定纠正/工具错误被 observe.py(cron */37,带 should-observe 闸)采为 friction →
+    specialist_swarm 起草改进提案 → memory/proposals/ →
+    human_review 档进人工闸队列等你拍板 → 批准后经证据门 apply → LEDGER 入账 →
+    经验晋升进 atoms/SOP,反哺下一次任务的拆解与人格。
+  </div>
+
+</div>
+</body>
+</html>

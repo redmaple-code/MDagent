@@ -1,0 +1,24 @@
+{
+  "name": "dsh-md-auto-approve",
+  "version": "0.1.0",
+  "description": "Optional auto-approver for the dsh approval seam: while <DSH_HOME>/auto-approve.json says enabled, every approval request resolves allowed-once (audit events still logged); otherwise it delegates to the normal web popup.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  }
+}

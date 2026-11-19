@@ -1,0 +1,11 @@
+{
+  "name": "dsh-bio-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs",
+  "exports": {".": "./index.mjs", "./package.json": "./package.json"},
+  "description": "Typed Bio workflow plugin for the tenant-bound remote compute runtime.",
+  "dependencies": {"@deepseek-ai/schemastery": "3.18.1", "typebox": "1.1.38"},
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

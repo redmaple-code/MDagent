@@ -1,0 +1,8 @@
+{
+  "auto_kill_wild": true,
+  "adopted": [
+    "/opt/mdagent/文献-水凝胶/projects/paper-07/gromacs_full/build",
+    "/opt/mdagent/文献-水凝胶/projects/paper-07/gromacs_full/air1to1/M1_build",
+    "/opt/mdagent/文献-水凝胶/projects/paper-07/gromacs_full/air1to1/M2_nvt/run6"
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "mode": "local",
+  "local_base": "/opt/mdagent/kit",
+  "ssh": {
+    "host": "",
+    "user": "",
+    "password": "",
+    "key_file": "",
+    "remote_base": "/opt/mdagent/kit"
+  },
+  "monitor_url": "http://127.0.0.1:8080",
+  "_note": "mode=local 直读 local_base 下的 state/日志(Windows/Linux 都行);mode=ssh 填 ssh.* 拉 remote_base 的实时状态(真机在你的 Linux 上时用)。SSH 凭证待你提供后填入并把 mode 改 ssh。所有工具只读,绝不写/杀进程/改力场。",
+  "hpc": {
+    "enabled": false,
+    "scheduler": "auto",
+    "default_partition": "",
+    "default_account": "",
+    "default_walltime": "24:00:00",
+    "_note": "超算提交预留接口配置。enabled=false 时 sim_hpc_submit 只渲染脚本(dry_run);启用需人工决策,且 sbatch/qsub 要先加入 claude_interface.py 白名单(红线文件)。换集群改这里即可。"
+  },
+  "scnet": {
+    "enabled": true,
+    "auto_submit": true,
+    "cluster_id": "20027",
+    "work_root": "YMY-AI",
+    "lmp_cmd": "",
+    "whitelist": {
+      "queues": [
+        "tyhcnormal"
+      ],
+      "max_nodes": 2,
+      "max_walltime_h": 48
+    },
+    "_note": "SCNet 开放平台提交(2026-09-03 真机联调通:华北二区太原 tyhcnormal,SLURM 调度器 1697599991)。凭证在 <数据根>/dsh-home/.credentials.yaml。enabled+auto_submit 双 true 才允许提交,且仅限白名单;人工确认为代码强制(scnet_client 内 TTY/一次性批准文件,非提示词),无法经配置关闭。work_root=YMY-AI(用户拍板),远端=<homePath>/YMY-AI/<case_id>/。lmp_cmd 待填:该集群 LAMMPS 加载命令,如 module load xxx && mpirun -np {nproc} lmp_mpi -in {input}。"
+  },
+  "data_root": "/opt/mdagent/data",
+  "exec_bridge": {
+    "sudo_user": "mdorch",
+    "_note": "sim_exec 经 sudo 提权到该身份执行 claude_interface.py(2026-09-17 加固)。harness 本身跑在 mdagent(无 mdorch 组),这是唯一提权路径;sudoers 规则见 /etc/sudoers.d/60-mdagent-simexec(脚本路径写死)。置空=不提权(改造前行为)。注意:白名单含 python3,此墙的性质是人工弹窗审批+逐条审计,不是能力零化。"
+  },
+  "run_case_base": "/opt/mdagent-workspace/程序运行-case",
+  "schedule": [
+    [
+      0,
+      100000,
+      300.0,
+      300.0
+    ],
+    [
+      100000,
+      400000,
+      300.0,
+      600.0
+    ],
+    [
+      400000,
+      700000,
+      600.0,
+      900.0
+    ],
+    [
+      700000,
+      1000000,
+      900.0,
+      1200.0
+    ],
+    [
+      1000000,
+      1350000,
+      1200.0,
+      1200.0
+    ]
+  ],
+  "schedules": {
+    "PRJ_SYS-A_RUN1500": [
+      [
+        0,
+        50000,
+        300,
+        300
+      ],
+      [
+        50000,
+        150000,
+        300,
+        1500
+      ],
+      [
+        150000,
+        1150000,
+        1500,
+        1500
+      ]
+    ],
+    "PRJ_SYS-A_RUN2000": [
+      [
+        0,
+        50000,
+        300,
+        300
+      ],
+      [
+        50000,
+        150000,
+        300,
+        2000
+      ],
+      [
+        150000,
+        1150000,
+        2000,
+        2000
+      ]
+    ],
+    "PRJ_SYS-A_RUN2500": [
+      [
+        0,
+        50000,
+        300,
+        300
+      ],
+      [
+        50000,
+        150000,
+        300,
+        2500
+      ],
+      [
+        150000,
+        1150000,
+        2500,
+        2500
+      ]
+    ],
+    "PRJ_SYS-A_pyrolysis": [
+      [
+        0,
+        50000,
+        300,
+        300
+      ],
+      [
+        50000,
+        150000,
+        300,
+        1500
+      ],
+      [
+        150000,
+        1150000,
+        1500,
+        1500
+      ]
+    ]
+  },
+  "_schedule_note": "温度程序唯一出处(2026-08-29 按项目统一):schedule=全局默认(当前 melt-quench 斜坡);schedules={<project>: [...]} 按项目覆盖。web_monitor 看板与 monitor_agent 巡检(经 pipeline_check 注入 in.json)都从这里读;段格式 [起始步, 结束步, 起始K, 结束K]。"
+}

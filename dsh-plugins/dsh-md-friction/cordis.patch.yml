@@ -1,0 +1,9 @@
+# dsh-md-friction bundle patch: one insert registering the friction collector.
+# The row id must match the plugin's exported cordis `name`.
+# logPath 相对值由 MDSIM_DATA_ROOT 环境变量锚定(run-dsh.sh 统一 export),
+# 解析进数据根 events/friction.jsonl;无 env 时才退回 cwd(与 flow-gate 同纪律)。
+- insert:
+    - id: dsh-md-friction
+      name: 'dsh-md-friction'
+      config:
+        logPath: 'events/friction.jsonl'

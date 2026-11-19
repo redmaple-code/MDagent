@@ -1,0 +1,15 @@
+--- a/openmm_workflow/stages.py
++++ b/openmm_workflow/stages.py
+@@ -824,7 +824,11 @@
+         selected, properties = _platform(self.spec["resources"])
+         simulation = app.Simulation(pdb.topology, system, integrator, selected, properties)
+         simulation.context.setState(state)
+-        self.diagnostics = _finite_state(_state(simulation.context), system)
++        evaluated_state = _state(simulation.context)
++        self.diagnostics = _finite_state(evaluated_state, system)
++        # Retain the inherited State and separately bind the fresh validation
++        # observation to the diagnostics produced from that same State.
++        self.write_xml("validation-state.xml", evaluated_state, "validation-state")
+ 
+     def analysis(self):
+         import MDAnalysis as mda

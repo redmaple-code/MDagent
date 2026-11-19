@@ -1,0 +1,569 @@
+{
+  "passed": 86,
+  "total": 86,
+  "groups": {
+    "E1": [
+      11,
+      11
+    ],
+    "E2": [
+      7,
+      7
+    ],
+    "E3": [
+      4,
+      4
+    ],
+    "E4": [
+      8,
+      8
+    ],
+    "E5": [
+      3,
+      3
+    ],
+    "BIND": [
+      3,
+      3
+    ],
+    "SURF": [
+      6,
+      6
+    ],
+    "SURF2": [
+      16,
+      16
+    ],
+    "HIGH": [
+      4,
+      4
+    ],
+    "KB": [
+      22,
+      22
+    ],
+    "REAL": [
+      2,
+      2
+    ]
+  },
+  "rows": [
+    {
+      "group": "E1",
+      "name": "无设计决策 → 拒",
+      "ok": true,
+      "detail": "['E1:no-design-decisions(锁定决策)', 'E3:assessment-missing:plan']"
+    },
+    {
+      "group": "E1",
+      "name": "只有 F 级估算 → 拒",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D1_对象与范围']"
+    },
+    {
+      "group": "E1",
+      "name": "D 级过往案例（medium）→ 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E1",
+      "name": "高风险仅 D 级 → 拒",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D1_对象与范围']"
+    },
+    {
+      "group": "E1",
+      "name": "高风险论文 B → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E1",
+      "name": "高风险纯人工（有理由）→ 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E1",
+      "name": "论文与体系不适用 → 拒",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D1_对象与范围']"
+    },
+    {
+      "group": "E1",
+      "name": "人工覆盖缺理由 → 冲突包",
+      "ok": true,
+      "detail": "{'reasons': ['E1:override-reason-missing:D5_关键参数'], 'pack': {'slot': 'D5_关键参数', 'fingerprint': 'abc3f0eef9c44d9c', 'human_input': {'ref': 'user:M-E1-08-dt', 'value': 25, 'scope': 'M-E1-08', 'stated_reason': ''}, 'conflic"
+    },
+    {
+      "group": "E1",
+      "name": "同一冲突已问未决 → 升级不重复",
+      "ok": true,
+      "detail": "['E1:override-unresolved:D5_关键参数']"
+    },
+    {
+      "group": "E1",
+      "name": "答复针对性理由 → 放行",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E1",
+      "name": "二次确认 → 最高权限人工经验",
+      "ok": true,
+      "detail": "paper:10.1103/PhysRevB.33.7983→B:paper-parseable user:M-E1-08-dt→A:human-confirmation 人工二次确认→最高权限人工经验"
+    },
+    {
+      "group": "E2",
+      "name": "执行无输入文件 → 拒",
+      "ok": true,
+      "detail": "['E2:input-untraceable']"
+    },
+    {
+      "group": "E2",
+      "name": "执行链路完整 → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E2",
+      "name": "数值主张无对账 → 拒",
+      "ok": true,
+      "detail": "['E2:claim-unevidenced:a0=3.615']"
+    },
+    {
+      "group": "E2",
+      "name": "对账不符 → 拒",
+      "ok": true,
+      "detail": "['E2:claim-failed:a0=3.7(factcheck-failed)']"
+    },
+    {
+      "group": "E2",
+      "name": "对账一致 → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E2",
+      "name": "旧账充新主张 → 拒",
+      "ok": true,
+      "detail": "['E2:stale-evidence:a0=3.615']"
+    },
+    {
+      "group": "E2",
+      "name": "结题无数值主张 → 拒",
+      "ok": true,
+      "detail": "['E2:no-acceptance-claims']"
+    },
+    {
+      "group": "E3",
+      "name": "计划段缺评估 → 拒",
+      "ok": true,
+      "detail": "['E3:assessment-missing:plan']"
+    },
+    {
+      "group": "E3",
+      "name": "计划段 critical → 拒",
+      "ok": true,
+      "detail": "['E3:critical:mdev-general-dt']"
+    },
+    {
+      "group": "E3",
+      "name": "计划段 critical 清零 → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E3",
+      "name": "结果段 critical → 拒",
+      "ok": true,
+      "detail": "['E3:critical:RA2']"
+    },
+    {
+      "group": "E4",
+      "name": "未声明输入文件 → 拒",
+      "ok": true,
+      "detail": "['E4:no-input-declared']"
+    },
+    {
+      "group": "E4",
+      "name": "恒压+变形 → 拒(methodo-001)",
+      "ok": true,
+      "detail": "['E4:violation:methodo-001:各向同性 NPT 控压与变形同时存在：应力被恒压抵消，样品拉不断（正确做法：控压只耦合非变形方向，或改 NVT+目标应力']"
+    },
+    {
+      "group": "E4",
+      "name": "仅非变形方向控压 → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E4",
+      "name": "往复做成单向 → 拒(methodo-002)",
+      "ok": true,
+      "detail": "['E4:violation:methodo-002:任务声明为往复实验，但输入文件缺少任何往复运动特征命令——被做成了单向运动（正确做法：周期反转加载方向）']"
+    },
+    {
+      "group": "E4",
+      "name": "往复+wiggle → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E4",
+      "name": "输入文件不可读 → 拒(fail-closed)",
+      "ok": true,
+      "detail": "['E4:cannot-verify:input-unreadable']"
+    },
+    {
+      "group": "E4",
+      "name": "注入新知识约束 → 立即拦截",
+      "ok": true,
+      "detail": "['E4:violation:methodo-inject-001:测试注入约束命中']"
+    },
+    {
+      "group": "E4",
+      "name": "撤销该知识 → 立即放行",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "E5",
+      "name": "验收项缺覆盖 → 拒",
+      "ok": true,
+      "detail": "['E5:acceptance-not-covered:Ec=-3.54']"
+    },
+    {
+      "group": "E5",
+      "name": "不达标无回退 → 拒",
+      "ok": true,
+      "detail": "['E5:no-rollback-on-fail']"
+    },
+    {
+      "group": "E5",
+      "name": "不达标有回退 → 过",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "BIND",
+      "name": "G-BUILD 不跑 E3（无评估也过）",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "BIND",
+      "name": "G-PLAN 不跑 E4（无输入也过）",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "BIND",
+      "name": "未绑定闸不跑证据规则",
+      "ok": true,
+      "detail": "{'_gate': '未绑定证据规则：G-CUSTOM'}"
+    },
+    {
+      "group": "SURF",
+      "name": "空核查面 → E6 拦截并产出问题包",
+      "ok": true,
+      "detail": "{'reasons': ['E6:surface-missing:acc-criteria', 'E6:surface-missing:acc-reference', 'E6:surface-missing:acc-tolerance'], 'questions': 19}"
+    },
+    {
+      "group": "SURF",
+      "name": "核查面完整 → 过闸",
+      "ok": true,
+      "detail": "核查面 design：19 项（有据 11 / N/A 8 / 待取证 0 / 缺项 0）"
+    },
+    {
+      "group": "SURF",
+      "name": "N/A 缺理由 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-na-reason:sys-charge']"
+    },
+    {
+      "group": "SURF",
+      "name": "不允许 N/A 的项 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-na-not-allowed:sys-composition']"
+    },
+    {
+      "group": "SURF",
+      "name": "证据等级不足 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-evidence-insufficient:sys-composition(need C)']"
+    },
+    {
+      "group": "SURF",
+      "name": "待取证项 → 点名提问",
+      "ok": true,
+      "detail": "['sys-composition']"
+    },
+    {
+      "group": "SURF2",
+      "name": "G-BUILD 缺 build 核查面 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-missing:eq-minimize', 'E6:surface-missing:eq-prebalance', 'E6:surface-missing:eq-production']"
+    },
+    {
+      "group": "SURF2",
+      "name": "G-EXEC 缺 exec 核查面 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-missing:fail-lost-atoms', 'E6:surface-missing:fail-temp', 'E6:surface-missing:rep-inputs']"
+    },
+    {
+      "group": "SURF2",
+      "name": "G-ANALYZE 缺 analyze 核查面 → 拒",
+      "ok": true,
+      "detail": "['E5:acceptance-not-covered:C11∈[150,178]GPa', 'E6:surface-missing:obs-observable', 'E6:surface-missing:obs-statistics']"
+    },
+    {
+      "group": "SURF2",
+      "name": "高风险核查面只有 C 级证据 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-evidence-insufficient:sys-potential(need B)']"
+    },
+    {
+      "group": "SURF2",
+      "name": "只挂引用没回答 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-answer-unquantified:bnd-atoms', 'E6:surface-answer-missing:sys-structure']"
+    },
+    {
+      "group": "SURF2",
+      "name": "数值项答案无数字 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-answer-unquantified:bnd-atoms', 'E6:surface-answer-missing:sys-structure']"
+    },
+    {
+      "group": "SURF2",
+      "name": "N/A 理由不正当 → 拒",
+      "ok": true,
+      "detail": "['E6:surface-na-reason-unjustified:int-timestep']"
+    },
+    {
+      "group": "SURF2",
+      "name": "高风险未知族（generic）→ E3 拒",
+      "ok": true,
+      "detail": "['E3:family-uncovered-high-risk']"
+    },
+    {
+      "group": "SURF2",
+      "name": "提问循环：首轮点名缺项",
+      "ok": true,
+      "detail": "['acc-criteria', 'acc-reference', 'acc-tolerance', 'bnd-atoms']"
+    },
+    {
+      "group": "SURF2",
+      "name": "回答后该项关闭（其余仍点名）",
+      "ok": true,
+      "detail": "['acc-criteria', 'acc-reference', 'acc-tolerance', 'bnd-atoms']"
+    },
+    {
+      "group": "SURF2",
+      "name": "补齐后过闸",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "group": "SURF2",
+      "name": "sim_surface status 列出全部条目",
+      "ok": true,
+      "detail": "30"
+    },
+    {
+      "group": "SURF2",
+      "name": "sim_surface record 写入答案",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "group": "SURF2",
+      "name": "sim_surface 拒绝未知条目",
+      "ok": true,
+      "detail": "核查面工具内部错误(fail-closed): ValueError('unknown-item:no-such-item')"
+    },
+    {
+      "group": "SURF2",
+      "name": "sim_surface sediment 落 atom",
+      "ok": true,
+      "detail": "a1792755147883_92fcbb"
+    },
+    {
+      "group": "SURF2",
+      "name": "沉淀 atom 可被后续案例引用（E 级）",
+      "ok": true,
+      "detail": "atom:a1792755147883_92fcbb→E:atom-active 最高有效等级=E（门槛 E）"
+    },
+    {
+      "group": "HIGH",
+      "name": "dt=100fs → 评估 critical + E3 拦截",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D5_关键参数', 'E3:critical:PA1']"
+    },
+    {
+      "group": "HIGH",
+      "name": "大规模无小规模成功 → S2 拦截",
+      "ok": true,
+      "detail": "{'error': '执行策略拦截:任务声明了大规模产线(scale_gate=large_pending),但台账里还没有小规模验证的成功结局;先跑小规模探针(run_kind=validation)并确认成功', 'reasons': ['S2:scale-gate-unmet'], 'case_id': 'M-HR-02', 'fail_closed': True, '_discipline': '唯一写门:命令经 claude_"
+    },
+    {
+      "group": "HIGH",
+      "name": "有小规模成功 → 放行",
+      "ok": true,
+      "detail": "None"
+    },
+    {
+      "group": "HIGH",
+      "name": "高风险仅 E 级经验 → 拒",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D1_对象与范围']"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-method 负例被抓",
+      "ok": true,
+      "detail": "未声明具体求法——需明确方法选型依据"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-method 正例放行",
+      "ok": true,
+      "detail": "已声明应变能法(0K 静态适用)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-strain-linear 负例被抓",
+      "ok": true,
+      "detail": "两组幅值 C11 偏差超 15%——非线性污染或未充分弛豫"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-strain-linear 正例放行",
+      "ok": true,
+      "detail": "c11_small_amp=167.1 与 c11_large_amp=167.5 相对偏差 0.2% ≤ 15%——两组幅值 C11 一致(线性区确认)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-relax 负例被抓",
+      "ok": true,
+      "detail": "输入文件缺少盒长弛豫(box/relax)——晶格未达平衡态,应变响应叠加了初始应力"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-relax 正例放行",
+      "ok": true,
+      "detail": "输入文件包含全部必需要素(1 项核验通过)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-size 负例被抓",
+      "ok": true,
+      "detail": "原子数 <108——有限尺寸效应可能显著(建议 4×4×4 验证)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-size 正例放行",
+      "ok": true,
+      "detail": "atom_count=108 ≥ 下限 108"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-temp-basis 负例被抓",
+      "ok": true,
+      "detail": "已区分理论基准(0K 同势)与实验参考(300K)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-ec-temp-basis 正例放行",
+      "ok": true,
+      "detail": "未区分对照基准温度口径——0K/300K 系统差未声明"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-liq-equil 负例被抓",
+      "ok": true,
+      "detail": "缺 NVT→NPT 平衡链条——液体统计可能未达平衡"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-liq-equil 正例放行",
+      "ok": true,
+      "detail": "输入文件包含全部必需要素(2 项核验通过)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-liq-sampling 负例被抓",
+      "ok": true,
+      "detail": "缺少结构统计命令(RDF/时间平均)——无法输出验收所需结构量"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-liq-sampling 正例放行",
+      "ok": true,
+      "detail": "输入文件包含全部必需要素(1 项核验通过)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-gs-relax 负例被抓",
+      "ok": true,
+      "detail": "缺 box/relax——晶格常数未弛豫"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-gs-relax 正例放行",
+      "ok": true,
+      "detail": "输入文件包含全部必需要素(1 项核验通过)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-gs-start-off 负例被抓",
+      "ok": true,
+      "detail": "起始值已声明偏离目标(验证有效)"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-gs-start-off 正例放行",
+      "ok": true,
+      "detail": "未声明起始值偏离——若恰好等于目标则验证无力度"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-general-dt 负例被抓",
+      "ok": true,
+      "detail": "dt=100fs → dt*=0.0464（推荐≤0.005，失稳线>0.02）：超失稳线"
+    },
+    {
+      "group": "KB",
+      "name": "mdev-general-dt 正例放行",
+      "ok": true,
+      "detail": "dt=2fs → dt*=0.0009（推荐≤0.005，失稳线>0.02）"
+    },
+    {
+      "group": "KB",
+      "name": "锚注入 → 同一决策判定变化",
+      "ok": true,
+      "detail": "sound → concern"
+    },
+    {
+      "group": "KB",
+      "name": "锚撤销 → 恢复原判定",
+      "ok": true,
+      "detail": "sound"
+    },
+    {
+      "group": "REAL",
+      "name": "真实日志重算 a0=3.615 → PASS",
+      "ok": true,
+      "detail": "3.61499999592369"
+    },
+    {
+      "group": "REAL",
+      "name": "真实日志重算 a0=3.70 → FAIL",
+      "ok": true,
+      "detail": "|3.615-3.7|=0.085 > tol 0.005"
+    }
+  ],
+  "sandbox": "C:\\Users\\redmaple\\AppData\\Local\\Temp\\ev_matrix_br0_du5z"
+}

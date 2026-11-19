@@ -1,0 +1,355 @@
+{
+  "schemaVersion": "bio.source-inventory.v1",
+  "observedDate": "2026-10-06",
+  "timezone": "Asia/Shanghai",
+  "sourceRoot": "<SOURCE_ROOT>",
+  "sourceHead": "bf0857a23f907cf85635c0c401b49d6ad049e418",
+  "sourceState": "dirty-working-tree",
+  "sourceStatusCounts": {
+    " M": 315,
+    "??": 1072
+  },
+  "selectedFileCount": 27,
+  "selectedBytes": 470422,
+  "files": [
+    {
+      "path": "workers/remote_runner.py",
+      "sha256": "6fa069d828bf9bf9d87095d8c0641e93b4c34ab7d593f2287572283b41c9632e",
+      "byteSize": 42606,
+      "gitStatus": " M",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/__init__.py",
+      "sha256": "9e6d58cf22247d69bfd587a368d0c7c12c02532a46dfbd4b20cd4c96b37946d5",
+      "byteSize": 56,
+      "gitStatus": "clean",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/common.py",
+      "sha256": "5373d37bf9faf9f1332b5b3d8247826b6f19d019798eb88c039b3a62f37e36ac",
+      "byteSize": 4190,
+      "gitStatus": "clean",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/stages.py",
+      "sha256": "fdd45853d21f92eacf147072238d8fc9f7bc0174d268961845407f53d3f536f9",
+      "byteSize": 61079,
+      "gitStatus": " M",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/amber_preparation.py",
+      "sha256": "c52293ca2d4a81d304872823183d9913373c22450e384ddaed687e36c10061bf",
+      "byteSize": 35994,
+      "gitStatus": "??",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/input_audit.py",
+      "sha256": "5ac6f18196cb6848af6fe84bf51a3532e3536e5c44eed78b349c20ee05f3a3ae",
+      "byteSize": 6658,
+      "gitStatus": "??",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/progress.py",
+      "sha256": "fcffcd6429bf3c4627e871b4e67b68e64b181d3aa095e4b8d13a538b574665d4",
+      "byteSize": 7542,
+      "gitStatus": "??",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/storage.py",
+      "sha256": "2ce0472d8ea91f7bf112be8f6492f8ac2105a01a9bf63a175a5b3cefd10a3eab",
+      "byteSize": 5694,
+      "gitStatus": "??",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/openmm_workflow/benchmark.py",
+      "sha256": "f45eb7fb74031ab467b1a54e5cc645a58e1e8d0d6b8e6fb121dbbc0963efa76e",
+      "byteSize": 4013,
+      "gitStatus": "??",
+      "role": "runtime"
+    },
+    {
+      "path": "workers/tests/test_openmm_workflow.py",
+      "sha256": "4d66138cea88cfd980049861370b4de021eb0dbcaf8722611fb957a5402d66ee",
+      "byteSize": 81496,
+      "gitStatus": " M",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/test_amber_preparation.py",
+      "sha256": "9b553c228bdab3fd4896697b5fa0d2b6386f12d7ae1fd5d4f1e64a150834d857",
+      "byteSize": 27954,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/test_benchmark.py",
+      "sha256": "17cbab5effb87d9d2044eb39b8fc9b090d34e12edc37bfc3b973cb3c82da3a17",
+      "byteSize": 4043,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "packages/contracts/src/workflow.ts",
+      "sha256": "c976d4ac08a30b54dc0cb47291ac339cf5ef236dacb36ff9e8a6041f02042688",
+      "byteSize": 12648,
+      "gitStatus": " M",
+      "role": "interface-reference"
+    },
+    {
+      "path": "crates/ksh-core/src/workflows/mod.rs",
+      "sha256": "627a7536c1d7977f5eb8ebc3afd31f68dc50a29fdb0c4b5a09a5dfc84d11d516",
+      "byteSize": 27420,
+      "gitStatus": " M",
+      "role": "interface-reference"
+    },
+    {
+      "path": "crates/ksh-core/src/workflows/store.rs",
+      "sha256": "fe2b524d8ee1f32bfcd7f8b7b5dc8263bffb7de87b8d907a38d428e58b4a16e9",
+      "byteSize": 23056,
+      "gitStatus": " M",
+      "role": "interface-reference"
+    },
+    {
+      "path": "crates/ksh-core/src/workflows/executor.rs",
+      "sha256": "47cdec5b7a804d94b2679ec90a93848bf890883deaf59274f37ec6588b9bb992",
+      "byteSize": 68699,
+      "gitStatus": " M",
+      "role": "interface-reference"
+    },
+    {
+      "path": "docs/development/md-workflows.md",
+      "sha256": "54bc43e28c25d6ae949e61ee80ea08434d67bb5efcc7a7383bf13481ae389e5d",
+      "byteSize": 32945,
+      "gitStatus": " M",
+      "role": "documentation-reference"
+    },
+    {
+      "path": "workers/README.md",
+      "sha256": "31468d81a1d80b35b5e315ce1324a6041f02b252873346969b538d0a3a7d5e2e",
+      "byteSize": 3226,
+      "gitStatus": "clean",
+      "role": "documentation-reference"
+    },
+    {
+      "path": "workers/tests/fixtures/acetate-antechamber-resonance.ac",
+      "sha256": "363e6b2c60863c57dd0573b986fa253a750e2c67e37538ceb8c7116dbc71b915",
+      "byteSize": 790,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/acetate-gaff2-resonance.mol2",
+      "sha256": "bb0bf7ee484927459dae8982b1992f9e5230fb5bc2a3567b6fb8e46ff93460a9",
+      "byteSize": 894,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/alanine-am1bcc-rounding-pre.ac",
+      "sha256": "2d15c3d80252673ad798add90e2977dd306308bdbc95ea5bdc6304ab17574d6b",
+      "byteSize": 1464,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/alanine-am1bcc-rounding-sqm.out",
+      "sha256": "71ecdb95d0b698618fafec29bd6263e4e01486c55f576282f07476b9af2949d7",
+      "byteSize": 8018,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/alanine-am1bcc-rounding.mol2",
+      "sha256": "151f51c6adb882be2cca56acbf389f699da3a8e0009416ed0d7a4db813166f54",
+      "byteSize": 1530,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/leu-ser.pdb",
+      "sha256": "c2d834d984b79a27339ea2847cf3b5fe1f0e15ce848f8e2ce4ae73269455cecb",
+      "byteSize": 2751,
+      "gitStatus": "clean",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/benzene-gaff2-native.mol2",
+      "sha256": "82cfcffc44ad397bc0695bb47c49694b89bf37f87147d7bd165f568ba70c5e54",
+      "byteSize": 1448,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/caffeine-gaff2-native.mol2",
+      "sha256": "74e8d358902d8d43a4078e0e1f2ea2f0fdcd49f085ea168f0ac4ba39131e92ea",
+      "byteSize": 2744,
+      "gitStatus": "??",
+      "role": "tests"
+    },
+    {
+      "path": "workers/tests/fixtures/alanine-am1bcc-rounding-bonds.ac",
+      "sha256": "826ddd921ecbf0d7d00dd6c8aae50089742a94ec03ee6d20550eaa60e424bf52",
+      "byteSize": 1464,
+      "gitStatus": "??",
+      "role": "tests"
+    }
+  ],
+  "environmentProbes": [
+    {
+      "python": "3.12.11",
+      "interpreter": "<EXISTING_ENV_ROOT>/envs/modeling/bin/python",
+      "prefix": "<EXISTING_ENV_ROOT>/envs/modeling",
+      "packages": {
+        "OpenMM": "8.3.0",
+        "MDAnalysis": "2.10.0",
+        "numpy": "1.26.4",
+        "scipy": "1.13.1",
+        "rdkit": "2025.3.6",
+        "ParmEd": "0+unknown",
+        "pdbfixer": "1.11.0"
+      },
+      "tools": {
+        "antechamber": true,
+        "parmchk2": true,
+        "tleap": true,
+        "teLeap": true,
+        "sqm": true,
+        "am1bcc": true,
+        "atomtype": true,
+        "bondtype": true
+      },
+      "openmmPlatforms": [
+        "Reference",
+        "CPU",
+        "OpenCL"
+      ]
+    },
+    {
+      "python": "3.13.5",
+      "interpreter": "<EXISTING_ENV_ROOT>/envs/openmm/bin/python",
+      "prefix": "<EXISTING_ENV_ROOT>/envs/openmm",
+      "packages": {
+        "OpenMM": "8.5.2",
+        "MDAnalysis": null,
+        "numpy": "2.3.1",
+        "scipy": "1.15.2",
+        "rdkit": null,
+        "ParmEd": null,
+        "pdbfixer": "1.11.0"
+      },
+      "tools": {
+        "antechamber": false,
+        "parmchk2": false,
+        "tleap": false,
+        "teLeap": false,
+        "sqm": false,
+        "am1bcc": false,
+        "atomtype": false,
+        "bondtype": false
+      },
+      "openmmPlatforms": [
+        "Reference",
+        "CPU",
+        "OpenCL"
+      ]
+    }
+  ],
+  "validation": {
+    "sourceHashesStableAcrossRead": true,
+    "environmentMetadataAndPlatformEnumeration": true,
+    "simulationExecuted": false,
+    "testsExecuted": false,
+    "serverModified": false,
+    "productCodeCopied": false
+  },
+  "selectionCorrections": [
+    {
+      "observedDate": "2026-10-06",
+      "previousReceiptSha256": "fd67a9fc382d43be5c8f6c625fa699062d39dcdf4a110ebdb19dcea6baf84e51",
+      "previousSelectedFileCount": 23,
+      "previousSelectedBytes": 462015,
+      "addedPaths": [
+        "workers/tests/fixtures/leu-ser.pdb",
+        "workers/tests/fixtures/benzene-gaff2-native.mol2",
+        "workers/tests/fixtures/caffeine-gaff2-native.mol2",
+        "workers/tests/fixtures/alanine-am1bcc-rounding-bonds.ac"
+      ],
+      "reason": "Include slash-qualified and composed fixture paths referenced by selected regression tests; no runtime scope added."
+    }
+  ],
+  "extractedDate": "2026-10-07",
+  "runtimeFiles": [
+    {
+      "path": "remote_runner.py",
+      "sha256": "6fa069d828bf9bf9d87095d8c0641e93b4c34ab7d593f2287572283b41c9632e",
+      "byteSize": 42606
+    },
+    {
+      "path": "openmm_workflow/__init__.py",
+      "sha256": "9e6d58cf22247d69bfd587a368d0c7c12c02532a46dfbd4b20cd4c96b37946d5",
+      "byteSize": 56
+    },
+    {
+      "path": "openmm_workflow/common.py",
+      "sha256": "5373d37bf9faf9f1332b5b3d8247826b6f19d019798eb88c039b3a62f37e36ac",
+      "byteSize": 4190
+    },
+    {
+      "path": "openmm_workflow/stages.py",
+      "sha256": "c4e7c613dfd151ff8ff5bae19b7dc5669df305491b2cf40dfcb851a36747fa5c",
+      "byteSize": 61355
+    },
+    {
+      "path": "openmm_workflow/amber_preparation.py",
+      "sha256": "c52293ca2d4a81d304872823183d9913373c22450e384ddaed687e36c10061bf",
+      "byteSize": 35994
+    },
+    {
+      "path": "openmm_workflow/input_audit.py",
+      "sha256": "5ac6f18196cb6848af6fe84bf51a3532e3536e5c44eed78b349c20ee05f3a3ae",
+      "byteSize": 6658
+    },
+    {
+      "path": "openmm_workflow/progress.py",
+      "sha256": "fcffcd6429bf3c4627e871b4e67b68e64b181d3aa095e4b8d13a538b574665d4",
+      "byteSize": 7542
+    },
+    {
+      "path": "openmm_workflow/storage.py",
+      "sha256": "2ce0472d8ea91f7bf112be8f6492f8ac2105a01a9bf63a175a5b3cefd10a3eab",
+      "byteSize": 5694
+    },
+    {
+      "path": "openmm_workflow/benchmark.py",
+      "sha256": "f45eb7fb74031ab467b1a54e5cc645a58e1e8d0d6b8e6fb121dbbc0963efa76e",
+      "byteSize": 4013
+    }
+  ],
+  "patches": [
+    {
+      "path": "openmm_workflow/stages.py",
+      "originalPath": "provenance/patches/0001-validation-observation/original-stages.py",
+      "originalSha256": "fdd45853d21f92eacf147072238d8fc9f7bc0174d268961845407f53d3f536f9",
+      "currentSha256": "c4e7c613dfd151ff8ff5bae19b7dc5669df305491b2cf40dfcb851a36747fa5c",
+      "patchPath": "provenance/patches/0001-validation-observation/change.patch",
+      "patchSha256": "4acac285e2ecf0658d8d0cf1f99ff0cdd668a54922678c3c1c76163751ef45c7",
+      "reason": "Preserve inherited State; serialize the fresh validation State used for diagnostics, without loosening independent numeric thresholds.",
+      "validationEvidence": [
+        "task-6-first-acceptance.log",
+        "task-6-validation-observation-red.log",
+        "task-6-validation-observation-green.log",
+        "task-6-native-validation-red.log",
+        "task-6-native-validation-green.log"
+      ]
+    }
+  ],
+  "pathMetadataNormalization": "Machine-specific source/environment paths normalized for repository sharing; scientific hashes and patch chain unchanged."
+}

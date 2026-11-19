@@ -1,0 +1,184 @@
+[
+  {
+    "name": "valid accepted",
+    "valid": true,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 1
+    }
+  },
+  {
+    "name": "{'path': '/tmp/data'}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 1,
+      "path": "/tmp/data"
+    }
+  },
+  {
+    "name": "{'python': 'exec()'}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 1,
+      "python": "exec()"
+    }
+  },
+  {
+    "name": "{'startFrame': True}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": true,
+      "endFrame": 202,
+      "stride": 1
+    }
+  },
+  {
+    "name": "{'endFrame': -1}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": -1,
+      "stride": 1
+    }
+  },
+  {
+    "name": "{'stride': 0}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 0
+    }
+  },
+  {
+    "name": "{'source': {'kind': 'accepted', 'sourceId': 'trajectory', 'sourceSha256': None, 'workflowId': 'wf', 'revision': 1, 'stageId': 'production', 'attemptId': 'attempt'}}",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "accepted",
+        "sourceId": "trajectory",
+        "sourceSha256": null,
+        "workflowId": "wf",
+        "revision": 1,
+        "stageId": "production",
+        "attemptId": "attempt"
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 1
+    }
+  },
+  {
+    "name": "static input",
+    "valid": true,
+    "request": {
+      "source": {
+        "kind": "input",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": null,
+        "revision": null,
+        "stageId": null,
+        "attemptId": null
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 0,
+      "stride": 1
+    }
+  },
+  {
+    "name": "input cannot play trajectory",
+    "valid": false,
+    "request": {
+      "source": {
+        "kind": "input",
+        "sourceId": "trajectory",
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "workflowId": null,
+        "revision": null,
+        "stageId": null,
+        "attemptId": null
+      },
+      "profile": "overview",
+      "atomSet": "overview",
+      "startFrame": 0,
+      "endFrame": 202,
+      "stride": 1
+    }
+  }
+]

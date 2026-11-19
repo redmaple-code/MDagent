@@ -1,0 +1,3266 @@
+[
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a1)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a1)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a1",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a1",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "history 长度",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "uses[A]",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 A",
+    "expected": 0.6667,
+    "actual": 0.6667,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 热身1胜",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a2)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a2)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a2",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a2",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a3)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a3)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a3",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a3",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a4)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a4)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a4",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a4",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "history 长度",
+    "expected": 4,
+    "actual": 4,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "uses[A]",
+    "expected": 4,
+    "actual": 4,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A0 2胜2负",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "db penalty[A:atomic_ejection]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A1 连败→0.15",
+    "item": "打分恰减 penalty(A)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a5)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a5)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a5",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a5",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a6)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a6)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a6",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a6",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "history 长度",
+    "expected": 6,
+    "actual": 6,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "uses[A]",
+    "expected": 6,
+    "actual": 6,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 A",
+    "expected": 0.375,
+    "actual": 0.375,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "db penalty[A:atomic_ejection]",
+    "expected": 0.3,
+    "actual": 0.3,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "select 胜出(去压制对照)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A2 连败→0.30",
+    "item": "打分恰减 penalty(A)",
+    "expected": -0.3,
+    "actual": -0.3,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a7)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a7)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a7",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a7",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a8)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a8)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a8",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a8",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "history 长度",
+    "expected": 8,
+    "actual": 8,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "uses[A]",
+    "expected": 8,
+    "actual": 8,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "db penalty[A:atomic_ejection]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A3 连胜→0.15",
+    "item": "打分恰减 penalty(A)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a9)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a9)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a9",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a9",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "recover成功(a10)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "选中策略(a10)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a10",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "a10",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "history 长度",
+    "expected": 10,
+    "actual": 10,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "uses[A]",
+    "expected": 10,
+    "actual": 10,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5833,
+    "actual": 0.5833,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "条目摘除[A:atomic_ejection]",
+    "expected": false,
+    "actual": false,
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "select 胜出(含压制)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "A",
+    "step": "A4 连胜→摘除",
+    "item": "select 胜出(去压制对照)",
+    "expected": "A",
+    "actual": "A",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b1)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b1)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b1",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b1",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b2)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b2)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b2",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b2",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b3)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b3)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b3",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b3",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b4)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b4)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b4",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b4",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "history 长度",
+    "expected": 4,
+    "actual": 4,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "uses[B]",
+    "expected": 4,
+    "actual": 4,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B0 2胜2负",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "db penalty[B:thermal_runaway]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B1 连败→0.15",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b5)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b5)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b5",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b5",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b6)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b6)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b6",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b6",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "history 长度",
+    "expected": 6,
+    "actual": 6,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "uses[B]",
+    "expected": 6,
+    "actual": 6,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 B",
+    "expected": 0.375,
+    "actual": 0.375,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "db penalty[B:thermal_runaway]",
+    "expected": 0.3,
+    "actual": 0.3,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "select 胜出(去压制对照)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B2 连败→0.30",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.3,
+    "actual": -0.3,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b7)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b7)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b7",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b7",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b8)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b8)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b8",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b8",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "history 长度",
+    "expected": 8,
+    "actual": 8,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "uses[B]",
+    "expected": 8,
+    "actual": 8,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "db penalty[B:thermal_runaway]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "D",
+    "actual": "D",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B3 连胜→0.15",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b9)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b9)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b9",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b9",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "recover成功(b10)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "选中策略(b10)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b10",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "b10",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "history 长度",
+    "expected": 10,
+    "actual": 10,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "uses[B]",
+    "expected": 10,
+    "actual": 10,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5833,
+    "actual": 0.5833,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "条目摘除[B:thermal_runaway]",
+    "expected": false,
+    "actual": false,
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "select 胜出(含压制)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "B",
+    "step": "B4 连胜→摘除",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "触发根因",
+    "expected": "thermal_runaway",
+    "actual": "thermal_runaway",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "同因结账数(应0,无 thermal pending)",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "年轻<6h 判 fail 数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "老>6h 判 success 数(不连坐)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "D 老账 outcome",
+    "expected": "success",
+    "actual": "success",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "F 年轻账 outcome",
+    "expected": "fail",
+    "actual": "fail",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 异根因",
+    "item": "E 窗口20 后验",
+    "expected": 0.1364,
+    "actual": 0.1364,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c1)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c1)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c1",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c1",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c2)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c2)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c2",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c2",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c3)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c3)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c3",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c3",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c4)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c4)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c4",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c4",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "history 长度",
+    "expected": 29,
+    "actual": 29,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "uses[B]",
+    "expected": 4,
+    "actual": 4,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 D",
+    "expected": 0.6667,
+    "actual": 0.6667,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 E",
+    "expected": 0.1364,
+    "actual": 0.1364,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C0 2胜2负",
+    "item": "Beta 后验 F",
+    "expected": 0.3333,
+    "actual": 0.3333,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "db penalty[B:QEq_instability]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "C",
+    "actual": "C",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C1 连败→0.15",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c5)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c5)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c5",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c5",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c6)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c6)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c6",
+    "item": "结账条数(fail)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c6",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "history 长度",
+    "expected": 31,
+    "actual": 31,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "uses[B]",
+    "expected": 6,
+    "actual": 6,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 B",
+    "expected": 0.375,
+    "actual": 0.375,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 D",
+    "expected": 0.6667,
+    "actual": 0.6667,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 E",
+    "expected": 0.1364,
+    "actual": 0.1364,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败前",
+    "item": "Beta 后验 F",
+    "expected": 0.3333,
+    "actual": 0.3333,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "db penalty[B:QEq_instability]",
+    "expected": 0.3,
+    "actual": 0.3,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "select 胜出(含压制)",
+    "expected": "C",
+    "actual": "C",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "select 胜出(去压制对照)",
+    "expected": "C",
+    "actual": "C",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C2 连败→0.30",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.3,
+    "actual": -0.3,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c7)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c7)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c7",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c7",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c8)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c8)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c8",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c8",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "history 长度",
+    "expected": 33,
+    "actual": 33,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "uses[B]",
+    "expected": 8,
+    "actual": 8,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.6667,
+    "actual": 0.6667,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.1364,
+    "actual": 0.1364,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.3333,
+    "actual": 0.3333,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "diff 含目标 penalty",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "db penalty[B:QEq_instability]",
+    "expected": 0.15,
+    "actual": 0.15,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "select 胜出(含压制)",
+    "expected": "C",
+    "actual": "C",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C3 连胜→0.15",
+    "item": "打分恰减 penalty(B)",
+    "expected": -0.15,
+    "actual": -0.15,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c9)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c9)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c9",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c9",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "recover成功(c10)",
+    "expected": true,
+    "actual": true,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "选中策略(c10)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "末条 outcome=pending",
+    "expected": "pending",
+    "actual": "pending",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "main",
+    "item": "pending +1",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c10",
+    "item": "结账条数(success)",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "settle",
+    "step": "c10",
+    "item": "pending -1",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "history 长度",
+    "expected": 35,
+    "actual": 35,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "uses[B]",
+    "expected": 10,
+    "actual": 10,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 A",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 B",
+    "expected": 0.5833,
+    "actual": 0.5833,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 C",
+    "expected": 0.5,
+    "actual": 0.5,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 D",
+    "expected": 0.6667,
+    "actual": 0.6667,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 E",
+    "expected": 0.1364,
+    "actual": 0.1364,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜前",
+    "item": "Beta 后验 F",
+    "expected": 0.3333,
+    "actual": 0.3333,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "起草策略提案数",
+    "expected": 1,
+    "actual": 1,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "提案 meta",
+    "expected": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "actual": [
+      "strategy_weight_tuning",
+      "auto",
+      "kit"
+    ],
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "apply rc",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "LEDGER 结果",
+    "expected": "AUTO_APPLIED",
+    "actual": "AUTO_APPLIED",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "条目摘除[B:QEq_instability]",
+    "expected": false,
+    "actual": false,
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "select 胜出(含压制)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "C",
+    "step": "C4 连胜→摘除",
+    "item": "select 胜出(去压制对照)",
+    "expected": "B",
+    "actual": "B",
+    "ok": true
+  },
+  {
+    "loop": "ALL",
+    "step": "终态",
+    "item": "adjustments 残留",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  },
+  {
+    "loop": "ALL",
+    "step": "终态",
+    "item": "history 总长度",
+    "expected": 35,
+    "actual": 35,
+    "ok": true
+  },
+  {
+    "loop": "ALL",
+    "step": "终态",
+    "item": "无 pending 残留",
+    "expected": 0,
+    "actual": 0,
+    "ok": true
+  }
+]

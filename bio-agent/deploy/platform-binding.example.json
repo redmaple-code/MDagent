@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "bio.platform-binding.v1",
+  "mode": "node-ssh",
+  "executionTarget": {
+    "schemaVersion": "bio.execution-target.v1",
+    "tenantId": "replace_user",
+    "nodeId": "n_replace_node",
+    "targetId": "replace-compute",
+    "targetRevision": 1,
+    "hostIdentitySha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "uid": 1000,
+    "python": "/REPLACE_COMPUTE_ENV/bin/python",
+    "projectsRoot": "/REPLACE_COMPUTE_ACCOUNT/bio/projects",
+    "releaseRoot": "/REPLACE_COMPUTE_ACCOUNT/bio/releases/REPLACE_RELEASE",
+    "resourcePolicy": {
+      "quotaRoot": "/REPLACE_SHARED_COMPUTE_ACCOUNT/bio-resource-pool",
+      "cpuThreads": 8,
+      "maxConcurrentJobs": 1,
+      "gpuDevices": [],
+      "maxOutputBytes": 10737418240
+    }
+  },
+  "gatewayPython": "/REPLACE_INGRESS_ENV/bin/python",
+  "gatewayReleaseRoot": "/REPLACE_INGRESS_ACCOUNT/bio/releases/REPLACE_RELEASE",
+  "gatewayConnectionFile": "/REPLACE_INGRESS_OPERATOR/connection.json",
+  "allowedActions": [
+    "connect", "advance", "bio_capabilities", "bio_inputs", "bio_inspect", "bio_plan",
+    "bio_get", "bio_list", "bio_submit", "bio_cancel", "bio_continue", "bio_artifacts", "bio_report",
+    "human:context", "human:inputs", "human:capabilities", "human:list", "human:get",
+    "human:review", "human:approve", "human:submit", "human:cancel", "human:recover",
+    "human:upload-begin", "human:upload-chunk", "human:upload-finish", "human:artifacts",
+    "human:download-begin", "human:download-chunk", "human:download-finish", "human:resource-preference"
+  ],
+  "rosterRoots": []
+}

@@ -1,0 +1,10 @@
+[Unit]
+Description=mdagent 共享进化层观测(全租户一份,自动蒸馏+后验)
+
+[Service]
+Type=oneshot
+# observe-root/memory 软链到 shared-evolution;persona 渲染落在 code/ 两处
+Environment=MDSIM_DATA_ROOT=/opt/mdagent/observe-root
+WorkingDirectory=/opt/mdagent/code/evolution
+ExecStart=/usr/bin/python3.11 /opt/mdagent/code/evolution/observe.py --days 7
+TimeoutStartSec=300

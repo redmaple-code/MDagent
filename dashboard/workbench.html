@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分子模拟助手 · 工作台（左讨论 · 右看板）</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f5f6f7; --border:rgba(0,0,0,.1); --border-soft:#ebedf0;
+    --bar-bg:rgba(255,255,255,.85);
+    --text:#0f1115; --text-2:#61666b; --text-3:#81868c;
+    --brand:#4176e6; --brand-hover:#679efe; --brand-50:#edf3fe; --brand-100:#e4edfd;
+    --green:#22c55e; --green-100:#e6faed;
+    --shadow-1:0 2px 4px 0 rgba(0,0,0,.05);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  html,body{margin:0;height:100%;font-family:var(--font);background:var(--panel);color:var(--text);overflow:hidden}
+
+  /* ── 顶栏(玻璃拟态) ── */
+  #bar{height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--bar-bg);
+       backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+       border-bottom:1px solid var(--border-soft);box-shadow:0 4px 16px rgba(0,0,0,.06);font-size:13px;position:relative;z-index:10}
+  #bar .logo{width:10px;height:10px;border-radius:50%;background:var(--brand);display:inline-block;margin-right:8px;
+             box-shadow:0 0 8px var(--brand),0 0 0 3px var(--brand-100)}
+  #bar b{font-size:14px;font-weight:700;
+         background:linear-gradient(92deg,var(--brand),#7c3aed 75%);
+         -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  #bar .hint{color:var(--text-3);font-size:12px;margin-left:4px}
+  #bar .spacer{margin-left:auto}
+  .navbtn{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:8px;border:1px solid transparent;
+          background:transparent;color:var(--text-2);font-size:12.5px;text-decoration:none;cursor:pointer;
+          transition:background .15s,color .15s;font-family:var(--font)}
+  .navbtn:hover{background:var(--brand-50);color:var(--brand)}
+
+  /* ── 自动审批开关(dsh 风格 switch) ── */
+  #aaWrap{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;padding:4px 6px;border-radius:8px}
+  #aaWrap:hover{background:var(--brand-50)}
+  #aaWrap .lbl{font-size:12.5px;color:var(--text-2)}
+  #aaTrack{width:34px;height:19px;border-radius:10px;background:#dcdfe4;position:relative;transition:background .2s;flex-shrink:0}
+  #aaTrack::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;
+                  box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
+  #aaWrap.on #aaTrack{background:var(--green)}
+  #aaWrap.on #aaTrack::after{left:17px}
+  #aaWrap.on .lbl{color:var(--text);font-weight:500}
+  #aaWrap.off .lbl{color:var(--text-2)}
+
+  /* ── 分栏 ── */
+  #wrap{display:flex;height:calc(100% - 78px)}
+  .pane{height:100%;position:relative}
+  #left{flex:0 0 46%}
+  #right{flex:1 1 auto}
+  iframe{width:100%;height:100%;border:0;background:#fff}
+  #drag{flex:0 0 8px;cursor:col-resize;background:transparent;position:relative;transition:background .15s}
+  #drag::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+               width:4px;height:28px;border-radius:2px;background:var(--border-soft);transition:background .15s}
+  #drag:hover{background:var(--brand-50)}
+  #drag:hover::after,#drag.active::after{background:var(--brand)}
+  .tag{position:absolute;top:10px;left:10px;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(2px);
+       color:var(--text-2);font-size:11.5px;padding:3px 10px 3px 8px;border-radius:8px;pointer-events:none;
+       border:1px solid var(--border-soft);border-left:3px solid var(--brand);box-shadow:var(--shadow-1)}
+  .tag.tag-dash{border-left-color:var(--green)}
+
+  /* ── 运行进度条(runbar) ── */
+  #runbar{height:30px;display:flex;align-items:center;gap:14px;padding:0 16px;font-size:12px;
+          background:var(--bg);border-bottom:1px solid var(--border-soft);color:var(--text-2);overflow:hidden;white-space:nowrap}
+  #runbar .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#9aa0a6}
+  #runbar .dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
+  #runbar .dot.warn{background:#f59e0b;box-shadow:0 0 6px #f59e0b}
+  #runbar .dot.bad{background:#ef4444;box-shadow:0 0 6px #ef4444}
+  #runbar .case{font-weight:600;color:var(--text);cursor:pointer;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+  #runbar .case:hover{color:var(--brand)}
+  #runbar .track{width:200px;height:6px;border-radius:3px;background:var(--border-soft);position:relative;flex-shrink:0;overflow:hidden}
+  #runbar .fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--brand),#7c3aed);width:0%;transition:width .6s}
+  #runbar .fill.warn{background:linear-gradient(90deg,#f59e0b,#f97316)}
+  #runbar .fill.bad{background:linear-gradient(90deg,#ef4444,#dc2626)}
+  #runbar b{color:var(--text);font-weight:600}
+  #runbar .mini{display:inline-flex;align-items:center;gap:4px}
+  #runbar .mini i{width:6px;height:6px;border-radius:50%;display:inline-block;font-style:normal}
+  #runbar .ago{color:var(--text-3);font-size:11px;margin-left:auto;flex-shrink:0}
+  #gate-card{position:fixed;right:16px;bottom:16px;width:440px;max-height:55vh;overflow:auto;background:var(--bg,#fff);border:1px solid var(--border-soft,#ccc);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:99;font-size:13px}
+  .gate-head{padding:8px 12px;font-weight:600;border-bottom:1px solid var(--border-soft,#ccc)}
+  .gate-item{padding:8px 12px;border-bottom:1px dashed var(--border-soft,#ddd)}
+  .gate-cmd{font-family:monospace;word-break:break-all;margin:4px 0}
+  .gate-desc{opacity:.7}
+  .gate-why{color:#b45309}
+  #bstrat-card{position:fixed;left:16px;bottom:16px;width:460px;max-height:55vh;overflow:auto;background:var(--bg,#fff);border:1px solid var(--border-soft,#ccc);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:99;font-size:13px}
+  #bstrat-card .bs-head{padding:8px 12px;font-weight:600;border-bottom:1px solid var(--border-soft,#eee)}
+  #bstrat-card .bs-item{padding:8px 12px;border-bottom:1px dashed var(--border-soft,#eee)}
+  #bstrat-card .bs-rule{margin:4px 0;color:var(--text-2,#444)}
+  #bstrat-card .bs-meta{color:var(--text-3,#999);font-size:12px}
+  #bstrat-card .bs-reverted{color:#b45309}
+  #bstrat-card .bs-revoke{padding:2px 10px;border-radius:6px;border:1px solid #dc2626;background:#fff;color:#dc2626;font-size:12px;cursor:pointer}
+  #bstrat-card .bs-revoke:hover{background:#dc2626;color:#fff}
+  #gate-card.folded #gate-list, #bstrat-card.folded #bs-list{display:none}
+  #gate-card.folded, #bstrat-card.folded{max-height:none;opacity:.85}
+  #gate-card .gate-head, #bstrat-card .bs-head{user-select:none}
+  .card-hidden{display:none !important}  /* 顶栏显隐开关;!important 压过渲染 JS 的内联 display */
+  .gate-btns button{margin-right:8px;padding:3px 14px;border-radius:6px;border:1px solid;cursor:pointer;background:transparent}
+  .gate-ok{color:#16a34a;border-color:#16a34a}
+  .gate-no{color:#dc2626;border-color:#dc2626}
+</style>
+</head>
+<body>
+  <div id="bar">
+    <span style="display:flex;align-items:center"><span class="logo"></span><b>分子模拟助手 · 工作台</b></span>
+    <span class="hint">左:对话 / 巡检 / 诊断 · 右:LAMMPS 实时看板(同一份真相源)</span>
+    <span class="spacer"></span>
+    <select id="theme-sel" class="navbtn" title="看板主题" style="border:1px solid var(--border-soft);background:var(--bg);">
+      <option value="auto">🌓 跟随 DSH</option>
+      <option value="light">☀️ 浅色</option>
+      <option value="dark">🌙 深色</option>
+      <option value="ocean">🌊 深海</option>
+      <option value="purple">🔮 暗紫</option>
+      <option value="forest">🌲 墨绿</option>
+    </select>
+    <a class="navbtn" href="/pages/architecture.html" target="_blank" title="dsh-agent 五层架构总览">🗂 架构</a>
+    <a class="navbtn" href="/pages/task-flow.html" target="_blank" title="从上传文献到模拟运行的全流程">🧭 流程</a>
+    <a class="navbtn" href="/pages/flow-pipeline.html" target="_blank" title="MD Exp 全流程管线(archify)">📊 管线</a>
+    <a class="navbtn" href="/pages/flow-recovery.html" target="_blank" title="kit 恢复状态机与真学习结账(archify)">🛠 恢复</a>
+    <a class="navbtn" href="/pages/flow-evolution.html" target="_blank" title="演化层数据流:观测→提案→门禁→生效(archify)">🧬 演化</a>
+    <a class="navbtn" href="/pages/graph.html" target="_blank" title="知识关系网:atom→场景→SOP/提案→策略,时间轴回放进化过程">🕸 图谱</a>
+    <a class="navbtn" href="/pages/knowledge.html" target="_blank" title="知识名片:经验库 LLM+wiki 蒸馏成卡片,含待拍板闸清单与人工核状态">🗂 名片</a>
+    <a class="navbtn" href="/pages/metrics.html" target="_blank" title="进化记分卡:胜率/一次修复率/复发率/恢复耗时/后验置信度/提案采纳率,合成进化指数">📈 指标</a>
+    <a class="navbtn" href="/pages/trajectory.html" target="_blank" title="每任务轨迹:pipeline 事件+orchestrator 日志+策略决策时间线;dsh 会话轮级摩擦">🧭 轨迹</a>
+    <span id="aaWrap" class="off" title="开启后:dsh 所有审批弹窗(sim_exec 写门/工作区外写)自动批准,审计照记;关闭恢复逐条弹窗">
+      <span class="lbl">自动审批</span><span id="aaTrack"></span>
+    </span>
+    <button class="navbtn" id="cloud-toggle" title="左侧对话面板切换:本地 dsh(:3091) ↔ 云端智能体(本机看板内嵌 /cloud)" style="border:1px solid var(--border-soft);background:var(--bg);cursor:pointer">☁️ 云端</button>
+    <button class="navbtn" id="bs-navbtn" title="左下「行为策略」悬浮卡显隐" style="border:1px solid var(--border-soft);background:var(--bg);cursor:pointer">🧠 策略 <span id="bs-nav-count">0</span></button>
+    <button class="navbtn" id="gate-navbtn" title="右下「红区闸门」悬浮卡显隐(有新待批会自动弹出)" style="border:1px solid var(--border-soft);background:var(--bg);cursor:pointer">🛂 闸门 <span id="gate-nav-count">0</span></button>
+    <a class="navbtn" href="javascript:location.reload()">🔄 重载</a>
+  </div>
+  <div id="runbar" title="当前在管任务实时进度(与看板同源 /api/status),点击任务名跳转看板详情">
+    <span class="dot" id="rb-dot"></span>
+    <span class="case" id="rb-case">连接看板…</span>
+    <span id="rb-phase">—</span>
+    <span id="rb-step">—</span>
+    <span class="track"><span class="fill" id="rb-fill"></span></span>
+    <span id="rb-pct">—</span>
+    <span id="rb-temp">—</span>
+    <span id="rb-risk" title="risk_score / 异常数">—</span>
+    <span class="mini" id="rb-score" title="Agent 进化指数(修复胜率/复发率/恢复耗时/知识覆盖加权)">🧬 —</span>
+    <span class="mini" id="rb-health" title="守护服务与 Meta 状态">🛡 —</span>
+    <span class="ago" id="rb-ago"></span>
+  </div>
+  <div id="wrap">
+    <div class="pane" id="left"><div class="tag">💬 分子模拟助手 · 对话</div><iframe id="chat-frame" allow="clipboard-read; clipboard-write"></iframe></div>
+    <div id="drag"></div>
+    <div class="pane" id="right"><div class="tag tag-dash">📊 LAMMPS 看板 · web_monitor</div><iframe id="dash-frame"></iframe></div>
+  </div>
+<script>
+  // iframe 源按访问主机动态指向(8080 同源自带 token Cookie;3091 是 dsh 对话 GUI)
+  document.getElementById('chat-frame').src='http://'+location.hostname+':3091/';
+  document.getElementById('dash-frame').src='http://'+location.hostname+':8080/';
+
+  // ☁️ 云端切换:左侧面板在 本地 dsh(:3091) 与 云端智能体(/cloud) 间切换,偏好存 localStorage
+  (function(){
+    const LOCAL_SRC='http://'+location.hostname+':3091/';
+    const CLOUD_SRC='/cloud';
+    const frame=document.getElementById('chat-frame');
+    const btn=document.getElementById('cloud-toggle');
+    const tag=frame.previousElementSibling;
+    let cloud=localStorage.getItem('wb-cloud')==='1';
+    function render(){
+      frame.src=cloud?CLOUD_SRC:LOCAL_SRC;
+      btn.style.color=cloud?'var(--brand)':'';
+      btn.style.borderColor=cloud?'var(--brand)':'var(--border-soft)';
+      if(tag&&tag.classList.contains('tag'))
+        tag.textContent=cloud?'☁️ 云端智能体 · 对话(脑子在 ECS)':'💬 分子模拟助手 · 对话';
+    }
+    btn.addEventListener('click',function(){
+      cloud=!cloud;localStorage.setItem('wb-cloud',cloud?'1':'0');render();
+    });
+    render();
+  })();
+</script>
+<script>
+  // 运行进度条(与看板同源 /api/status; 数字必来自真相源,不经过任何模型)
+  (function(){
+    const STATUS_API='http://'+location.hostname+':8080/api/status';
+    const $=function(id){return document.getElementById(id)};
+    let lastCase=null;
+    function rbRender(d){
+      const dot=$('rb-dot'),fill=$('rb-fill');
+      const task=d.task||{}, phase=d.phase||'IDLE';
+      const caseId=task.case_id||'';
+      if(!caseId){
+        $('rb-case').textContent='空闲 · 无在管任务';
+        $('rb-phase').textContent='';$('rb-step').textContent='';$('rb-pct').textContent='';
+        $('rb-temp').textContent='';$('rb-risk').textContent='';
+        dot.className='dot';fill.style.width='0%';return;
+      }
+      const step=d.step||0,total=d.total_steps||0,pct=Math.max(0,Math.min(100,d.progress_pct||0));
+      const risk=d.risk_score||0,ano=d.anomalies_count||0;
+      const ms=d.monitor_status||'UNKNOWN';
+      // 状态色: FAILED/CRITICAL 红; 恢复类相位或 risk≥60 或有异常 黄; 其余绿
+      let cls='ok',txt='运行中';
+      if(phase==='FAILED'||ms==='CRITICAL'){cls='bad';txt='危急'}
+      else if(phase==='RESEARCH'||phase==='RECOVER'||phase==='PREEMPTIVE_RECOVER'||phase==='REBUILD'||risk>=60||ano>0){cls='warn';txt='处置中'}
+      dot.className='dot '+cls;dot.title=txt+'(相位 '+phase+' · '+ms+')';
+      fill.className='fill '+(cls==='ok'?'':cls);
+      fill.style.width=pct.toFixed(1)+'%';
+      $('rb-case').textContent=caseId;
+      $('rb-phase').innerHTML='<b>'+phase+'</b>'+(d.monitor_subphase?' · '+d.monitor_subphase:'');
+      $('rb-step').textContent='Step '+step.toLocaleString()+(total?' / '+total.toLocaleString():'');
+      $('rb-pct').textContent=pct.toFixed(1)+'%';
+      const t=d.temp,tt=d.target_temp;
+      $('rb-temp').textContent=(t!=null?('T '+t+'K'+(tt?' / 目标 '+tt+'K':'')):'');
+      $('rb-risk').textContent='风险 '+risk+(ano?' · 异常 '+ano:'');
+      lastCase=caseId;
+    }
+    async function rbTick(){
+      try{
+        const r=await fetch(STATUS_API,{cache:'no-store'});
+        rbRender(await r.json());
+        $('rb-ago').textContent='更新于 '+new Date().toLocaleTimeString();
+      }catch(e){$('rb-dot').className='dot';$('rb-case').textContent='看板不可达';}
+    }
+    $('rb-case').addEventListener('click',function(){
+      if(lastCase)window.open('http://'+location.hostname+':8080/?task='+encodeURIComponent(lastCase),'_blank');
+    });
+    rbTick();setInterval(rbTick,15000);
+  })();
+
+  // 进化得分 + 守护服务(大白话,60s 周期,与看板守护条同源)
+  (function(){
+    const API='http://'+location.hostname+':8080';
+    const $=function(id){return document.getElementById(id)};
+    async function wbGuardTick(){
+      try{
+        const ev=await (await fetch(API+'/api/evolution_metrics',{cache:'no-store'})).json();
+        if(typeof ev.index==='number'){
+          const v=ev.index,col=v>=70?'#22c55e':(v>=40?'#f59e0b':'#ef4444');
+          const m={};(ev.cards||[]).forEach(function(c){m[c.key]=c});
+          $('rb-score').innerHTML='<b style="color:'+col+'">🧬 '+v.toFixed(1)+'</b><i style="color:#9aa0a6;font-style:normal">/100</i>';
+          $('rb-score').title='进化指数(修复胜率/复发率/恢复耗时/知识覆盖等加权)\n'+
+            '修复胜率 '+(m.win_rate?m.win_rate.value:'—')+' · 复发率 '+(m.recurrence?m.recurrence.value:'—')+' · 恢复 '+(m.recover_hours?m.recover_hours.value:'—');
+        }
+      }catch(e){}
+      try{
+        const g=await (await fetch(API+'/api/guard_status',{cache:'no-store'})).json();
+        const up=['mdorch','md_guard','md_watchdog'].filter(function(k){return g[k]==='active'}).length;
+        let t='🛡 '+up+'/3';
+        if(g.meta_overall==='RED')t+=' · ⚠ 需人工介入';
+        else if(g.meta_overall==='YELLOW')t+=' · 🟡 建议检查';
+        const el=$('rb-health');el.textContent=t;
+        el.title='mdorch='+(g.mdorch||'?')+' · md-guard='+(g.md_guard||'?')+' · md-watchdog='+(g.md_watchdog||'?')+' · Meta='+(g.meta_overall||'?');
+      }catch(e){}
+    }
+    wbGuardTick();setInterval(wbGuardTick,60000);
+  })();
+
+  // 自动审批开关(状态存在 dsh 侧 .dsh/auto-approve.json,插件每次审批时读)
+  const AA_API='http://'+location.hostname+':8080/api/auto-approve';
+  const aaWrap=document.getElementById('aaWrap');
+  function aaRender(on){aaWrap.classList.toggle('on',!!on);aaWrap.classList.toggle('off',!on);}
+  async function aaRefresh(){try{const r=await fetch(AA_API);aaRender((await r.json()).enabled);}catch(e){}}
+  aaWrap.addEventListener('click',async()=>{
+    try{
+      const cur=await (await fetch(AA_API)).json();
+      const r=await fetch(AA_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:!cur.enabled})});
+      aaRender((await r.json()).enabled);
+    }catch(e){}
+  });
+  aaRefresh(); setInterval(aaRefresh, 15000);
+
+  // 主题同步 + 主题选择器(与看板共用 dash-theme cookie,0.5s 轮询自动重载)
+  (function(){
+    var m=document.querySelector('meta[name="dsh-theme"]');
+    var cur=m?m.content:'light';
+    setInterval(async function(){
+      try{
+        var r=await fetch('/api/theme',{cache:'no-store'});
+        var t=(await r.json()).theme;
+        if(t&&t!==cur)location.reload();
+      }catch(e){}
+    },500);
+    var sel=document.getElementById('theme-sel');
+    if(sel){
+      var cm=document.cookie.match(/dash-theme=([\w-]+)/);
+      sel.value=cm?cm[1]:'auto';
+      sel.addEventListener('change',function(){
+        document.cookie='dash-theme='+sel.value+';path=/;max-age=31536000';
+      });
+    }
+  })();
+
+  // 可拖拽分隔条(位置记忆)
+  const drag=document.getElementById('drag'), left=document.getElementById('left'), wrap=document.getElementById('wrap');
+  const savedPct=+localStorage.getItem('wb-split');
+  if(savedPct) left.style.flex='0 0 '+Math.min(75,Math.max(25,savedPct))+'%';
+  let dragging=false;
+  drag.addEventListener('mousedown',()=>{dragging=true;drag.classList.add('active');document.body.style.userSelect='none';
+    document.querySelectorAll('iframe').forEach(f=>f.style.pointerEvents='none');});
+  window.addEventListener('mouseup',()=>{dragging=false;drag.classList.remove('active');document.body.style.userSelect='';
+    document.querySelectorAll('iframe').forEach(f=>f.style.pointerEvents='auto');});
+  window.addEventListener('mousemove',e=>{if(!dragging)return;
+    const pct=Math.min(75,Math.max(25, e.clientX / wrap.clientWidth * 100));
+    left.style.flex='0 0 '+pct+'%';
+    localStorage.setItem('wb-split', pct.toFixed(1));});
+</script>
+<div id="gate-card" style="display:none">
+  <div class="gate-head">🛂 红区执行闸门 · <span id="gate-count">0</span> 条待批(mdorch 侧第二道闸,批准后 agent 原样重发即执行;同命令记忆一次后续自动放行)</div>
+  <div id="gate-list"></div>
+</div>
+<script>
+  // 红区 exec_gate 审批卡(2026-09-17 C 方案):轮询 /api/exec_gate,
+  // pending 条目渲染批准/拒绝按钮——此前后端已上线但前端没接线,"看板批准"无钮可点
+  (function(){
+    const API='http://'+location.hostname+':8080';
+    const card=document.getElementById('gate-card'),list=document.getElementById('gate-list'),cnt=document.getElementById('gate-count');
+    const gateSeen={};
+    // 桌面通知需要用户手势授权:首次点击页面时请求一次
+    document.addEventListener('click',function reqPerm(){
+      document.removeEventListener('click',reqPerm);
+      try{if(window.Notification&&Notification.permission==='default')Notification.requestPermission();}catch(e){}
+    });
+    function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    async function tick(){
+      let d;
+      try{d=await (await fetch(API+'/api/exec_gate',{cache:'no-store'})).json();}catch(e){card.style.display='none';return;}
+      const pend=(d.items||[]).filter(function(i){return !i.resolution;});
+      // 新卡到达:桌面通知+提示音(2026-09-20 批准唤醒闭环配套——卡不出现=批不了)
+      const fresh=pend.filter(function(i){return !gateSeen[i.gate_id];}).map(function(i){return i.gate_id;});
+      if(fresh.length&&Object.keys(gateSeen).length){
+        try{
+          if(window.Notification&&Notification.permission==='granted')
+            new Notification('红区闸门 · '+fresh.length+' 条待批',
+              {body:String((pend[0].description||pend[0].cmd||'')).slice(0,90)});
+        }catch(e){}
+        try{
+          const ac=new (window.AudioContext||window.webkitAudioContext)();
+          const o=ac.createOscillator(),g=ac.createGain();
+          o.connect(g);g.connect(ac.destination);
+          o.frequency.value=880;g.gain.value=0.07;o.start();
+          setTimeout(function(){try{o.stop();ac.close();}catch(e){}},200);
+        }catch(e){}
+      }
+      fresh.forEach(function(id){gateSeen[id]=1;});
+      if(!pend.length){card.style.display='none';return;}
+      card.style.display='block';cnt.textContent=pend.length;
+      list.innerHTML=pend.map(function(i){
+        return '<div class="gate-item"><div class="gate-desc">'+esc(i.description||'')+' · '+esc(i.ts||'')
+          +(i.zone_reason?(' · <span class="gate-why">判红: '+esc(i.zone_reason)+'</span>'):'')+'</div>'
+          +'<div class="gate-cmd">$ '+esc(i.cmd||'')+'</div>'
+          +'<div class="gate-btns"><button class="gate-ok" data-id="'+i.gate_id+'" data-dec="approve">批准</button>'
+          +'<button class="gate-no" data-id="'+i.gate_id+'" data-dec="deny">拒绝</button></div></div>';
+      }).join('');
+    }
+    list.addEventListener('click',async function(e){
+      const b=e.target.closest('button');if(!b)return;
+      b.disabled=true;
+      const gid=b.dataset.id,want=b.dataset.dec;
+      try{
+        const r=await (await fetch(API+'/api/exec_gate_resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:gid,decision:want})})).json();
+        if(r.error){alert('裁决失败: '+r.error);tick();return;}
+        // 落账确认(建议②):POST ok 后再 GET 核验 resolution,防"点了以为批了实际没落账"
+        let ok=false;
+        for(let k=0;k<4;k++){
+          const d=await (await fetch(API+'/api/exec_gate',{cache:'no-store'})).json();
+          const it=(d.items||[]).find(function(x){return x.gate_id===gid;});
+          if(it&&it.resolution&&it.resolution.decision===want){ok=true;break;}
+          await new Promise(function(rs){setTimeout(rs,400);});
+        }
+        if(!ok)alert('裁决可能未落账,请再点一次或检查看板日志');
+      }catch(err){alert('裁决请求失败');}
+      tick();
+    });
+    tick();setInterval(tick,15000);
+  })();
+</script>
+<div id="bstrat-card" style="display:none">
+  <div class="bs-head">🧠 行为策略·自动蒸馏 · <span id="bs-count">0</span> 条生效中(人工已降级为周报复核;翻案后该信号类回到人工闸)</div>
+  <div id="bs-list"></div>
+</div>
+<script>
+  // 行为策略周报复核卡(2026-09-17 去人工化·兜底③):轮询 /api/behavior_strategies,
+  // 展示 auto 蒸馏的生效/撤回记录;active 条目带"翻案"钮(撤销策略+签名回人工闸)
+  (function(){
+    const API='http://'+location.hostname+':8080';
+    const card=document.getElementById('bstrat-card'),list=document.getElementById('bs-list'),cnt=document.getElementById('bs-count');
+    function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    async function tick(){
+      let d;
+      try{d=await (await fetch(API+'/api/behavior_strategies',{cache:'no-store'})).json();}catch(e){card.style.display='none';return;}
+      const ss=(d.strategies||[]);
+      if(!ss.length){card.style.display='none';return;}
+      card.style.display='block';
+      const act=ss.filter(function(s){return s.status==='active';});
+      cnt.textContent=act.length;
+      list.innerHTML=ss.slice().reverse().map(function(s){
+        const ev=(s.evals||[]).map(function(e){return e.count;}).join('→');
+        let st='';
+        if(s.status==='active')st='<span style="color:#15803d">生效中</span>';
+        else if(s.status==='reverted')st='<span class="bs-reverted">已自动撤回</span>';
+        else st='<span style="color:#6b7280">'+esc(s.status)+'</span>';
+        return '<div class="bs-item"><div>'+st+' · <b>'+esc(s.title||s.signature)+'</b></div>'
+          +'<div class="bs-rule">'+esc(s.rule||'')+'</div>'
+          +'<div class="bs-meta">'+esc(s.sid)+' · 基线 '+(s.baseline_7d==null?'?':s.baseline_7d)
+          +(ev?' · 后验 '+ev:'')+(s.revert_reason?' · '+esc(s.revert_reason):'')+'</div>'
+          +(s.status==='active'?'<div style="margin-top:4px"><button class="bs-revoke" data-sid="'+esc(s.sid)+'">翻案(回人工闸)</button></div>':'')
+          +'</div>';
+      }).join('');
+    }
+    list.addEventListener('click',async function(e){
+      const b=e.target.closest('button.bs-revoke');if(!b)return;
+      if(!confirm('翻案后该策略立即从 persona 撤下,且该信号类以后都走人工闸。确定?'))return;
+      b.disabled=true;
+      try{
+        const r=await (await fetch(API+'/api/behavior_strategy_revoke',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid:b.dataset.sid})})).json();
+        if(r.error){alert('翻案失败: '+r.error);tick();return;}
+        let ok=false;
+        for(let k=0;k<4;k++){
+          const d=await (await fetch(API+'/api/behavior_strategies',{cache:'no-store'})).json();
+          const it=(d.strategies||[]).find(function(x){return x.sid===b.dataset.sid;});
+          if(it&&it.status==='revoked-by-human'){ok=true;break;}
+          await new Promise(function(rs){setTimeout(rs,400);});
+        }
+        if(!ok)alert('翻案可能未落账,请再点一次');
+      }catch(err){alert('翻案请求失败');}
+      tick();
+    });
+    tick();setInterval(tick,60000);
+  })();
+</script>
+<script>
+  // 悬浮卡显隐/折叠:顶栏按钮整卡显隐(!important 压内联 display),点头栏只收正文;
+  // 两者都记 localStorage。闸门卡隐藏期间计数上涨(来了新待批)自动弹出,不漏批。
+  // 顶栏按钮镜像卡片计数,藏起后也能看到"几条待批/几条生效"。
+  (function(){
+    function wire(cardId, headSel, navId, navCountId, countSpanId, hideKey, foldKey, autoPop, defaultHidden){
+      const card=document.getElementById(cardId),nav=document.getElementById(navId),
+            navCnt=document.getElementById(navCountId),cntSpan=document.getElementById(countSpanId);
+      if(!card||!nav)return;
+      const head=card.querySelector(headSel);
+      let lastCount=-1;
+      function isHidden(){
+        const v=localStorage.getItem(hideKey);
+        return v===null?!!defaultHidden:v==='1';
+      }
+      function applyAll(){
+        const hidden=isHidden();
+        const folded=localStorage.getItem(foldKey)==='1';
+        card.classList.toggle('card-hidden',hidden);
+        card.classList.toggle('folded',folded);
+        nav.style.opacity=hidden?'.5':'1';
+        if(head)head.title='点击收起/展开正文;顶栏按钮可整卡隐藏';
+        const tag=head&&head.querySelector('.fold-tag');
+        if(tag)tag.textContent=folded?'▸ 展开':'▾ 收起';
+      }
+      if(head){
+        head.style.cursor='pointer';
+        const tag=document.createElement('span');
+        tag.className='fold-tag';
+        tag.style.cssText='float:right;opacity:.55;font-weight:400';
+        head.appendChild(tag);
+        head.addEventListener('click',function(){
+          localStorage.setItem(foldKey,localStorage.getItem(foldKey)==='1'?'0':'1');
+          applyAll();
+        });
+      }
+      nav.addEventListener('click',function(){
+        localStorage.setItem(hideKey,isHidden()?'0':'1');
+        applyAll();
+      });
+      // 计数镜像 + 闸门新待批自动弹出(含 0→1)
+      setInterval(function(){
+        const n=cntSpan?parseInt(cntSpan.textContent||'0',10)||0:0;
+        if(navCnt)navCnt.textContent=n;
+        if(autoPop&&lastCount>=0&&n>lastCount&&isHidden()){
+          localStorage.setItem(hideKey,'0');applyAll();
+        }
+        lastCount=n;
+      },2000);
+      applyAll();
+    }
+    wire('bstrat-card','.bs-head','bs-navbtn','bs-nav-count','bs-count','wb-hide-bstrat','wb-fold-bstrat',false,true);
+    wire('gate-card','.gate-head','gate-navbtn','gate-nav-count','gate-count','wb-hide-gate','wb-fold-gate',true,false);
+  })();
+</script>
+</body>
+</html>

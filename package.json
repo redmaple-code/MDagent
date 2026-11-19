@@ -1,0 +1,15 @@
+{
+  "name": "ai-md-dsh-workspace",
+  "version": "0.0.1",
+  "private": true,
+  "description": "以 dsh(DeepSeek Harness)为核心的分子模拟(LAMMPS/ReaxFF)智能体工作区 —— 与 zerocarbon(C:\\Users\\ymy\\.dsh)、量化(G:\\AI智能体-DSH)彻底隔离",
+  "type": "module",
+  "scripts": {
+    "dsh": "dsh",
+    "web": "dsh web"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh": "0.1.0-rc.6"
+  },
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

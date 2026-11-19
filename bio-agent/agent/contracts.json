@@ -1,0 +1,3019 @@
+{
+  "schemaVersion": "bio.contracts.v1",
+  "tools": {
+    "bio_capabilities": {
+      "description": "capabilities for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "bio_inputs": {
+      "description": "inputs for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "offset",
+          "limit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_inspect": {
+      "description": "inspect for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_plan": {
+      "description": "plan for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": {
+                "enum": [
+                  "bio.intent.v1"
+                ]
+              },
+              "domain": {
+                "enum": [
+                  "bio-openmm"
+                ]
+              },
+              "workflowId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "researchGoal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "profile": {
+                "enum": [
+                  "protein",
+                  "protein-ligand-external",
+                  "small-molecule-water",
+                  "water-box",
+                  "continuation"
+                ]
+              },
+              "input": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "expectedSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "expectedByteSize": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 67108864
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "path",
+                      "expectedSha256",
+                      "expectedByteSize"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "preparation": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "forceField": {
+                        "enum": [
+                          "amber14",
+                          "charmm36",
+                          "amber99sbildn"
+                        ]
+                      },
+                      "addHydrogens": {
+                        "type": "boolean"
+                      },
+                      "ph": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 14
+                      },
+                      "solvent": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "as-is"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "tip3p-box"
+                                ]
+                              },
+                              "paddingAngstrom": {
+                                "type": "number",
+                                "minimum": 10,
+                                "maximum": 100
+                              },
+                              "ionicStrengthMolar": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1
+                              },
+                              "neutralize": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "paddingAngstrom",
+                              "ionicStrengthMolar",
+                              "neutralize"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "forceField",
+                      "addHydrogens",
+                      "ph",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "water-box"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "tip3p"
+                        ]
+                      },
+                      "boxSizeNm": {
+                        "type": "number",
+                        "minimum": 2.2,
+                        "maximum": 10
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "boxSizeNm"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "amber-small-molecule"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "gaff2-tip3p"
+                        ]
+                      },
+                      "seed": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "ligand": {
+                        "type": "object",
+                        "properties": {
+                          "smiles": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                          },
+                          "netCharge": {
+                            "type": "integer",
+                            "minimum": -4,
+                            "maximum": 4
+                          },
+                          "multiplicity": {
+                            "enum": [
+                              1
+                            ]
+                          },
+                          "chargeMethod": {
+                            "enum": [
+                              "bcc",
+                              "abcg2"
+                            ]
+                          },
+                          "chargeRationale": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          }
+                        },
+                        "required": [
+                          "smiles",
+                          "netCharge",
+                          "multiplicity",
+                          "chargeMethod",
+                          "chargeRationale"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "solvent": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "tip3p-box"
+                            ]
+                          },
+                          "paddingAngstrom": {
+                            "type": "number",
+                            "minimum": 10,
+                            "maximum": 100
+                          },
+                          "ionicStrengthMolar": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "neutralize": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "paddingAngstrom",
+                          "ionicStrengthMolar",
+                          "neutralize"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "seed",
+                      "ligand",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "amber-protein-ligand"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "ff14SB-gaff2-tip3p"
+                        ]
+                      },
+                      "seed": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "proteinChains": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1
+                        },
+                        "maxItems": 32
+                      },
+                      "missingResidues": {
+                        "enum": [
+                          "reject",
+                          "complete-standard"
+                        ]
+                      },
+                      "histidines": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "chain": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1
+                            },
+                            "residueId": {
+                              "type": "string",
+                              "pattern": "^-?[0-9]+$"
+                            },
+                            "variant": {
+                              "enum": [
+                                "HID",
+                                "HIE",
+                                "HIP"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "chain",
+                            "residueId",
+                            "variant"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 1024
+                      },
+                      "ligand": {
+                        "type": "object",
+                        "properties": {
+                          "smiles": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                          },
+                          "netCharge": {
+                            "type": "integer",
+                            "minimum": -4,
+                            "maximum": 4
+                          },
+                          "multiplicity": {
+                            "enum": [
+                              1
+                            ]
+                          },
+                          "chargeMethod": {
+                            "enum": [
+                              "bcc",
+                              "abcg2"
+                            ]
+                          },
+                          "chargeRationale": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          },
+                          "placement": {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "outside-protein-positive-x"
+                                ]
+                              },
+                              "gapAngstrom": {
+                                "type": "number",
+                                "minimum": 5,
+                                "maximum": 30
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "gapAngstrom"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "smiles",
+                          "netCharge",
+                          "multiplicity",
+                          "chargeMethod",
+                          "chargeRationale",
+                          "placement"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "solvent": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "tip3p-box"
+                            ]
+                          },
+                          "paddingAngstrom": {
+                            "type": "number",
+                            "minimum": 10,
+                            "maximum": 100
+                          },
+                          "ionicStrengthMolar": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "neutralize": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "paddingAngstrom",
+                          "ionicStrengthMolar",
+                          "neutralize"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "seed",
+                      "proteinChains",
+                      "missingResidues",
+                      "histidines",
+                      "ligand",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "system": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "nonbondedMethod": {
+                        "enum": [
+                          "PME",
+                          "NoCutoff"
+                        ]
+                      },
+                      "nonbondedCutoffNm": {
+                        "type": "number",
+                        "minimum": 1e-09,
+                        "maximum": 10
+                      },
+                      "constraints": {
+                        "enum": [
+                          "HBonds",
+                          "AllBonds",
+                          "None"
+                        ]
+                      },
+                      "rigidWater": {
+                        "type": "boolean"
+                      },
+                      "removeCMMotion": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "nonbondedMethod",
+                      "nonbondedCutoffNm",
+                      "constraints",
+                      "rigidWater",
+                      "removeCMMotion"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minimization": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "toleranceKjMolNm": {
+                        "type": "number",
+                        "minimum": 1e-09,
+                        "maximum": 1e+20
+                      },
+                      "maxIterations": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1000000
+                      }
+                    },
+                    "required": [
+                      "toleranceKjMolNm",
+                      "maxIterations"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "equilibration": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                            "maxLength": 64
+                          },
+                          "unit": {
+                            "enum": [
+                              "fs",
+                              "ps",
+                              "ns"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "dynamics": {
+                        "type": "object",
+                        "properties": {
+                          "ensemble": {
+                            "enum": [
+                              "NVT",
+                              "NPT"
+                            ]
+                          },
+                          "temperatureKelvin": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 500
+                          },
+                          "timestepFs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 2
+                          },
+                          "frictionPerPs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 100
+                          },
+                          "seed": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "initializeVelocities": {
+                            "type": "boolean"
+                          },
+                          "reporterInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "checkpointInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "segmentFrames": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "pressureBar": {
+                            "type": "number",
+                            "minimum": 0.1,
+                            "maximum": 100
+                          },
+                          "integrator": {
+                            "enum": [
+                              "LangevinMiddle",
+                              "Langevin",
+                              "LangevinLegacy"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "ensemble",
+                          "temperatureKelvin",
+                          "timestepFs",
+                          "frictionPerPs",
+                          "seed",
+                          "initializeVelocities",
+                          "reporterInterval",
+                          "checkpointInterval",
+                          "segmentFrames"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "restart": {
+                        "enum": [
+                          "state",
+                          "checkpoint"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "duration",
+                      "dynamics",
+                      "restart"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "production": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                            "maxLength": 64
+                          },
+                          "unit": {
+                            "enum": [
+                              "fs",
+                              "ps",
+                              "ns"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "dynamics": {
+                        "type": "object",
+                        "properties": {
+                          "ensemble": {
+                            "enum": [
+                              "NVT",
+                              "NPT"
+                            ]
+                          },
+                          "temperatureKelvin": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 500
+                          },
+                          "timestepFs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 2
+                          },
+                          "frictionPerPs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 100
+                          },
+                          "seed": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "initializeVelocities": {
+                            "type": "boolean"
+                          },
+                          "reporterInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "checkpointInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "segmentFrames": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "pressureBar": {
+                            "type": "number",
+                            "minimum": 0.1,
+                            "maximum": 100
+                          },
+                          "integrator": {
+                            "enum": [
+                              "LangevinMiddle",
+                              "Langevin",
+                              "LangevinLegacy"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "ensemble",
+                          "temperatureKelvin",
+                          "timestepFs",
+                          "frictionPerPs",
+                          "seed",
+                          "initializeVelocities",
+                          "reporterInterval",
+                          "checkpointInterval",
+                          "segmentFrames"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "restart": {
+                        "enum": [
+                          "state",
+                          "checkpoint"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "duration",
+                      "dynamics",
+                      "restart"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "analysis": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "selection": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "alignmentSelection": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "pbc": {
+                        "enum": [
+                          "none",
+                          "unwrap"
+                        ]
+                      },
+                      "stride": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100000
+                      },
+                      "metrics": {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "rmsd",
+                            "rmsf",
+                            "radiusOfGyration"
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 3,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "selection",
+                      "alignmentSelection",
+                      "pbc",
+                      "stride",
+                      "metrics"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "resources": {
+                "type": "object",
+                "properties": {
+                  "cpuThreads": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "maxOutputBytes": {
+                    "type": "integer",
+                    "minimum": 1048576,
+                    "maximum": 10995116277760
+                  },
+                  "wallTimeSeconds": {
+                    "type": "object",
+                    "properties": {
+                      "prepare": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "minimize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "equilibrate": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "production": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "validate": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "analysis": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      }
+                    },
+                    "required": [
+                      "validate"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "execution": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "platform": {
+                            "const": "CPU"
+                          }
+                        },
+                        "required": [
+                          "platform"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "platform": {
+                            "const": "CUDA"
+                          },
+                          "deviceIndex": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 63
+                          },
+                          "precision": {
+                            "enum": [
+                              "single",
+                              "mixed",
+                              "double"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "platform",
+                          "deviceIndex",
+                          "precision"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "cpuThreads",
+                  "maxOutputBytes",
+                  "wallTimeSeconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "domain",
+              "workflowId",
+              "revision",
+              "title",
+              "researchGoal",
+              "profile",
+              "input",
+              "preparation",
+              "system",
+              "minimization",
+              "equilibration",
+              "production",
+              "analysis",
+              "resources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "intent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_get": {
+      "description": "get for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          }
+        },
+        "required": [
+          "workflowId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_list": {
+      "description": "list for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "offset",
+          "limit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_submit": {
+      "description": "submit for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "workflowId",
+          "revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_cancel": {
+      "description": "cancel for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          }
+        },
+        "required": [
+          "workflowId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_continue": {
+      "description": "continue for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "sourceWorkflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          },
+          "sourceAttemptId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          },
+          "intent": {
+            "type": "object",
+            "properties": {
+              "schemaVersion": {
+                "enum": [
+                  "bio.intent.v1"
+                ]
+              },
+              "domain": {
+                "enum": [
+                  "bio-openmm"
+                ]
+              },
+              "workflowId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "researchGoal": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "profile": {
+                "enum": [
+                  "protein",
+                  "protein-ligand-external",
+                  "small-molecule-water",
+                  "water-box",
+                  "continuation"
+                ]
+              },
+              "input": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+                      },
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1024
+                      },
+                      "expectedSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "expectedByteSize": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 67108864
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "path",
+                      "expectedSha256",
+                      "expectedByteSize"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "preparation": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "forceField": {
+                        "enum": [
+                          "amber14",
+                          "charmm36",
+                          "amber99sbildn"
+                        ]
+                      },
+                      "addHydrogens": {
+                        "type": "boolean"
+                      },
+                      "ph": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 14
+                      },
+                      "solvent": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "as-is"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "mode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "tip3p-box"
+                                ]
+                              },
+                              "paddingAngstrom": {
+                                "type": "number",
+                                "minimum": 10,
+                                "maximum": 100
+                              },
+                              "ionicStrengthMolar": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1
+                              },
+                              "neutralize": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "paddingAngstrom",
+                              "ionicStrengthMolar",
+                              "neutralize"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "forceField",
+                      "addHydrogens",
+                      "ph",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "water-box"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "tip3p"
+                        ]
+                      },
+                      "boxSizeNm": {
+                        "type": "number",
+                        "minimum": 2.2,
+                        "maximum": 10
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "boxSizeNm"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "amber-small-molecule"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "gaff2-tip3p"
+                        ]
+                      },
+                      "seed": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "ligand": {
+                        "type": "object",
+                        "properties": {
+                          "smiles": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                          },
+                          "netCharge": {
+                            "type": "integer",
+                            "minimum": -4,
+                            "maximum": 4
+                          },
+                          "multiplicity": {
+                            "enum": [
+                              1
+                            ]
+                          },
+                          "chargeMethod": {
+                            "enum": [
+                              "bcc",
+                              "abcg2"
+                            ]
+                          },
+                          "chargeRationale": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          }
+                        },
+                        "required": [
+                          "smiles",
+                          "netCharge",
+                          "multiplicity",
+                          "chargeMethod",
+                          "chargeRationale"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "solvent": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "tip3p-box"
+                            ]
+                          },
+                          "paddingAngstrom": {
+                            "type": "number",
+                            "minimum": 10,
+                            "maximum": 100
+                          },
+                          "ionicStrengthMolar": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "neutralize": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "paddingAngstrom",
+                          "ionicStrengthMolar",
+                          "neutralize"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "seed",
+                      "ligand",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "amber-protein-ligand"
+                        ]
+                      },
+                      "forceField": {
+                        "enum": [
+                          "ff14SB-gaff2-tip3p"
+                        ]
+                      },
+                      "seed": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2147483647
+                      },
+                      "proteinChains": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1
+                        },
+                        "maxItems": 32
+                      },
+                      "missingResidues": {
+                        "enum": [
+                          "reject",
+                          "complete-standard"
+                        ]
+                      },
+                      "histidines": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "chain": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 1
+                            },
+                            "residueId": {
+                              "type": "string",
+                              "pattern": "^-?[0-9]+$"
+                            },
+                            "variant": {
+                              "enum": [
+                                "HID",
+                                "HIE",
+                                "HIP"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "chain",
+                            "residueId",
+                            "variant"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 1024
+                      },
+                      "ligand": {
+                        "type": "object",
+                        "properties": {
+                          "smiles": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2048
+                          },
+                          "netCharge": {
+                            "type": "integer",
+                            "minimum": -4,
+                            "maximum": 4
+                          },
+                          "multiplicity": {
+                            "enum": [
+                              1
+                            ]
+                          },
+                          "chargeMethod": {
+                            "enum": [
+                              "bcc",
+                              "abcg2"
+                            ]
+                          },
+                          "chargeRationale": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          },
+                          "placement": {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "enum": [
+                                  "outside-protein-positive-x"
+                                ]
+                              },
+                              "gapAngstrom": {
+                                "type": "number",
+                                "minimum": 5,
+                                "maximum": 30
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "gapAngstrom"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "smiles",
+                          "netCharge",
+                          "multiplicity",
+                          "chargeMethod",
+                          "chargeRationale",
+                          "placement"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "solvent": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "enum": [
+                              "tip3p-box"
+                            ]
+                          },
+                          "paddingAngstrom": {
+                            "type": "number",
+                            "minimum": 10,
+                            "maximum": 100
+                          },
+                          "ionicStrengthMolar": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "neutralize": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "paddingAngstrom",
+                          "ionicStrengthMolar",
+                          "neutralize"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "forceField",
+                      "seed",
+                      "proteinChains",
+                      "missingResidues",
+                      "histidines",
+                      "ligand",
+                      "solvent"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "system": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "nonbondedMethod": {
+                        "enum": [
+                          "PME",
+                          "NoCutoff"
+                        ]
+                      },
+                      "nonbondedCutoffNm": {
+                        "type": "number",
+                        "minimum": 1e-09,
+                        "maximum": 10
+                      },
+                      "constraints": {
+                        "enum": [
+                          "HBonds",
+                          "AllBonds",
+                          "None"
+                        ]
+                      },
+                      "rigidWater": {
+                        "type": "boolean"
+                      },
+                      "removeCMMotion": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "nonbondedMethod",
+                      "nonbondedCutoffNm",
+                      "constraints",
+                      "rigidWater",
+                      "removeCMMotion"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "minimization": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "toleranceKjMolNm": {
+                        "type": "number",
+                        "minimum": 1e-09,
+                        "maximum": 1e+20
+                      },
+                      "maxIterations": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 1000000
+                      }
+                    },
+                    "required": [
+                      "toleranceKjMolNm",
+                      "maxIterations"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "equilibration": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                            "maxLength": 64
+                          },
+                          "unit": {
+                            "enum": [
+                              "fs",
+                              "ps",
+                              "ns"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "dynamics": {
+                        "type": "object",
+                        "properties": {
+                          "ensemble": {
+                            "enum": [
+                              "NVT",
+                              "NPT"
+                            ]
+                          },
+                          "temperatureKelvin": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 500
+                          },
+                          "timestepFs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 2
+                          },
+                          "frictionPerPs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 100
+                          },
+                          "seed": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "initializeVelocities": {
+                            "type": "boolean"
+                          },
+                          "reporterInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "checkpointInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "segmentFrames": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "pressureBar": {
+                            "type": "number",
+                            "minimum": 0.1,
+                            "maximum": 100
+                          },
+                          "integrator": {
+                            "enum": [
+                              "LangevinMiddle",
+                              "Langevin",
+                              "LangevinLegacy"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "ensemble",
+                          "temperatureKelvin",
+                          "timestepFs",
+                          "frictionPerPs",
+                          "seed",
+                          "initializeVelocities",
+                          "reporterInterval",
+                          "checkpointInterval",
+                          "segmentFrames"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "restart": {
+                        "enum": [
+                          "state",
+                          "checkpoint"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "duration",
+                      "dynamics",
+                      "restart"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "production": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                            "maxLength": 64
+                          },
+                          "unit": {
+                            "enum": [
+                              "fs",
+                              "ps",
+                              "ns"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "value",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "dynamics": {
+                        "type": "object",
+                        "properties": {
+                          "ensemble": {
+                            "enum": [
+                              "NVT",
+                              "NPT"
+                            ]
+                          },
+                          "temperatureKelvin": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 500
+                          },
+                          "timestepFs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 2
+                          },
+                          "frictionPerPs": {
+                            "type": "number",
+                            "minimum": 1e-09,
+                            "maximum": 100
+                          },
+                          "seed": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 2147483647
+                          },
+                          "initializeVelocities": {
+                            "type": "boolean"
+                          },
+                          "reporterInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "checkpointInterval": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000000
+                          },
+                          "segmentFrames": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10000
+                          },
+                          "pressureBar": {
+                            "type": "number",
+                            "minimum": 0.1,
+                            "maximum": 100
+                          },
+                          "integrator": {
+                            "enum": [
+                              "LangevinMiddle",
+                              "Langevin",
+                              "LangevinLegacy"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "ensemble",
+                          "temperatureKelvin",
+                          "timestepFs",
+                          "frictionPerPs",
+                          "seed",
+                          "initializeVelocities",
+                          "reporterInterval",
+                          "checkpointInterval",
+                          "segmentFrames"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "restart": {
+                        "enum": [
+                          "state",
+                          "checkpoint"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "duration",
+                      "dynamics",
+                      "restart"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "analysis": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "selection": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "alignmentSelection": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "pbc": {
+                        "enum": [
+                          "none",
+                          "unwrap"
+                        ]
+                      },
+                      "stride": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 100000
+                      },
+                      "metrics": {
+                        "type": "array",
+                        "items": {
+                          "enum": [
+                            "rmsd",
+                            "rmsf",
+                            "radiusOfGyration"
+                          ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 3,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "selection",
+                      "alignmentSelection",
+                      "pbc",
+                      "stride",
+                      "metrics"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "resources": {
+                "type": "object",
+                "properties": {
+                  "cpuThreads": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "maxOutputBytes": {
+                    "type": "integer",
+                    "minimum": 1048576,
+                    "maximum": 10995116277760
+                  },
+                  "wallTimeSeconds": {
+                    "type": "object",
+                    "properties": {
+                      "prepare": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "minimize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "equilibrate": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "production": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "validate": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      },
+                      "analysis": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 604800
+                      }
+                    },
+                    "required": [
+                      "validate"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "execution": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "platform": {
+                            "const": "CPU"
+                          }
+                        },
+                        "required": [
+                          "platform"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "platform": {
+                            "const": "CUDA"
+                          },
+                          "deviceIndex": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 63
+                          },
+                          "precision": {
+                            "enum": [
+                              "single",
+                              "mixed",
+                              "double"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "platform",
+                          "deviceIndex",
+                          "precision"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "cpuThreads",
+                  "maxOutputBytes",
+                  "wallTimeSeconds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schemaVersion",
+              "domain",
+              "workflowId",
+              "revision",
+              "title",
+              "researchGoal",
+              "profile",
+              "input",
+              "preparation",
+              "system",
+              "minimization",
+              "equilibration",
+              "production",
+              "analysis",
+              "resources"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "sourceWorkflowId",
+          "sourceAttemptId",
+          "intent"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_artifacts": {
+      "description": "artifacts for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          },
+          "stageId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483647
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "workflowId",
+          "stageId",
+          "offset",
+          "limit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "bio_report": {
+      "description": "report for local biology workflows; no human approval capability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflowId": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+          }
+        },
+        "required": [
+          "workflowId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "intent": {
+    "type": "object",
+    "properties": {
+      "schemaVersion": {
+        "enum": [
+          "bio.intent.v1"
+        ]
+      },
+      "domain": {
+        "enum": [
+          "bio-openmm"
+        ]
+      },
+      "workflowId": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+      },
+      "revision": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 2147483647
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      },
+      "researchGoal": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 16384
+      },
+      "profile": {
+        "enum": [
+          "protein",
+          "protein-ligand-external",
+          "small-molecule-water",
+          "water-box",
+          "continuation"
+        ]
+      },
+      "input": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "expectedSha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "expectedByteSize": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 67108864
+              }
+            },
+            "required": [
+              "id",
+              "path",
+              "expectedSha256",
+              "expectedByteSize"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "preparation": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "forceField": {
+                "enum": [
+                  "amber14",
+                  "charmm36",
+                  "amber99sbildn"
+                ]
+              },
+              "addHydrogens": {
+                "type": "boolean"
+              },
+              "ph": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 14
+              },
+              "solvent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "as-is"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "mode"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "tip3p-box"
+                        ]
+                      },
+                      "paddingAngstrom": {
+                        "type": "number",
+                        "minimum": 10,
+                        "maximum": 100
+                      },
+                      "ionicStrengthMolar": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "neutralize": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "paddingAngstrom",
+                      "ionicStrengthMolar",
+                      "neutralize"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              }
+            },
+            "required": [
+              "forceField",
+              "addHydrogens",
+              "ph",
+              "solvent"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "water-box"
+                ]
+              },
+              "forceField": {
+                "enum": [
+                  "tip3p"
+                ]
+              },
+              "boxSizeNm": {
+                "type": "number",
+                "minimum": 2.2,
+                "maximum": 10
+              }
+            },
+            "required": [
+              "mode",
+              "forceField",
+              "boxSizeNm"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "amber-small-molecule"
+                ]
+              },
+              "forceField": {
+                "enum": [
+                  "gaff2-tip3p"
+                ]
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "ligand": {
+                "type": "object",
+                "properties": {
+                  "smiles": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "netCharge": {
+                    "type": "integer",
+                    "minimum": -4,
+                    "maximum": 4
+                  },
+                  "multiplicity": {
+                    "enum": [
+                      1
+                    ]
+                  },
+                  "chargeMethod": {
+                    "enum": [
+                      "bcc",
+                      "abcg2"
+                    ]
+                  },
+                  "chargeRationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  }
+                },
+                "required": [
+                  "smiles",
+                  "netCharge",
+                  "multiplicity",
+                  "chargeMethod",
+                  "chargeRationale"
+                ],
+                "additionalProperties": false
+              },
+              "solvent": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "enum": [
+                      "tip3p-box"
+                    ]
+                  },
+                  "paddingAngstrom": {
+                    "type": "number",
+                    "minimum": 10,
+                    "maximum": 100
+                  },
+                  "ionicStrengthMolar": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "neutralize": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "mode",
+                  "paddingAngstrom",
+                  "ionicStrengthMolar",
+                  "neutralize"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "mode",
+              "forceField",
+              "seed",
+              "ligand",
+              "solvent"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "amber-protein-ligand"
+                ]
+              },
+              "forceField": {
+                "enum": [
+                  "ff14SB-gaff2-tip3p"
+                ]
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483647
+              },
+              "proteinChains": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1
+                },
+                "maxItems": 32
+              },
+              "missingResidues": {
+                "enum": [
+                  "reject",
+                  "complete-standard"
+                ]
+              },
+              "histidines": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "chain": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 1
+                    },
+                    "residueId": {
+                      "type": "string",
+                      "pattern": "^-?[0-9]+$"
+                    },
+                    "variant": {
+                      "enum": [
+                        "HID",
+                        "HIE",
+                        "HIP"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "chain",
+                    "residueId",
+                    "variant"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 1024
+              },
+              "ligand": {
+                "type": "object",
+                "properties": {
+                  "smiles": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "netCharge": {
+                    "type": "integer",
+                    "minimum": -4,
+                    "maximum": 4
+                  },
+                  "multiplicity": {
+                    "enum": [
+                      1
+                    ]
+                  },
+                  "chargeMethod": {
+                    "enum": [
+                      "bcc",
+                      "abcg2"
+                    ]
+                  },
+                  "chargeRationale": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "placement": {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "enum": [
+                          "outside-protein-positive-x"
+                        ]
+                      },
+                      "gapAngstrom": {
+                        "type": "number",
+                        "minimum": 5,
+                        "maximum": 30
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "gapAngstrom"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "smiles",
+                  "netCharge",
+                  "multiplicity",
+                  "chargeMethod",
+                  "chargeRationale",
+                  "placement"
+                ],
+                "additionalProperties": false
+              },
+              "solvent": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "enum": [
+                      "tip3p-box"
+                    ]
+                  },
+                  "paddingAngstrom": {
+                    "type": "number",
+                    "minimum": 10,
+                    "maximum": 100
+                  },
+                  "ionicStrengthMolar": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "neutralize": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "mode",
+                  "paddingAngstrom",
+                  "ionicStrengthMolar",
+                  "neutralize"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "mode",
+              "forceField",
+              "seed",
+              "proteinChains",
+              "missingResidues",
+              "histidines",
+              "ligand",
+              "solvent"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "system": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nonbondedMethod": {
+                "enum": [
+                  "PME",
+                  "NoCutoff"
+                ]
+              },
+              "nonbondedCutoffNm": {
+                "type": "number",
+                "minimum": 1e-09,
+                "maximum": 10
+              },
+              "constraints": {
+                "enum": [
+                  "HBonds",
+                  "AllBonds",
+                  "None"
+                ]
+              },
+              "rigidWater": {
+                "type": "boolean"
+              },
+              "removeCMMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "nonbondedMethod",
+              "nonbondedCutoffNm",
+              "constraints",
+              "rigidWater",
+              "removeCMMotion"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "minimization": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "toleranceKjMolNm": {
+                "type": "number",
+                "minimum": 1e-09,
+                "maximum": 1e+20
+              },
+              "maxIterations": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              }
+            },
+            "required": [
+              "toleranceKjMolNm",
+              "maxIterations"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "equilibration": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "duration": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                    "maxLength": 64
+                  },
+                  "unit": {
+                    "enum": [
+                      "fs",
+                      "ps",
+                      "ns"
+                    ]
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false
+              },
+              "dynamics": {
+                "type": "object",
+                "properties": {
+                  "ensemble": {
+                    "enum": [
+                      "NVT",
+                      "NPT"
+                    ]
+                  },
+                  "temperatureKelvin": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 500
+                  },
+                  "timestepFs": {
+                    "type": "number",
+                    "minimum": 1e-09,
+                    "maximum": 2
+                  },
+                  "frictionPerPs": {
+                    "type": "number",
+                    "minimum": 1e-09,
+                    "maximum": 100
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  "initializeVelocities": {
+                    "type": "boolean"
+                  },
+                  "reporterInterval": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000000
+                  },
+                  "checkpointInterval": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000000
+                  },
+                  "segmentFrames": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000
+                  },
+                  "pressureBar": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "integrator": {
+                    "enum": [
+                      "LangevinMiddle",
+                      "Langevin",
+                      "LangevinLegacy"
+                    ]
+                  }
+                },
+                "required": [
+                  "ensemble",
+                  "temperatureKelvin",
+                  "timestepFs",
+                  "frictionPerPs",
+                  "seed",
+                  "initializeVelocities",
+                  "reporterInterval",
+                  "checkpointInterval",
+                  "segmentFrames"
+                ],
+                "additionalProperties": false
+              },
+              "restart": {
+                "enum": [
+                  "state",
+                  "checkpoint"
+                ]
+              }
+            },
+            "required": [
+              "duration",
+              "dynamics",
+              "restart"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "production": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "duration": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "pattern": "^[0-9]+(?:\\.[0-9]+)?$",
+                    "maxLength": 64
+                  },
+                  "unit": {
+                    "enum": [
+                      "fs",
+                      "ps",
+                      "ns"
+                    ]
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false
+              },
+              "dynamics": {
+                "type": "object",
+                "properties": {
+                  "ensemble": {
+                    "enum": [
+                      "NVT",
+                      "NPT"
+                    ]
+                  },
+                  "temperatureKelvin": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 500
+                  },
+                  "timestepFs": {
+                    "type": "number",
+                    "minimum": 1e-09,
+                    "maximum": 2
+                  },
+                  "frictionPerPs": {
+                    "type": "number",
+                    "minimum": 1e-09,
+                    "maximum": 100
+                  },
+                  "seed": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  "initializeVelocities": {
+                    "type": "boolean"
+                  },
+                  "reporterInterval": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000000
+                  },
+                  "checkpointInterval": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000000
+                  },
+                  "segmentFrames": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10000
+                  },
+                  "pressureBar": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 100
+                  },
+                  "integrator": {
+                    "enum": [
+                      "LangevinMiddle",
+                      "Langevin",
+                      "LangevinLegacy"
+                    ]
+                  }
+                },
+                "required": [
+                  "ensemble",
+                  "temperatureKelvin",
+                  "timestepFs",
+                  "frictionPerPs",
+                  "seed",
+                  "initializeVelocities",
+                  "reporterInterval",
+                  "checkpointInterval",
+                  "segmentFrames"
+                ],
+                "additionalProperties": false
+              },
+              "restart": {
+                "enum": [
+                  "state",
+                  "checkpoint"
+                ]
+              }
+            },
+            "required": [
+              "duration",
+              "dynamics",
+              "restart"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "analysis": {
+        "anyOf": [
+          {
+            "type": "null"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "selection": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "alignmentSelection": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "pbc": {
+                "enum": [
+                  "none",
+                  "unwrap"
+                ]
+              },
+              "stride": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100000
+              },
+              "metrics": {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "rmsd",
+                    "rmsf",
+                    "radiusOfGyration"
+                  ]
+                },
+                "minItems": 1,
+                "maxItems": 3,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "selection",
+              "alignmentSelection",
+              "pbc",
+              "stride",
+              "metrics"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "resources": {
+        "type": "object",
+        "properties": {
+          "cpuThreads": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "maxOutputBytes": {
+            "type": "integer",
+            "minimum": 1048576,
+            "maximum": 10995116277760
+          },
+          "wallTimeSeconds": {
+            "type": "object",
+            "properties": {
+              "prepare": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              },
+              "minimize": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              },
+              "equilibrate": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              },
+              "production": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              },
+              "validate": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              },
+              "analysis": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 604800
+              }
+            },
+            "required": [
+              "validate"
+            ],
+            "additionalProperties": false
+          },
+          "execution": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "const": "CPU"
+                  }
+                },
+                "required": [
+                  "platform"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "platform": {
+                    "const": "CUDA"
+                  },
+                  "deviceIndex": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 63
+                  },
+                  "precision": {
+                    "enum": [
+                      "single",
+                      "mixed",
+                      "double"
+                    ]
+                  }
+                },
+                "required": [
+                  "platform",
+                  "deviceIndex",
+                  "precision"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "cpuThreads",
+          "maxOutputBytes",
+          "wallTimeSeconds"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "domain",
+      "workflowId",
+      "revision",
+      "title",
+      "researchGoal",
+      "profile",
+      "input",
+      "preparation",
+      "system",
+      "minimization",
+      "equilibration",
+      "production",
+      "analysis",
+      "resources"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,20 @@
+units metal
+boundary p p p
+atom_style atomic
+lattice fcc 3.60
+region box block 0 3 0 3 0 3
+create_box 1 box
+create_atoms 1 box
+mass 1 63.546
+pair_style eam
+pair_coeff * * Cu_u3.eam
+# 打破对称:完美 fcc 受力恒为零(对称性),扰动后最小化才有真实能量下降
+displace_atoms all random 0.08 0.08 0.08 12345 units lattice
+thermo 20
+thermo_style custom step pe etotal fnorm fmax
+thermo_modify format float %.12g
+min_style cg
+minimize 1.0e-8 1.0e-10 1000 10000
+print "EVLIVE_EFINAL $(pe)"
+print "EVLIVE_FFINAL $(fnorm)"
+print "EVLIVE_DONE ok"

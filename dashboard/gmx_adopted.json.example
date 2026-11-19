@@ -1,0 +1,7 @@
+{
+  "_comment": "GROMACS 接管注册表(不走编排器不能跑,2026-09-10 拍板)。复制为 gmx_adopted.json;adopted 里放被接管的 run 目录绝对路径(每条对应 scan 出来的 dir)。alive 且不在此表的 run = 野跑:auto_kill_wild=true 时推送驱动直接 SIGTERM 停掉(温和停,gromacs 写终态检查点,.cpt 可续跑)并微信通知;=false 时只严重告警等人工拍板。要放行某只野跑:先把它的 dir 加进 adopted 再重启。本机文件入 .gitignore;env GMX_ADOPTED_FILE 可指别处。",
+  "auto_kill_wild": false,
+  "adopted": [
+    "/tmp/mdruns/paper05/gmx_example"
+  ]
+}

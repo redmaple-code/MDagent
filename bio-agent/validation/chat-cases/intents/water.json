@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "bio.intent.v1",
+  "domain": "bio-openmm",
+  "workflowId": "bio-validation-water",
+  "revision": 1,
+  "title": "TIP3P water engineering fixture",
+  "researchGoal": "Explicit 33-atom Amber14 fixture; NoCutoff; CPU 1 fs 20 steps. Engineering only.",
+  "profile": "water-box",
+  "input": null,
+  "preparation": {
+    "mode": "water-box",
+    "forceField": "tip3p",
+    "boxSizeNm": 2.2
+  },
+  "system": {
+    "nonbondedMethod": "PME",
+    "nonbondedCutoffNm": 1,
+    "constraints": "HBonds",
+    "rigidWater": true,
+    "removeCMMotion": true
+  },
+  "minimization": {
+    "toleranceKjMolNm": 10,
+    "maxIterations": 100
+  },
+  "equilibration": null,
+  "production": {
+    "duration": {
+      "value": "0.02",
+      "unit": "ps"
+    },
+    "dynamics": {
+      "ensemble": "NVT",
+      "temperatureKelvin": 300,
+      "timestepFs": 1,
+      "frictionPerPs": 1,
+      "seed": 713,
+      "initializeVelocities": true,
+      "reporterInterval": 5,
+      "checkpointInterval": 10,
+      "segmentFrames": 2
+    },
+    "restart": "state"
+  },
+  "analysis": null,
+  "resources": {
+    "cpuThreads": 1,
+    "maxOutputBytes": 67108864,
+    "wallTimeSeconds": {
+      "prepare": 180,
+      "minimize": 120,
+      "production": 60,
+      "validate": 60
+    }
+  }
+}

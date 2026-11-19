@@ -1,0 +1,7 @@
+# 全链分子模拟智能体 MD Exp —— agent-presets 清单（preset.yml）
+#
+# ⚠ 本文件所在的【预设目录名】必须是 ascii-slug（正则 [a-z0-9][a-z0-9-]*，此处 md-sim-assistant）
+#   ——dsh-agent-presets 直接跳过非 ascii 目录名（病灶 D-02），CJK 目录名永不被发现、
+#   agent.cordis.yml 不会被 mount。中文显示名放在下面的 name:。
+name: 全链分子模拟智能体 MD Exp
+description: 全链分子模拟智能体（LAMMPS/ReaxFF）——覆盖建模与力场选型、输入准备、作业提交(HPC 提交永远人工确认)、运行监控、故障诊断修复、结果分析与报告全链路的裁决层与对话脑。盯 status_bus/编排日志/策略决策的真相源，判断"模拟跑到哪了、哪个 case 健康、为什么进 RECOVER、什么风险"，诊断异常(ensemble/QEq/结构非物理)、讲机理、给下一步建议；数字均取自只读 MCP 工具返回，不编造；不碰 LAMMPS 计算/力场(科研红线)，不杀进程、不下发操作，任何改动走 claude_interface 审计通道并需你确认。

@@ -1,0 +1,11 @@
+# Template only. Generate a tenant-specific candidate after platform prerequisites
+# are synchronized and an operator-owned permission adapter is configured.
+- id: bio-tools
+  name: dsh-bio-agent
+  config:
+    projectsRoot: /opt/mdagent/users/<TENANT>/bio-control
+    mode: node-world
+    nodeId: <REGISTERED-NODE-ID>
+    executionTargetFile: /opt/mdagent/users/<TENANT>/bio-target.json
+    gateMode: platform
+    platformGateModule: /opt/mdagent/users/<TENANT>/bio-platform-gate.mjs

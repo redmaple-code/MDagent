@@ -1,0 +1,7 @@
+{
+  "schemaVersion":"bio.display-tools.v1",
+  "tools":{
+    "bio_view":{"description":"Display only; never approves or submits science. commandJson is {operationId: UUID, expected: latest bio_observe binding, kind, payload}. Kinds/payloads: openSource {source: SourceRef from bio_artifacts.sourceRef or bio_inputs}; setRepresentation {representation: cartoon|sticks|spheres|lines, appearance?: {colorScheme: auto|element|chain|residue|rainbow|uniform, uniformColor: integer RGB 0..16777215, material: matte|glossy|metal}}; select {sourceAtomIndices: unique <=512 original atom indices}; seekTime {timePs}; play {startFrame,endFrame,fps:1..20,direction:1|-1,loop:boolean}; focus/pause/observe {}. play range is zero-based PREVIEW positions 0..previewFrameCount-1; sourceFrameIndex can differ. Empty live viewport observation includes its binding with ok=false; openSource waits for real loading.","parameters":{"type":"object","additionalProperties":false,"required":["viewportId","commandJson"],"properties":{"viewportId":{"type":"string","maxLength":128},"commandJson":{"type":"string","maxLength":8192}}}},
+    "bio_observe":{"description":"Read actual molecular renderer state. viewportId active selects the sole connected viewport; multiple viewers need an explicit ID. Offline or not-ready is an error.","parameters":{"type":"object","additionalProperties":false,"required":["viewportId"],"properties":{"viewportId":{"type":"string","maxLength":128}}}}
+  }
+}

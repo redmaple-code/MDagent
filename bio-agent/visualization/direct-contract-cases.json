@@ -1,0 +1,234 @@
+{
+  "engineeringFixture": true,
+  "validRequests": [
+    {
+      "action": "direct-open",
+      "value": {
+        "previewId": "preview-test",
+        "source": {
+          "kind": "accepted",
+          "sourceId": "result-attempt",
+          "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "workflowId": "wf",
+          "revision": 1,
+          "stageId": "production",
+          "attemptId": "attempt"
+        },
+        "manifestSha256": "eeb1b6abc96fc7ae8be9473d4caa3dfd282649f3d63e39d2da496f51a439ad76",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    },
+    {
+      "action": "direct-permit",
+      "value": {
+        "channelId": "channel-test",
+        "previewId": "preview-test",
+        "fileId": "segment.xtc",
+        "offset": 0,
+        "limit": 262144,
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    },
+    {
+      "action": "direct-close",
+      "value": {
+        "channelId": "channel-test",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    }
+  ],
+  "invalidRequests": [
+    {
+      "action": "direct-open",
+      "value": {
+        "previewId": "preview-test",
+        "source": {
+          "kind": "accepted",
+          "sourceId": "result-attempt",
+          "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "workflowId": "wf",
+          "revision": 1,
+          "stageId": "production",
+          "attemptId": "attempt"
+        },
+        "manifestSha256": "eeb1b6abc96fc7ae8be9473d4caa3dfd282649f3d63e39d2da496f51a439ad76",
+        "clientId": "client-test",
+        "pairingId": "pair-test",
+        "path": "/foreign"
+      }
+    },
+    {
+      "action": "direct-open",
+      "value": {
+        "previewId": "preview-test",
+        "source": {
+          "kind": "accepted",
+          "sourceId": "result-attempt",
+          "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "workflowId": "wf",
+          "revision": 1,
+          "stageId": "production",
+          "attemptId": "attempt"
+        },
+        "manifestSha256": "eeb1b6abc96fc7ae8be9473d4caa3dfd282649f3d63e39d2da496f51a439ad76",
+        "clientId": "client-test",
+        "pairingId": "pair-test",
+        "owner": "other"
+      }
+    },
+    {
+      "action": "direct-permit",
+      "value": {
+        "channelId": "channel-test",
+        "previewId": "preview-test",
+        "fileId": "segment.xtc",
+        "offset": true,
+        "limit": 262144,
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    },
+    {
+      "action": "direct-permit",
+      "value": {
+        "channelId": "channel-test",
+        "previewId": "preview-test",
+        "fileId": "segment.xtc",
+        "offset": 0,
+        "limit": 262145,
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    },
+    {
+      "action": "direct-permit",
+      "value": {
+        "channelId": "channel-test",
+        "previewId": "preview-test",
+        "fileId": "../other",
+        "offset": 0,
+        "limit": 262144,
+        "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "clientId": "client-test",
+        "pairingId": "pair-test"
+      }
+    },
+    {
+      "action": "direct-close",
+      "value": {
+        "channelId": "channel-test",
+        "clientId": "client-test",
+        "pairingId": "pair-test",
+        "agentEpoch": "forged"
+      }
+    }
+  ],
+  "channel": {
+    "schemaVersion": "bio.direct-channel.v1",
+    "channelId": "channel-test",
+    "targetId": "compute-test",
+    "executionTargetSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "projectKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "clientId": "client-test",
+    "pairingId": "pair-test",
+    "previewId": "preview-test",
+    "source": {
+      "kind": "accepted",
+      "sourceId": "result-attempt",
+      "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "workflowId": "wf",
+      "revision": 1,
+      "stageId": "production",
+      "attemptId": "attempt"
+    },
+    "manifestSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "readerVersion": "bio.direct-reader.v1",
+    "transportBinding": {
+      "ownerBinding": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "sessionEpoch": "epoch-test",
+      "executionTargetSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "uid": 501,
+    "hostIdentitySha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "permit": {
+    "schemaVersion": "bio.direct-permit.v1",
+    "channelId": "channel-test",
+    "handle": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "previewId": "preview-test",
+    "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifestSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "fileId": "segment.xtc",
+    "fileSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "byteSize": 524288,
+    "offset": 0,
+    "limit": 262144,
+    "expiresAtMs": 1700000005000
+  },
+  "manifest": {
+    "schemaVersion": "bio.preview.v1",
+    "previewId": "preview-test",
+    "source": {
+      "kind": "accepted",
+      "sourceId": "result-attempt",
+      "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "workflowId": "wf",
+      "revision": 1,
+      "stageId": "production",
+      "attemptId": "attempt"
+    },
+    "atomCount": 2,
+    "sourceFrameCount": 3,
+    "atomMapFile": "atoms.bin",
+    "topologyFile": "topology.pdb",
+    "precision": 3,
+    "previewOnly": true,
+    "frames": [
+      {
+        "sourceFrameIndex": 0,
+        "segmentId": "segment.xtc",
+        "segmentFrameIndex": 0,
+        "timePs": 0
+      },
+      {
+        "sourceFrameIndex": 2,
+        "segmentId": "segment.xtc",
+        "segmentFrameIndex": 1,
+        "timePs": 1.25
+      }
+    ],
+    "files": [
+      {
+        "fileId": "atoms.bin",
+        "kind": "atom-map",
+        "byteSize": 100,
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "previewFrameStart": null,
+        "previewFrameCount": null
+      },
+      {
+        "fileId": "topology.pdb",
+        "kind": "topology",
+        "byteSize": 100,
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "previewFrameStart": null,
+        "previewFrameCount": null
+      },
+      {
+        "fileId": "segment.xtc",
+        "kind": "xtc",
+        "byteSize": 100,
+        "sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "previewFrameStart": 0,
+        "previewFrameCount": 2
+      }
+    ]
+  },
+  "manifestDigest": "eeb1b6abc96fc7ae8be9473d4caa3dfd282649f3d63e39d2da496f51a439ad76"
+}

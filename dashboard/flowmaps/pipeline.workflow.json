@@ -1,0 +1,92 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "MD Exp 全流程管线",
+    "subtitle": "物理感知 → 建模 → 动力学 → 管线监管 → 分析 · 小体系验证成功后才大体系运行",
+    "locale": "zh-CN",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "happy-path",
+        "label": "主链路",
+        "focus": ["user", "model", "input", "validate", "submit", "monitor", "report"],
+        "note": "从科研需求到结果报告的完整主链路,试跑验收通过才放行生产。"
+      },
+      {
+        "id": "red-line",
+        "label": "红线与恢复",
+        "focus": ["validate", "submit", "monitor", "recover", "pipeline-check"],
+        "note": "HPC 提交永远人工确认;异常由 kit 状态机诊断恢复(熔断退避+蜂群研究)后回到监控。"
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "user", "label": "用户" },
+    { "id": "agent", "label": "MD Exp 决策" },
+    { "id": "gate", "label": "红线门", "variant": "exception" },
+    { "id": "exec", "label": "执行层 kit · HPC" }
+  ],
+  "phases": [
+    { "id": "prepare", "label": "准备", "fromCol": 0, "toCol": 2 },
+    { "id": "run", "label": "验收·提交·运行", "fromCol": 3, "toCol": 4, "variant": "emphasis" },
+    { "id": "close", "label": "收尾", "fromCol": 5, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "recover_loop", "label": "诊断恢复环", "lane": "exec", "fromCol": 4, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["user", "model", "input", "validate", "submit", "monitor", "report"],
+  "nodes": [
+    { "id": "user", "lane": "user", "col": 0, "type": "external", "label": "用户", "sublabel": "科研需求", "width": 132 },
+    { "id": "model", "lane": "agent", "col": 1, "type": "backend", "label": "物理感知·建模", "sublabel": "packmol/moltemplate · 双引擎路由", "tag": "model_research", "width": 168 },
+    { "id": "input", "lane": "agent", "col": 2, "type": "backend", "label": "输入准备", "sublabel": "力场/系综/时间/续跑", "tag": "mcp", "width": 150 },
+    { "id": "validate", "lane": "exec", "col": 3, "type": "backend", "label": "VALIDATE 试跑", "sublabel": "N 步·六项验收", "tag": "小体系先行", "width": 150 },
+    { "id": "submit", "lane": "gate", "col": 4, "type": "security", "label": "HPC 作业提交", "sublabel": "人工确认 · PIN 闸", "tag": "永不自动", "width": 150 },
+    { "id": "monitor", "lane": "exec", "col": 5, "type": "messagebus", "label": "运行监控", "sublabel": "LAMMPS/GROMACS 双引擎", "width": 168 },
+    { "id": "report", "lane": "agent", "col": 5, "type": "backend", "label": "结果分析与报告", "sublabel": "轨迹 / 能量 / 结论", "width": 150 },
+    { "id": "pipeline-check", "lane": "exec", "col": 2, "type": "database", "label": "pipeline_check", "sublabel": "事件流 pipeline.jsonl", "width": 168 },
+    { "id": "recover", "lane": "exec", "col": 4, "type": "messagebus", "label": "诊断恢复·蜂群", "sublabel": "熔断退避 + 联网研究", "tag": "真学习", "width": 168 }
+  ],
+  "edges": [
+    { "id": "e-user-model", "from": "user", "to": "model", "variant": "default" },
+    { "id": "e-model-input", "from": "model", "to": "input", "variant": "emphasis" },
+    { "id": "e-input-validate", "from": "input", "to": "validate", "label": "小体系", "variant": "emphasis" },
+    { "id": "e-validate-submit", "from": "validate", "to": "submit", "label": "六项全过", "variant": "default" },
+    { "id": "e-input-submit", "from": "input", "to": "submit", "label": "大体系(验证后)", "variant": "dashed" },
+    { "id": "e-submit-monitor", "from": "submit", "to": "monitor", "label": "确认后提交", "variant": "emphasis" },
+    { "id": "e-monitor-report", "from": "monitor", "to": "report", "label": "DONE", "variant": "emphasis" },
+    { "id": "e-input-check", "from": "input", "to": "pipeline-check", "variant": "dashed" },
+    { "id": "e-check-monitor", "from": "pipeline-check", "to": "monitor", "label": "判据", "variant": "dashed" },
+    { "id": "e-monitor-recover", "from": "monitor", "to": "recover", "label": "异常", "variant": "security", "role": "error" },
+    { "id": "e-recover-monitor", "from": "recover", "to": "monitor", "label": "修复后回监控", "variant": "dashed", "role": "return" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "主工作流·五段总纲",
+      "items": [
+        "物理感知→建模→动力学→管线监管→分析,全链路由 MD Exp 判断决策",
+        "小体系(500-5000 原子)全链走通才放大;VALIDATE 试跑不过不放行生产",
+        "引擎只 LAMMPS/ReaxFF 与 GROMACS;建模工具只 packmol/moltemplate"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "红线",
+      "items": [
+        "HPC 提交永远人工确认(SCNet 另有 PIN 码闸),agent 不越权",
+        "恢复策略经真学习记账,连败自动压制;耗尽熔断只压恢复不压检测"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "工具面与记忆",
+      "items": [
+        "11 只读真相源 MCP 工具 + sim_exec 唯一审计写门;回忆型问题查会话档(sim_search_sessions)",
+        "经验按验证条件定界(APPLY/DON'T APPLY),未入账(atoms+LEDGER)不算数"
+      ]
+    }
+  ]
+}

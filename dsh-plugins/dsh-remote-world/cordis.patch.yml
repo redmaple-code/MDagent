@@ -1,0 +1,36 @@
+# dsh-remote-world bundle patch：把执行世界换到 mdshell。
+# 三行本地提供者按 id 关掉（不带 name，避免 name-mismatch fail-open），三行远端提供者 insert。
+# base bundle 的行 id（核自 @deepseek-ai/dsh-base@0.1.0-rc.6/cordis.patch.yml）：
+#   fs-sandbox → @deepseek-ai/dsh-fs-sandbox（注意：base 里没有 fs-local 行，fs 提供者就是 fs-sandbox）
+#   subprocess → @deepseek-ai/dsh-subprocess-local
+#   sandbox    → @deepseek-ai/dsh-sandbox-local
+# url/token 由租户 profile 渲染时填入。
+- id: fs-sandbox
+  disabled: true
+- id: subprocess
+  disabled: true
+- id: sandbox
+  disabled: true
+# 默认 directory-picker(dsh-host-directory-picker-auto)用 node:fs 读云端实例目录 → "选择工作区"列错机器。
+# 关掉它,换成走 remote-fs(node01 world 通道)的 remote-directorypicker,让工作区选择器列 node01 的目录。
+- id: directory-picker
+  disabled: true
+- insert:
+    - id: remote-fs
+      name: 'dsh-remote-world/fs'
+      config:
+        url: 'ws://127.0.0.1:9797'
+        token: ''
+    - id: remote-subprocess
+      name: 'dsh-remote-world/subprocess'
+      config:
+        url: 'ws://127.0.0.1:9797'
+        token: ''
+    - id: remote-sandbox
+      name: 'dsh-remote-world/sandbox'
+      config:
+        url: 'ws://127.0.0.1:9797'
+        token: ''
+    - id: remote-directorypicker
+      name: 'dsh-remote-world/directorypicker'
+      config: {}

@@ -1,0 +1,4 @@
+# dsh-md-auto-approve bundle patch: one insert registering the auto-approver.
+- insert:
+    - id: dsh-md-auto-approve
+      name: 'dsh-md-auto-approve'

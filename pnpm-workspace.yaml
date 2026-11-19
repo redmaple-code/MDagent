@@ -1,0 +1,15 @@
+# 本地搜索插件声明为 workspace 包,pnpm 才会装它们自己的 deps(schemastery/dsh-settings/dsh-tools)
+# 否则 link 的插件不在依赖图里、deps 不装 → profile 加载报 Cannot find package
+packages:
+  - 'dsh-plugins/*'
+
+# 批准 dsh 官方声明的 5 个原生依赖构建脚本
+# (子进程插件/pty/FFI/protobuf/gemini-sdk) —— 全部 true
+# 不写这个 pnpm11 会拦原生构建,`pnpm exec dsh` 每次退 1
+allowBuilds:
+  '@deepseek-ai/dsh-subprocess-local': true
+  '@google/genai': true
+  '@jackwener/opencli': false
+  koffi: true
+  node-pty: true
+  protobufjs: true

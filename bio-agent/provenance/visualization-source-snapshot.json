@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "bio.visualization-provenance.v1",
+  "sourceRepository": "KSH",
+  "sourceState": "user-authorized local source extraction",
+  "files": [
+    {
+      "sourcePath": "apps/desktop/src/workbench/visualization/frame-playback.ts",
+      "sourceSha256": "83f988e119a0c65f3e946128d011d5277e4ae53c805de8f47c9a6b1cc347468b",
+      "originalPath": "provenance/visualization-originals/frame-playback.ts",
+      "patchPath": "provenance/visualization-originals/frame-playback.patch",
+      "patchSha256": "570821562cad08c75d4afcbf53e62dd7c0bd79805c4d7d3172f7aa4905caead5",
+      "derivedPath": "web/visualization/src/frame-binding.mjs",
+      "derivedSha256": "c634d2ecab8f7fe810ae3980bfaef154e0de1d969e333418e7d899299c5906be"
+    },
+    {
+      "sourcePath": "apps/desktop/src/workbench/sceneOperationBinding.ts",
+      "sourceSha256": "e0ae7e930071db44e6daa426a2b720a85708076040ba594b1a630c0ac769eb27",
+      "originalPath": "provenance/visualization-originals/sceneOperationBinding.ts",
+      "patchPath": "provenance/visualization-originals/sceneOperationBinding.patch",
+      "patchSha256": "cc208bac4880b66153dd43399e32dafc28b8c72dbbe08db897b3aa97265b6884",
+      "derivedPath": "web/visualization/src/frame-binding.mjs",
+      "derivedSha256": "c634d2ecab8f7fe810ae3980bfaef154e0de1d969e333418e7d899299c5906be"
+    }
+  ],
+  "notes": "Adapted true-frame navigation and revision binding only; no Qt, PyMOL or scientific runtime changes."
+}

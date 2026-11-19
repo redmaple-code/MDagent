@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "bio.visualization-contracts.v1",
+  "limits": {
+    "overviewFrames": 200, "windowFrames": 64,
+    "windowBytes": 33554432, "cacheBytes": 67108864,
+    "httpTargetBytes": 262144, "httpMaxBytes": 1048576, "bridgeReadBytes": 65536,
+    "inflightRequests": 2, "minFps": 1, "maxFps": 20, "defaultFps": 10,
+    "egressBitsPerSecond": 4000000, "sendSliceBytes": 16384,
+    "projectDiskBytes": 268435456, "helperSeconds": 120, "maxSourceFrames": 1000000
+  },
+  "precision": 3,
+  "previewActions": ["describe", "prepare", "status", "window", "read", "cancel"],
+  "viewCommands": ["openSource", "setRepresentation", "select", "focus", "seekTime", "play", "pause", "observe"]
+}

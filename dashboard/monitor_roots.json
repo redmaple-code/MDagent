@@ -1,0 +1,22 @@
+{
+  "roots": [
+    {
+      "path": "/tmp/mdruns",
+      "type": "gromacs",
+      "label": "水凝胶复现",
+      "enabled": true
+    },
+    {
+      "path": "/opt/mdagent/文献-水凝胶/projects",
+      "type": "gromacs",
+      "label": "水凝胶论文",
+      "enabled": true
+    },
+    {
+      "path": "/opt/mdagent/文献-水凝胶/projects/paper-07/gromacs_full/air1to1/M2_nvt",
+      "type": "gromacs",
+      "label": "M2-NVT",
+      "enabled": true
+    }
+  ]
+}

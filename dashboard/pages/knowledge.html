@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识名片 · 经验知识库 wiki</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#f5f6f7; color:#353638; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; padding:26px 20px 60px; }
+  .wrap { max-width:1240px; margin:0 auto; }
+  h1 { font-size:22px; color:#0f1115; margin-bottom:4px; }
+  h1 .tag { font-size:12px; color:#8b5cf6; border:1px solid #ddd2f8; border-radius:4px; padding:2px 8px; margin-left:10px; vertical-align:middle; font-weight:normal; }
+  .sub { color:#81868c; font-size:13px; margin-bottom:18px; }
+  .chips { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; font-size:12.5px; }
+  .chip { background:#fff; border:1px solid #e1e5ee; border-radius:16px; padding:4px 14px; }
+  .chip b { color:#4176e6; }
+  .gates { background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:12px 16px; margin-bottom:18px; font-size:12.5px; }
+  .gates h3 { color:#dd8629; font-size:13.5px; margin-bottom:6px; }
+  .gates .g { padding:5px 0; border-bottom:1px dashed #ffe4c7; line-height:1.6; }
+  .gates .g:last-child { border-bottom:none; }
+  .gates .kind { display:inline-block; background:#f59e0b; color:#fff; border-radius:3px; font-size:11px; padding:1px 6px; margin-right:8px; }
+  .gates .how { color:#81868c; font-size:11.5px; margin-top:6px; }
+  .gates button.gv { float:right; margin-left:10px; background:#f59e0b; color:#fff; border:0; border-radius:4px;
+                     font-size:11.5px; padding:3px 10px; cursor:pointer; font-family:inherit; }
+  .gates button.gv:disabled { background:#c8cdd4; cursor:default; }
+  .gates .gn { color:#22c55e; font-size:11px; float:right; }
+  .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
+  .toolbar input { flex:1; min-width:220px; border:1px solid #d5dae3; border-radius:6px; padding:7px 12px; font-size:13px; }
+  .fchips { display:flex; gap:6px; flex-wrap:wrap; }
+  .fchips span { font-size:12px; border:1px solid #d5dae3; background:#fff; border-radius:14px; padding:3px 12px; cursor:pointer; user-select:none; }
+  .fchips span.on { background:#4176e6; color:#fff; border-color:#4176e6; }
+  .views { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:0 0 12px; font-size:12px; color:#81868c; }
+  .views span { border:1px solid #d5dae3; background:#fff; border-radius:14px; padding:3px 12px; cursor:pointer; user-select:none; }
+  .views span.on { background:#8b5cf6; color:#fff; border-color:#8b5cf6; }
+  .council { background:#f5f0ff; border:1px solid #ddd2f8; border-radius:8px; padding:9px 14px; margin-bottom:14px; font-size:12px; color:#5b21b6; line-height:1.7; }
+  .grp { margin-bottom:18px; }
+  .grp h2 { font-size:14.5px; color:#0f1115; margin-bottom:2px; }
+  .grp h2 i { font-style:normal; font-size:11.5px; color:#81868c; font-weight:normal; margin-left:6px; }
+  .grp .gsum { font-size:12px; color:#5b21b6; margin:0 0 8px; line-height:1.6; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:12px; }
+  .card { background:#fff; border:1px solid #e1e5ee; border-left:4px solid #4176e6; border-radius:8px; padding:13px 15px; display:flex; flex-direction:column; }
+  .card.cat-已验证结论 { border-left-color:#22c55e; }
+  .card.cat-教训 { border-left-color:#f59e0b; }
+  .card.cat-SOP { border-left-color:#0ea5e9; }
+  .card.cat-工程经验 { border-left-color:#4176e6; }
+  .card.cat-研判笔记 { border-left-color:#8b5cf6; }
+  .card.cat-摩擦与纠正 { border-left-color:#ec4899; }
+  .card.cat-安全 { border-left-color:#ef4444; }
+  .card .hd { display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+  .card h3 { font-size:13.5px; color:#0f1115; flex:1; word-break:break-all; }
+  .badge { font-size:10.5px; border-radius:3px; padding:1px 7px; white-space:nowrap; }
+  .b-reviewed { background:#e6faed; color:#16a34a; border:1px solid #bbe9c9; }
+  .b-llm { background:#fef5e7; color:#dd8629; border:1px solid #fed7aa; }
+  .b-fact { background:#f1f2f4; color:#6b7280; border:1px solid #e1e5ee; }
+  .meta { font-size:11.5px; color:#81868c; margin-bottom:8px; }
+  .summary { font-size:12.5px; line-height:1.7; color:#353638; background:#f7f8fa; border-radius:6px; padding:8px 10px; margin-bottom:8px; }
+  .summary .cond { display:block; color:#4176e6; margin-top:4px; font-size:11.5px; }
+  .ad { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:8px; }
+  .ad .col { font-size:11.5px; border-radius:6px; padding:6px 8px; line-height:1.6; }
+  .ad .yes { background:#e6faed; color:#15803d; }
+  .ad .no { background:#fef2f2; color:#b91c1c; }
+  .ad .col b { display:block; font-size:11px; margin-bottom:2px; }
+  .facts-toggle { font-size:11.5px; color:#4176e6; cursor:pointer; user-select:none; margin-top:auto; }
+  .facts { display:none; margin-top:8px; border-top:1px dashed #e1e5ee; padding-top:8px; font-size:11.5px; line-height:1.7; color:#43454a; }
+  .facts.open { display:block; }
+  .facts li { margin-left:16px; margin-bottom:4px; }
+  .refs { margin-top:6px; font-size:10.5px; color:#979da6; word-break:break-all; }
+  .empty { color:#81868c; text-align:center; padding:40px 0; font-size:13px; }
+  .ledger { margin-top:22px; background:#fff; border:1px solid #e1e5ee; border-radius:8px; padding:12px 16px; font-size:12px; }
+  .ledger h3 { font-size:13px; color:#4176e6; margin-bottom:6px; }
+  .ledger .l { padding:3px 0; color:#43454a; border-bottom:1px dashed #f0f1f4; }
+  .ledger .l:last-child { border:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>知识名片 <span class="tag">LLM+wiki · 经验知识库蒸馏</span></h1>
+  <div class="sub">atoms/SOP/notes → 确定性骨架 + LLM 蒸馏正文;LLM 只准复述事实,正文永远可与下方原始事实对照;已核 = 你人工确认过</div>
+  <div class="chips" id="chips"></div>
+  <div class="gates" id="gates" style="display:none">
+    <h3>⏳ 待你拍板(人工闸 pending —— 不会自动消失,等你动作)</h3>
+    <div id="gatelist"></div>
+    <div class="how">处置:evolution_proposal → 审 memory/proposals/ 后 apply_proposal.py --approver 你(或不批放着);wild_run_adopt → adopt 收编或终止;breaker_terminal → 看板任务详情复盘后销项</div>
+  </div>
+  <div class="toolbar">
+    <input id="q" placeholder="搜索:标题 / 摘要 / 事实 / kind…">
+    <div class="fchips" id="fc"></div>
+  </div>
+  <div class="views" id="views">
+    <span>视图:</span>
+    <span data-v="category" class="on">按类别</span>
+    <span data-v="layers">按智能体体系</span>
+    <span data-v="physics">按物理过程</span>
+  </div>
+  <div class="council" id="council" style="display:none"></div>
+  <div id="groups"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">无匹配卡片</div>
+  <div class="ledger" id="ledger" style="display:none">
+    <h3>LEDGER 账(过人工闸+证据门才算数;空 = 尚无已批准提案)</h3>
+    <div id="ledgerlist"></div>
+  </div>
+</div>
+<script>
+/* 2026-09-15 降级补齐(同 graph/metrics/trajectory 页):fetch→XHR(IE 内核/360兼容模式无 fetch),
+   加 onerror 红条——再出问题页面自己报错。 */
+window.onerror=function(msg,src,line){
+  var b=document.getElementById('errbar');
+  if(!b){b=document.createElement('div');b.id='errbar';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99;background:#ef4444;color:#fff;'+
+      'font-size:13px;padding:8px 14px;font-family:sans-serif';
+    (document.body||document.documentElement).appendChild(b);}
+  b.textContent='⚠ 页面脚本出错: '+msg+' (行 '+line+') —— 请截图反馈,或切浏览器"极速模式"/换现代浏览器';
+  return false;};
+function getJSON(url,cb,errcb){
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    if(x.status===200){try{cb(JSON.parse(x.responseText));}catch(e){
+      window.onerror('数据解析失败: '+e.message,url,0);}}
+    else{window.onerror('接口 '+url+' 返回 '+x.status,url,0);if(errcb)errcb();}};
+  x.send(null);}
+function postJSON(url,obj,cb,errcb){
+  var x=new XMLHttpRequest();
+  x.open('POST',url,true);
+  x.setRequestHeader('Content-Type','application/json');
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    if(x.status===200){try{cb(JSON.parse(x.responseText));}catch(e){
+      window.onerror('数据解析失败: '+e.message,url,0);if(errcb)errcb();}}
+    else if(errcb)errcb();};
+  x.onerror=function(){if(errcb)errcb();};
+  x.send(JSON.stringify(obj));}
+function esc(s){ if(s===null||s===undefined) return ''; return String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function fmtTs(t){ if(!t) return '—'; var d=new Date(t*1000);
+  return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+var DATA=null, FCAT='全部', VIEW='category';
+function badge(c){
+  if(c.reviewed_by) return '<span class="badge b-reviewed">✓ 已核·'+esc(c.reviewed_by)+'</span>';
+  if(c.distill) return '<span class="badge b-llm">LLM 蒸馏·未核</span>';
+  return '<span class="badge b-fact">纯事实</span>';
+}
+function cardHtml(c){
+  var d=c.distill||{};
+  var h='<div class="card cat-'+esc(c.category)+'">'
+    +'<div class="hd"><h3>'+esc(c.title)+'</h3>'+badge(c)+'</div>'
+    +'<div class="meta">'+esc(c.category)+' · '+(c.count||1)+' 次 · '+fmtTs(c.first_ts)+' → '+fmtTs(c.last_ts)
+    +(d.model?' · '+esc(d.model):'')+'</div>';
+  if(d.summary) h+='<div class="summary">'+esc(d.summary)
+    +(d.conditions?'<span class="cond">边界: '+esc(d.conditions)+'</span>':'')+'</div>';
+  if((d.apply&&d.apply.length)||(d.dont_apply&&d.dont_apply.length)){
+    h+='<div class="ad">'
+      +'<div class="col yes"><b>APPLY 适用</b>'+esc((d.apply||[]).join('；')||'—')+'</div>'
+      +'<div class="col no"><b>DON&#39;T APPLY 不适用</b>'+esc((d.dont_apply||[]).join('；')||'—')+'</div>'
+      +'</div>';
+  }
+  if(c.distill_error) h+='<div class="meta">蒸馏失败: '+esc(c.distill_error)+'</div>';
+  h+='<div class="facts-toggle" onclick="this.nextElementSibling.classList.toggle(\'open\')">▸ 原始事实('+(c.facts||[]).length+')与溯源</div>'
+    +'<div class="facts"><ul>'
+    +(c.facts||[]).map(function(f){return '<li>'+esc(f)+'</li>';}).join('')
+    +'</ul><div class="refs">refs: '+esc((c.refs||[]).join(' | '))+'</div></div></div>';
+  return h;
+}
+function filtered(){
+  var q=document.getElementById('q').value.trim().toLowerCase();
+  return (DATA.cards||[]).filter(function(c){
+    if(FCAT!=='全部' && c.category!==FCAT) return false;
+    if(!q) return true;
+    var blob=(c.title+' '+c.kind+' '+(c.distill&&c.distill.summary||'')+' '
+      +(c.facts||[]).join(' ')).toLowerCase();
+    return blob.indexOf(q)>=0;
+  });
+}
+function renderGroups(cards){
+  var tax=DATA.taxonomy||{};
+  var groups=(tax[VIEW==='layers'?'layers':'physics'])||[];
+  var byId={}; cards.forEach(function(c){ byId[c.id]=c; });
+  var used={}, html='';
+  groups.forEach(function(g){
+    var gc=(g.card_ids||[]).map(function(id){ return byId[id]; })
+      .filter(function(c){ if(c && !used[c.id]){ used[c.id]=1; return true; } return false; });
+    if(!gc.length) return;
+    html+='<div class="grp"><h2>'+esc(g.name||g.key)+'<i>'+gc.length+' 张</i></h2>'
+      +(g.summary?'<p class="gsum">'+esc(g.summary)+'</p>':'')
+      +'<div class="grid">'+gc.map(cardHtml).join('')+'</div></div>';
+  });
+  var rest=cards.filter(function(c){ return !used[c.id]; });
+  if(rest.length) html+='<div class="grp"><h2>未归类<i>'+rest.length+' 张</i></h2>'
+    +'<div class="grid">'+rest.map(cardHtml).join('')+'</div></div>';
+  return html;
+}
+function render(){
+  if(!DATA) return;
+  var cards=filtered();
+  if(VIEW==='category'){
+    document.getElementById('groups').innerHTML='';
+    document.getElementById('grid').style.display='grid';
+    document.getElementById('grid').innerHTML=cards.map(cardHtml).join('');
+  }else{
+    document.getElementById('grid').style.display='none';
+    document.getElementById('grid').innerHTML='';
+    document.getElementById('groups').innerHTML=renderGroups(cards);
+  }
+  document.getElementById('empty').style.display=cards.length?'none':'block';
+}
+function renderStatic(){
+  var s=DATA.stats;
+  document.getElementById('chips').innerHTML=
+    '<span class="chip">名片 <b>'+s.total+'</b></span>'
+    +'<span class="chip">LLM 蒸馏 <b>'+s.distilled+'</b></span>'
+    +'<span class="chip">人工已核 <b>'+s.reviewed+'</b></span>'
+    +'<span class="chip">待拍板闸 <b style="color:'+(s.pending_gates?'#dd8629':'#22c55e')+'">'+s.pending_gates+'</b></span>';
+  if(DATA.pending_gates.length){
+    document.getElementById('gates').style.display='block';
+    document.getElementById('gatelist').innerHTML=DATA.pending_gates.map(function(g,i){
+      return '<div class="g"><span class="kind">'+esc(g.kind)+'</span>'+esc(g.question)
+        +' <span style="color:#979da6">('+esc(g.id)+' · '+fmtTs(g.created_ts)+')</span>'
+        +' <button class="gv" data-g="'+esc(g.ref||'')+'" data-i="'+i+'" title="销项:写收件箱,编排器下个tick落账(≤30s);收件箱白名单只销演化提案闸">拍板·销项</button>'
+        +'<span class="gn" id="gn-'+i+'"></span></div>';
+    }).join('');
+    document.getElementById('gatelist').querySelectorAll('button.gv').forEach(function(b){
+      b.onclick=function(){
+        var gref=b.getAttribute('data-g');
+        var s2=document.getElementById('gn-'+b.getAttribute('data-i'));
+        if(!gref){alert('该闸无 ref,收件箱无法定位(原生闸走运维通道)');return;}
+        var note=prompt('销项说明(记入 resolved_by 审计):', '人工拍板:已处置');
+        if(note===null)return;
+        b.disabled=true;b.textContent='提交中…';
+        postJSON('/api/gate_resolve',{ref:gref,by:'dashboard-user',note:note},
+          function(j){
+            if(j.ok){s2.textContent='已入收件箱,'+(j.note||'编排器将落账');b.textContent='已提交';}
+            else{s2.textContent='失败:'+(j.error||'?');b.disabled=false;b.textContent='拍板·销项';}
+          },
+          function(){s2.textContent='网络错误';b.disabled=false;b.textContent='拍板·销项';});
+      };
+    });
+  }
+  var cats=['全部'].concat(Object.keys(DATA.stats.by_category));
+  document.getElementById('fc').innerHTML=cats.map(function(c){
+    return '<span class="'+(c===FCAT?'on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</span>';
+  }).join('');
+  document.getElementById('fc').querySelectorAll('span').forEach(function(el){
+    el.onclick=function(){ FCAT=el.getAttribute('data-c'); renderStatic2(); render(); };
+  });
+  if(DATA.ledger.length){
+    document.getElementById('ledger').style.display='block';
+    document.getElementById('ledgerlist').innerHTML=DATA.ledger.map(function(l){
+      return '<div class="l">'+esc(l.result)+' · '+esc(l.slug||l.id||'')+' · '+esc(l.reason||'')+' · '+esc((l.ts||'')+'')+'</div>';
+    }).join('');
+  }
+  var el=document.getElementById('council');
+  var tax=DATA.taxonomy;
+  var MODE={ 'roles+chair':'五角色+主席 LLM 研讨','roles-only':'五角色 LLM 研讨(主席缺席,按角色聚合)','baseline':'确定性规则基线(未跑 LLM)'};
+  if(tax){
+    el.style.display='block';
+    el.innerHTML='🧠 经验研讨团 · '+(MODE[tax.mode]||(tax.llm?'LLM 研讨':'确定性规则基线'))
+      +' · 卡片 '+esc(tax.cards_total||'?')+' 张 · '+fmtTs(tax.generated_ts)
+      +(tax.note?'<br>'+esc(tax.note):'')
+      +(!tax.llm?'<br>升级 LLM 研讨: python3.11 evolution/card_council.py run --llm':'');
+  }else{
+    el.style.display='block';
+    el.innerHTML='🧠 经验研讨团尚未运行 —— 「按智能体体系 / 按物理过程」视图需先跑: python3.11 evolution/card_council.py run [--llm]';
+  }
+}
+function renderStatic2(){
+  document.getElementById('fc').querySelectorAll('span').forEach(function(el){
+    el.className=(el.getAttribute('data-c')===FCAT)?'on':'';
+  });
+}
+function load(){
+  getJSON('/api/knowledge_cards',function(d){
+    DATA=d; renderStatic(); render();
+  });
+}
+document.getElementById('q').addEventListener('input', render);
+document.getElementById('views').querySelectorAll('span[data-v]').forEach(function(el){
+  el.onclick=function(){
+    VIEW=el.getAttribute('data-v');
+    document.getElementById('views').querySelectorAll('span[data-v]').forEach(function(x){
+      x.className=(x===el)?'on':'';
+    });
+    render();
+  };
+});
+load(); setInterval(load, 60000);
+</script>
+</body>
+</html>

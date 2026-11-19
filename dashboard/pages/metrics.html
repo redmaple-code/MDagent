@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>进化记分卡 · MD Exp</title>
+<style>
+  :root{--brand:#4176e6;--brand-50:#eef3fd;--text:#1f2329;--text-2:#646a73;--border:#dee0e3;
+        --ok:#22c55e;--bad:#ef4444;--amber:#f59e0b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f6f7;color:var(--text);padding:20px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:18px;margin-bottom:4px}
+  .sub{color:var(--text-2);font-size:12px;margin-bottom:16px}
+  .hero{display:flex;gap:20px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:16px}
+  .hero .num{font-size:44px;font-weight:800;color:var(--brand);min-width:120px}
+  .hero .num small{font-size:14px;color:var(--text-2);font-weight:400}
+  .bars{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+  .bar{font-size:11px;color:var(--text-2)}
+  .bar .track{height:6px;background:var(--brand-50);border-radius:3px;margin-top:3px;overflow:hidden}
+  .bar .fill{height:100%;background:var(--brand);border-radius:3px;transition:width .4s}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .card .name{font-size:12px;color:var(--text-2)}
+  .card .val{font-size:26px;font-weight:700;margin:4px 0 2px}
+  .card .hint{font-size:11px;color:var(--text-2)}
+  .card svg{display:block;margin-top:8px}
+  .note{margin-top:14px;font-size:11px;color:var(--text-2);line-height:1.7}
+  .note code{background:var(--brand-50);padding:1px 5px;border-radius:4px}
+  a.back{color:var(--brand);text-decoration:none;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📈 进化记分卡 <a class="back" href="/workbench">← 工作台</a> <a class="back" href="/pages/graph.html">🕸 图谱</a></h1>
+  <div class="sub">全部由既有学习数据算出 · 30 秒自动刷新 · <span id="ts"></span></div>
+  <div class="hero">
+    <div class="num" id="idx">—</div>
+    <div class="bars" id="bars"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="note">
+    口径:胜率/一次修复率/复发率来自 kit 策略库已结账账簿(Beta(1,1) 后验);恢复耗时 = <code>settled_ts − ts</code>(2026-09-02 起新账才有);
+    偏离先验度 = 各策略 |success_rate−0.5| 的均值,离无知先验越远说明学得越多;进化指数 = 各维归一化等权合成,仅当下截面不外推历史。
+    趋势窗:近 30 天,6 桶 × 5 天,无数据的桶断线显示。
+  </div>
+</div>
+<script>
+'use strict';
+/* 2026-09-15 语法降级(同 graph 页):箭头/async-await/模板串/展开/Object.entries 全部去掉,
+   fetch→XHR,加 onerror 红条——旧内核(Chrome<80/360兼容模式)白屏根治。 */
+window.onerror=function(msg,src,line){
+  var b=document.getElementById('errbar');
+  if(!b){b=document.createElement('div');b.id='errbar';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99;background:#ef4444;color:#fff;'+
+      'font-size:13px;padding:8px 14px;font-family:sans-serif';
+    (document.body||document.documentElement).appendChild(b);}
+  b.textContent='⚠ 页面脚本出错: '+msg+' (行 '+line+') —— 请截图反馈,或切浏览器"极速模式"/换现代浏览器';
+  return false;};
+function getJSON(url,cb){
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    if(x.status===200){try{cb(JSON.parse(x.responseText));}catch(e){
+      window.onerror('数据解析失败: '+e.message,url,0);}}
+    else{window.onerror('接口 '+url+' 返回 '+x.status,url,0);}};
+  x.send(null);}
+var TREND_FOR={win_rate:'win_rate',first_fix:'first_fix',recover_hours:'recover_hours',knowledge:'atoms'};
+function spark(points,w,h){
+  w=w||210;h=h||36;
+  if(!points)return'';
+  var xs=[],i;
+  for(i=0;i<points.length;i++)xs.push([i,points[i]]);
+  var valid=xs.filter(function(p){return p[1]!=null;});
+  if(valid.length<2)return'';
+  var vals=valid.map(function(p){return p[1];});
+  var lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals),rg=hi-lo||1;
+  var n=points.length-1||1;
+  var d='',pen=false;
+  xs.forEach(function(p){
+    var idx=p[0],v=p[1];
+    if(v==null){pen=false;return;}
+    var x=(idx/n)*w,y=h-3-((v-lo)/rg)*(h-6);
+    d+=(pen?'L':'M')+x.toFixed(1)+','+y.toFixed(1);pen=true;
+  });
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><path d="'+d+'" fill="none" stroke="#4176e6" stroke-width="1.6"/></svg>';
+}
+function refresh(){
+  getJSON('/api/evolution_metrics',function(d){
+    document.getElementById('ts').textContent='更新于 '+new Date(d.ts*1000).toLocaleTimeString();
+    document.getElementById('idx').innerHTML=(d.index!=null?d.index:'—')+'<small> /100 进化指数</small>';
+    var bars=document.getElementById('bars');bars.innerHTML='';
+    var sub=d.subscores||{};
+    for(var k in sub){
+      if(!Object.prototype.hasOwnProperty.call(sub,k))continue;
+      var v=sub[k];
+      var b=document.createElement('div');b.className='bar';
+      b.innerHTML=k+' '+(v*100).toFixed(0)+'<div class="track"><div class="fill" style="width:'+(v*100).toFixed(0)+'%"></div></div>';
+      bars.appendChild(b);
+    }
+    var grid=document.getElementById('grid');grid.innerHTML='';
+    var cards=d.cards||[];
+    for(var ci=0;ci<cards.length;ci++){
+      var c=cards[ci];
+      var el=document.createElement('div');el.className='card';
+      el.innerHTML='<div class="name">'+c.name+'</div><div class="val">'+c.value+'</div><div class="hint">'+(c.hint||'')+'</div>';
+      var tk=TREND_FOR[c.key];
+      if(tk&&d.trends&&d.trends[tk])el.innerHTML+=spark(d.trends[tk]);
+      grid.appendChild(el);
+    }
+  });
+}
+refresh();setInterval(refresh,30000);
+</script>
+</body>
+</html>

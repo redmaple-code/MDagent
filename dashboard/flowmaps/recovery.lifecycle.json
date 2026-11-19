@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "kit 恢复状态机与真学习结账",
+    "locale": "zh-CN",
+    "viewBox": [
+      1080,
+      700
+    ],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "main-rail",
+        "label": "主生命周期",
+        "focus": [
+          "preflight",
+          "validate",
+          "launch",
+          "monitor",
+          "done"
+        ],
+        "note": "case 从待机到完成的主相序列(IDLE 待机省略),试跑验收(VALIDATE)过才拉起生产。"
+      },
+      {
+        "id": "fault-loop",
+        "label": "异常处置环",
+        "focus": [
+          "monitor",
+          "preemptive",
+          "research",
+          "recover"
+        ],
+        "note": "监控判出异常后的预防性恢复与根因恢复两条回路;策略耗尽熔断退避,蜂群联网研究。"
+      },
+      {
+        "id": "learning",
+        "label": "真学习结账",
+        "focus": [
+          "recover",
+          "settle",
+          "done",
+          "failed"
+        ],
+        "note": "每次恢复记账 pending,事后按统一判负规则结账,Beta 后验回写 success_rate。"
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "主相"
+    },
+    {
+      "id": "interrupt",
+      "label": "异常处置"
+    },
+    {
+      "id": "learn",
+      "label": "学习结账"
+    },
+    {
+      "id": "terminal",
+      "label": "终态"
+    }
+  ],
+  "states": [
+    {
+      "id": "preflight",
+      "type": "start",
+      "label": "PREFLIGHT",
+      "sublabel": "预检 v2(IDLE 待机省略)",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "entry"
+    },
+    {
+      "id": "validate",
+      "type": "active",
+      "label": "VALIDATE",
+      "sublabel": "试跑 N 步 · 六项验收",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "小体系先行"
+    },
+    {
+      "id": "launch",
+      "type": "active",
+      "label": "LAUNCH",
+      "sublabel": "拉起生产",
+      "lane": "main",
+      "col": 2,
+      "step": "03"
+    },
+    {
+      "id": "monitor",
+      "type": "decision",
+      "label": "MONITOR",
+      "sublabel": "四相位循环",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "loop"
+    },
+    {
+      "id": "done",
+      "type": "success",
+      "label": "DONE",
+      "sublabel": "完成 · 接领养队列",
+      "lane": "main",
+      "col": 4,
+      "step": "05",
+      "tag": "terminal"
+    },
+    {
+      "id": "preemptive",
+      "type": "waiting",
+      "label": "PREEMPTIVE_RECOVER",
+      "sublabel": "预防性恢复",
+      "lane": "interrupt",
+      "col": 0,
+      "tag": "轻度异常"
+    },
+    {
+      "id": "research",
+      "type": "decision",
+      "label": "RESEARCH",
+      "sublabel": "根因研判 · 蜂群研究",
+      "lane": "interrupt",
+      "col": 1,
+      "tag": "重异常"
+    },
+    {
+      "id": "recover",
+      "type": "active",
+      "label": "RECOVER",
+      "sublabel": "recover_agent 执行策略",
+      "lane": "interrupt",
+      "col": 2,
+      "tag": "耗尽即熔断退避",
+      "yOffset": 96
+    },
+    {
+      "id": "settle",
+      "type": "neutral",
+      "label": "settle_pending",
+      "sublabel": "统一判负 · Beta 后验",
+      "lane": "terminal",
+      "col": 1,
+      "tag": "近 20 条窗"
+    },
+    {
+      "id": "failed",
+      "type": "failure",
+      "label": "FAILED",
+      "sublabel": "人工介入 · 用户闸",
+      "lane": "terminal",
+      "col": 0,
+      "tag": "terminal"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t-monitor-preemptive",
+      "from": "monitor",
+      "to": "preemptive",
+      "variant": "security"
+    },
+    {
+      "id": "t-preemptive-monitor",
+      "from": "preemptive",
+      "to": "monitor",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-monitor-research",
+      "from": "monitor",
+      "to": "research",
+      "label": "重异常/失活",
+      "variant": "security",
+      "labelAt": [
+        556,
+        202
+      ]
+    },
+    {
+      "id": "t-research-recover",
+      "from": "research",
+      "to": "recover",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-recover-monitor",
+      "from": "recover",
+      "to": "monitor",
+      "label": "重启回监控",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t-recover-failed",
+      "from": "recover",
+      "to": "failed",
+      "label": "恢复失败 / 熔断 strikes>5",
+      "variant": "security",
+      "route": "bottom-channel",
+      "channelY": 540
+    },
+    {
+      "id": "t-recover-settle",
+      "from": "recover",
+      "to": "settle",
+      "label": "记 pending",
+      "variant": "dashed",
+      "labelAt": [
+        466,
+        446
+      ]
+    },
+    {
+      "id": "t-research-settle",
+      "from": "research",
+      "to": "settle",
+      "label": "同因复发判 fail",
+      "variant": "dashed",
+      "labelAt": [
+        560,
+        420
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "主相",
+      "items": [
+        "IDLE→PREFLIGHT→VALIDATE→LAUNCH→MONITOR→DONE;VALIDATE 六项全过才放行生产",
+        "MONITOR 内部四子相位循环(OBSERVE/ANALYZE/DETECT/EVALUATE)",
+        "外部运行经 adopt 收编;DONE/FAILED 见 pending_adopts 即归档转 IDLE 领养新任务"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "异常处置",
+      "items": [
+        "轻异常走 PREEMPTIVE_RECOVER,恢复即回监控",
+        "重异常进 RESEARCH 判根因(策略耗尽触发蜂群联网研究),再由 RECOVER 执行策略"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "熔断与真学习",
+      "items": [
+        "恢复即记 pending;DONE 全判 success,RESEARCH/FAILED 按统一判负规则判 fail",
+        "success_rate 为 Beta(1,1) 后验(近 20 条已结账),连败触发演化层压制提案",
+        "策略耗尽熔断退避(30min×2ⁿ⁻¹ 上限 6h),只压恢复不压检测;strikes>5 落 FAILED 转人工"
+      ]
+    }
+  ]
+}

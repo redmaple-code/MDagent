@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "bio.direct-contracts.v1",
+  "readerVersion": "bio.direct-reader.v1",
+  "limits": {
+    "permitBytes": 262144,
+    "permitSeconds": 5,
+    "frameBytes": 65536,
+    "jsonBytes": 32768,
+    "activeReads": 2,
+    "queueReads": 32,
+    "bufferBytes": 1048576,
+    "pairBits": 128,
+    "pairSeconds": 120,
+    "pairAttempts": 5,
+    "pairIdleSeconds": 900,
+    "maxPairs": 128,
+    "maxChannels": 64,
+    "reservationSeconds": 15,
+    "defaultPort": 18773
+  },
+  "requestFields": {
+    "direct-open": "previewId source manifestSha256 clientId pairingId",
+    "direct-permit": "channelId previewId fileId offset limit sourceSha256 clientId pairingId",
+    "direct-close": "channelId clientId pairingId"
+  },
+  "bindingFields": "ownerBinding sessionEpoch executionTargetSha256",
+  "channelFields": "schemaVersion channelId targetId executionTargetSha256 projectKey clientId pairingId previewId source manifestSha256 readerVersion transportBinding uid hostIdentitySha256",
+  "permitFields": "schemaVersion channelId handle previewId sourceSha256 manifestSha256 fileId fileSha256 byteSize offset limit expiresAtMs",
+  "recoverableCodes": [
+    "CONNECTOR_UNAVAILABLE",
+    "LOCAL_NETWORK_DENIED",
+    "SSH_NETWORK_UNAVAILABLE"
+  ],
+  "fatalCodes": [
+    "DIRECT_ACCESS_DENIED",
+    "DIRECT_BINDING_CHANGED",
+    "DIRECT_SOURCE_CHANGED",
+    "DIRECT_FILE_CHANGED",
+    "DIRECT_PROTOCOL_INVALID",
+    "DIRECT_REPLAY",
+    "SSH_IDENTITY_MISMATCH",
+    "SSH_AUTH_REQUIRED",
+    "DIRECT_CONFIG_INVALID",
+    "DIRECT_TRANSFER_TIMEOUT",
+    "DIRECT_NOT_CONFIGURED",
+    "DIRECT_SLOT_LIMIT"
+  ]
+}

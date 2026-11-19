@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dsh-agent 架构总览 · 分子模拟助手</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#f5f6f7; color:#353638; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; padding:28px 20px 60px; }
+  .wrap { max-width:1180px; margin:0 auto; }
+  h1 { font-size:22px; color:#0f1115; margin-bottom:4px; }
+  h1 .tag { font-size:12px; color:#4176e6; border:1px solid #c9d9f7; border-radius:4px; padding:2px 8px; margin-left:10px; vertical-align:middle; font-weight:normal; }
+  .sub { color:#81868c; font-size:13px; margin-bottom:26px; }
+
+  .layer { margin-bottom:22px; }
+  .layer-title { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .layer-title .num { background:#4176e6; color:#f5f6f7; font-weight:700; font-size:13px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .layer-title h2 { font-size:16px; color:#0f1115; }
+  .layer-title .desc { font-size:12px; color:#81868c; }
+
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+  .card { background:#ffffff; border:1px solid #e1e5ee; border-radius:8px; padding:14px 16px; }
+  .card h3 { font-size:14px; color:#4176e6; margin-bottom:8px; }
+  .card.green h3 { color:#22c55e; }
+  .card.orange h3 { color:#f59e0b; }
+  .card.red h3 { color:#ef4444; }
+  .card.purple h3 { color:#8b5cf6; }
+  .card ul { list-style:none; font-size:12.5px; line-height:1.9; color:#43454a; }
+  .card li b { color:#353638; font-weight:600; }
+  .card li .code { font-family:Consolas,monospace; font-size:11.5px; color:#4176e6; background:#eef2fb; padding:0 4px; border-radius:3px; }
+  .card .note { margin-top:8px; font-size:11.5px; color:#81868c; border-top:1px dashed #e1e5ee; padding-top:8px; }
+
+  .arrow { text-align:center; color:#979da6; font-size:18px; line-height:1; margin:2px 0 20px; }
+  .arrow .lbl { font-size:11px; color:#979da6; margin-left:8px; }
+
+  .flowbar { background:#ffffff; border:1px solid #e1e5ee; border-radius:8px; padding:16px; font-size:12.5px; line-height:2; color:#43454a; }
+  .flowbar b { color:#4176e6; }
+  .flowbar .step { display:inline-block; background:#eef2fb; border:1px solid #c9d9f7; border-radius:4px; padding:1px 8px; margin:2px 2px; color:#353638; }
+
+  .legend { margin-top:26px; font-size:12px; color:#81868c; display:flex; gap:18px; flex-wrap:wrap; }
+  .legend span::before { content:"■"; margin-right:5px; }
+  .legend .l-blue::before { color:#4176e6; } .legend .l-green::before { color:#22c55e; }
+  .legend .l-orange::before { color:#f59e0b; } .legend .l-red::before { color:#ef4444; }
+  .legend .l-purple::before { color:#8b5cf6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>dsh-agent 架构总览 <span class="tag">v1.6.6+20260919 · LAMMPS/ReaxFF + GROMACS</span></h1>
+  <div class="sub">对话脑(dsh + Kimi K3) 套壳在领域编排系统(agent_deploy_kit)之上 —— 只读真相源 / 唯一审计写门 / 七条红线服务端注入 / 双引擎(GROMACS 已并入 agent loop)/ L2 证据进化 / 双层 AI 验收 + 绝不野跑铁律 · 2026-09-19</div>
+
+  <!-- 主工作流五段总纲 -->
+  <div class="layer" style="margin-bottom:18px">
+    <div class="layer-title"><div class="num">★</div><h2>主工作流·五段总纲</h2><span class="desc">引擎只 LAMMPS/ReaxFF + GROMACS · 建模工具只 packmol + moltemplate</span></div>
+    <div class="flowbar">
+      <span class="step">① 物理感知(按是否断键成键选引擎)</span> →
+      <span class="step">② 建模(packmol 构型打包 · moltemplate 拓扑组装)</span> →
+      <span class="step">③ 动力学(力场/系综/时间/续跑;ReaxFF 0.1–0.25 fs · 经典 1–2 fs)</span> →
+      <span class="step">④ 管线监管(全程走编排器;遇错蜂群分布式讨论→决策;教训 L2 沉淀)</span> →
+      <span class="step">⑤ 分析(专科手产物为准)</span>
+      <br><b>规模铁律:小体系(500–5000 原子量级)验证成功后才大体系运行</b> —— 新体系/新力场/新参数组合一律先小体系全链走通才放大
+    </div>
+  </div>
+
+  <!-- 第1层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">1</div><h2>用户入口</h2><span class="desc">四条通道进同一个对话脑</span></div>
+    <div class="cards">
+      <div class="card"><h3>workbench 单窗 (8080)</h3><ul>
+        <li><b>左栏</b>:dsh 对话 <span class="code">:3091</span></li>
+        <li><b>右栏</b>:看板 <span class="code">:8080</span>(ThreadingHTTPServer,多线程不卡)</li>
+        <li>看板:<span class="code">⚗️ GROMACS 运行</span>活跃卡 + <span class="code">📁 GROMACS 归档</span>折叠区 + LAMMPS 任务/历史</li>
+        <li>卡片可点开详情模态框(流水线/模型对照/能量/文件/日志尾),任务卡带"轨迹"链接</li></ul>
+        <div class="note">dashboard/workbench.html · /api/gromacs 带 5s 缓存 · 扫描根 monitor_roots.json</div></div>
+      <div class="card"><h3>headless 入口</h3><ul>
+        <li><span class="code">run-dsh.sh --profile headless</span></li>
+        <li>靠 <span class="code">--patch</span> 叠人格+工具白名单</li>
+        <li>无审批应答者,工作区外写 fail-closed</li></ul>
+        <div class="note">md-sim-assistant.headless.patch.yml(病灶 D-01/D-03 修法)</div></div>
+      <div class="card"><h3>定时巡检 + 微信推送</h3><ul>
+        <li>cron 每 10 min 跑 <span class="code">md_push_driver.py</span>(node20 PATH 已修)</li>
+        <li>LAMMPS:CRITICAL / RECOVER / 爆炸 / 跑完</li>
+        <li>GROMACS:跑完 / 中途停 / 温度爆炸(&gt;5000K,只在活时判)/ <b>野跑闸</b>:未接管 mdrun 直接 SIGTERM(.cpt 可续跑)</li>
+        <li>严重→微信(Server酱);常规→处理层收件箱</li></ul>
+        <div class="note">push/ 目录 · 野跑同一 rid 只处理一次</div></div>
+      <div class="card"><h3>自动审批(可选)</h3><ul>
+        <li>插件 <span class="code">dsh-md-auto-approve</span> 挂 approval 缝</li>
+        <li>旗标 <span class="code">.dsh/auto-approve.json</span> 每请求读,免重启</li>
+        <li>默认关;开了审计仍逐条留痕</li></ul>
+        <div class="note">省点击不省判断 —— 高危照样先讲后果(红线 7)</div></div>
+    </div>
+  </div>
+  <div class="arrow">▼<span class="lbl">对话 / 审批 / 推送</span></div>
+
+  <!-- 第2层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">2</div><h2>dsh 对话脑(裁决层)</h2><span class="desc">dsh 隔离实例 + Kimi K3 · 人格服务端注入</span></div>
+    <div class="cards">
+      <div class="card purple"><h3>人格(七条红线)</h3><ul>
+        <li>1 全能力全责任 · 2 方案先行确认即执行</li>
+        <li>3 数字必来自工具 · 4 高危先讲后果</li>
+        <li>5 诊断讲机理 · 6 不迎合</li>
+        <li><b>7 分层自主</b>:四条件全满足才自主,否则出建议书等拍板</li></ul>
+        <div class="note">agent.cordis.yml(web)与 headless patch 逐字一致</div></div>
+      <div class="card purple"><h3>三种工作模式</h3><ul>
+        <li><b>Mode A 巡检</b>:先分引擎——GROMACS 调 <span class="code">sim_gmx_status</span>,LAMMPS 走 sim_pipeline_check</li>
+        <li><b>Mode B 文献复现</b>:read_paper→蜂群拆解→建模→动力学→指标对比(交付标准 §0-§3)</li>
+        <li><b>Mode C 修复</b>:确诊→蜂群搜→AI 比选→逐项执行(预算3项)</li></ul></div>
+      <div class="card purple"><h3>记忆纪律(三条)</h3><ul>
+        <li><b>不露记忆痕迹</b>:引用沉淀经验直接给结论与适用条件,实时数字仍必须工具真返回</li>
+        <li><b>适用边界优先</b>:经验按"验证时的条件"定界,核对体系/引擎/力场/规模四要素,附 APPLY·DON'T APPLY 例对</li>
+        <li><b>未入账不算数</b>:只有 memory/(atoms+LEDGER) 算沉淀经验,沉淀走 L2 晋升管线不手改账本</li></ul></div>
+      <div class="card purple"><h3>插件栈</h3><ul>
+        <li><span class="code">mcp-mdsim</span>:只读真相源桥(<b>11 工具</b>)</li>
+        <li><span class="code">dsh-md-flow-gate</span>:意图布防→证据工具销防;豁免白名单(纯问候/身份/审计简报/交接粘贴),"用户要求跳过工具"不豁免</li>
+        <li><span class="code">tool-web</span>:联网检索(fetch:true)</li>
+        <li><span class="code">dsh-md-auto-approve</span>:审批缝</li>
+        <li>通用能力全开:bash/fs/subagent</li></ul></div>
+    </div>
+  </div>
+  <div class="arrow">▼<span class="lbl">五类工具地图</span></div>
+
+  <!-- 第3层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">3</div><h2>工具层</h2><span class="desc">真相源只读 · 唯一写门 · 通用能力 · 联网参考 · 专科手</span></div>
+    <div class="cards">
+      <div class="card green"><h3>① 真相源只读 mcp__mdsim__*(11 工具)</h3><ul>
+        <li><span class="code">sim_status</span> status_bus 各 case 状态/温度/异常</li>
+        <li><span class="code">sim_gmx_status</span> GROMACS 各 run 阶段/步数/进度/温度/存活/接管</li>
+        <li><span class="code">sim_context</span> 相位/任务/恢复;section=strategy 策略链</li>
+        <li><span class="code">sim_review_packet</span> 一屏复盘包(相位/熔断/人工闸/提案)</li>
+        <li><span class="code">sim_search_sessions</span> 只读检索历史会话档(zstd,回忆型问题先查档)</li>
+        <li><span class="code">read_paper</span> PDF/txt/md/docx(Mode B)</li></ul>
+        <div class="note">模拟数字只信这些返回 —— 网页/模型记忆都不算数</div></div>
+      <div class="card orange"><h3>② 唯一写门 sim_exec</h3><ul>
+        <li>经 <span class="code">claude_interface</span> 审计通道执行</li>
+        <li>白名单(packmol/mpirun/lmp_mpi/python3/cp/mv/kill)+ shell=False</li>
+        <li>逐条审计 · 长任务 background=true 拿 PID+日志</li></ul>
+        <div class="note">被拒绝即停,绝不绕过</div></div>
+      <div class="card"><h3>③ 通用能力(与 Claude Code 同级)</h3><ul>
+        <li><b>bash</b>:分析/建模脚本/查进程直接跑</li>
+        <li><b>read/write/edit/glob/grep</b>:沙箱 workspace-write</li>
+        <li><b>subagent</b>:蜂群拆解,只读只推理不执行</li></ul></div>
+      <div class="card"><h3>④ 联网检索(参考·非真相源)</h3><ul>
+        <li>web_search_pro / web_fetch_pro(DDG/Bing/Jina 免 key)</li>
+        <li>优先级:LAMMPS/GROMACS 官方文档 &gt; 邮件列表/matsci &gt; 一般帖</li>
+        <li>引用给来源+置信度;不覆盖工具数字,不绕写门</li></ul></div>
+      <div class="card green"><h3>⑤ 专科手(v3.3 脚本,确定性代码)</h3><ul>
+        <li><span class="code">preflight_agent(_v2)</span> 近接触/元素力场匹配</li>
+        <li><span class="code">launch_agent</span> 启动 · <span class="code">monitor_agent</span> 监控(risk≥60 介入线)</li>
+        <li><span class="code">recover_agent</span> 策略库+联网研究 · <span class="code">analyze_agent</span> 产率分析</li>
+        <li><span class="code">gmx_agent.py</span> <b>GROMACS 唯一启动入口</b>:四道硬校验,先 adopt 再 spawn</li></ul>
+        <div class="note">统一契约:input.json → python3 脚本 → 必须真读 result.json 再判断</div></div>
+    </div>
+  </div>
+  <div class="arrow">▼<span class="lbl">stdio JSON-RPC / 文件系统</span></div>
+
+  <!-- 第4层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">4</div><h2>领域系统 agent_deploy_kit(只用不改)</h2><span class="desc">真相源所在 · 编排器常驻,should-run 裁决驱动</span></div>
+    <div class="cards">
+      <div class="card orange"><h3>编排器 orchestrator v3.3</h3><ul>
+        <li>外环:IDLE→PREFLIGHT→VALIDATE(试跑验收)→LAUNCH→MONITOR→RECOVER→ANALYZE;外部运行 adopt 收编,DONE/FAILED 接领养队列</li>
+        <li>内环 MONITOR:OBSERVE→ANALYZE→DETECT→EVALUATE→DECIDE(30s tick)</li>
+        <li><b>should-run 裁决</b>:每 tick 判 ACT/IDLE/WAIT_HUMAN/SUPPRESSED,纯咨询不拦派发</li>
+        <li><b>人工闸队列</b> <span class="code">.v3.3_user_gates.json</span>:orchestrator 单写者,dsh 经收件箱追加请求</li></ul></div>
+      <div class="card orange"><h3>真相源文件</h3><ul>
+        <li><span class="code">status_bus.json</span> 各 case 实时状态</li>
+        <li><span class="code">.v3.3_state.json</span> 编排上下文 · <span class="code">strategy_decisions.jsonl</span> 裁决账</li>
+        <li><span class="code">orchestrator_v3.3.jsonl</span> tick 日志 · <span class="code">claude_operations.jsonl</span> 审计</li>
+        <li><span class="code">gmx_adopted.json</span> GROMACS 接管注册表(auto_kill_wild)</li></ul></div>
+      <div class="card orange"><h3>claude_interface.py(审计写口)</h3><ul>
+        <li>白名单 + shell=False + 逐条审计</li>
+        <li>dsh 的 sim_exec 最终落到这里</li>
+        <li>高危操作清单:kill_lammps / modify_* / restart / change_forcefield…</li></ul></div>
+      <div class="card orange"><h3>v3.3 专科脚本</h3><ul>
+        <li>路径 <span class="code">agents/runtime/v3.3/</span></li>
+        <li>python3 = 系统 3.6.8(已验证兼容;python3.11 被白名单拒)</li>
+        <li>能用脚本做的事优先调脚本,dsh 不重写</li></ul></div>
+    </div>
+  </div>
+  <div class="arrow">▼<span class="lbl">MPI / 文件 IO</span></div>
+
+  <!-- 第5层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">5</div><h2>计算层</h2><span class="desc">真正烧核的地方 —— dsh 绝不直碰计算内核</span></div>
+    <div class="cards">
+      <div class="card red"><h3>LAMMPS / ReaxFF</h3><ul>
+        <li><span class="code">mpirun -np N lmp_mpi</span> 经 launch_agent / sim_exec 启动</li>
+        <li>ffield.reax 力场 <b>永不改</b>(红线 7 条件②)</li>
+        <li>timestep 0.1–0.25 fs · QEq 电荷中性</li>
+        <li>含水体系 300K 不可信(实测 665-705K)→ 经典力场轨</li></ul></div>
+      <div class="card red"><h3>GROMACS(已并入 agent loop)</h3><ul>
+        <li><span class="code">gmx_mpi mdrun</span> 唯一入口 <span class="code">gmx_agent.py</span>(启动即接管)</li>
+        <li>扫描根 <span class="code">monitor_roots.json</span>:/tmp/mdruns + 文献-水凝胶/projects + M2_nvt</li>
+        <li>建模产物上榜(packed.xyz/.gro),模型统计对照 model_spec.json ✓/✗</li>
+        <li>绕过入口的野跑 mdrun 活不过一个 cron 周期</li></ul></div>
+      <div class="card red"><h3>SCNet 超算(人工闸)</h3><ul>
+        <li>白名单闸 + PIN 制人工闸(<b>代码强制</b>,非提示词)</li>
+        <li>远端目录 YMY-AI · 太原 tyhcnormal</li></ul></div>
+      <div class="card red"><h3>case/工程目录</h3><ul>
+        <li>程序运行-case/(LAMMPS)· 文献-水凝胶/projects/(12 篇复现)</li>
+        <li>修复时逐项留:备份 <span class="code">原名_bak_时间戳</span> + 修复日志.md</li>
+        <li>每个任务文件夹配归纳说明.md(模板固化)</li></ul></div>
+    </div>
+  </div>
+  <div class="arrow">▲<span class="lbl">事件/经验向上回流</span></div>
+
+  <!-- 第6层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">6</div><h2>L2 进化层(2026-09 上线;v1.6.0 起升格专家进化体系)</h2><span class="desc">friction 采集 → 蜂群起草 → 证据门 → 沉淀 → 三轴打标 → 回放考试 → 毕业闸 —— 任何路径都不自动批准任何东西</span></div>
+    <div class="cards">
+      <div class="card green"><h3>observe.py(cron */37)</h3><ul>
+        <li><b>should-observe 闸</b>:相位+最小间隔+pipeline 近度,fail-closed</li>
+        <li>friction 采集:用户打断/工具错误/审批否决 → 打能力标签</li>
+        <li>裁决行追加 <span class="code">events/pipeline.jsonl</span></li></ul></div>
+      <div class="card green"><h3>蜂群起草 → 证据门</h3><ul>
+        <li><span class="code">specialist_swarm.py</span> 多专科起草提案 → <span class="code">memory/proposals/</span></li>
+        <li>human_review 档 → 收件箱 → 人工闸队列(<b>不自动批准</b>)</li>
+        <li><span class="code">apply_proposal.py</span> 证据门逐字节比对 → LEDGER 入账</li></ul></div>
+      <div class="card green"><h3>经验沉淀</h3><ul>
+        <li><span class="code">atoms.jsonl</span> 经验原子 · <span class="code">scenarios.json</span> · <span class="code">SOP.md</span></li>
+        <li><span class="code">notes/</span> 教训文档(最新:paper-07 复现教训)</li>
+        <li>晋升阈值:4 账 3 胜 / posterior 0.5 / 连败 3 / 冷却 7d</li></ul></div>
+      <div class="card green"><h3>全量账本(记录面)</h3><ul>
+        <li><span class="code">TOKEN_LOG.md</span> token 总账(快照式,费用累计)</li>
+        <li><span class="code">strategy_decisions.jsonl</span> 裁决 · <span class="code">toolcalls.jsonl</span> 工具 · <span class="code">flowgate.jsonl</span> 用户纠正</li>
+        <li><span class="code">pipeline.jsonl</span> 事件流 · 任务"轨迹"页单任务时间线</li></ul></div>
+      <div class="card green"><h3>专家进化 v1.6.0(①②已落地)</h3><ul>
+        <li><b>①三轴打标</b>:topic/method/ops 回填 518 原子,repair-rescue 295 条入考场资格</li>
+        <li><b>②回放考场</b> <span class="code">replay_eval.py</span>:真实结局考题绝不重跑 LAMMPS,时序 80/20 留出,(根因,策略)对判命中率/误报;首考 11 考生无一毕业——工具箱亏空的诚实基线</li>
+        <li>③④⑤待建:毕业闸/L4 物理考场/在岗 RL(任务 #85-87)</li></ul></div>
+    </div>
+  </div>
+
+
+  <!-- 一页纸数据流 -->
+  <div class="layer" style="margin-top:34px">
+    <div class="layer-title"><div class="num">7</div><h2>守护与自省层(2026-09-14 上线)</h2><span class="desc">崩溃自愈闭环 · 死人开关 · 资源预算 · 知识蒸馏 —— mdorch 之外的第三套常驻</span></div>
+    <div class="cards">
+      <div class="card"><h3>md-guard(三温度链守护 v3)</h3><ul>
+        <li>systemd 常驻:进程死+无 final+有 restart → <b>校验后自动续跑</b></li>
+        <li>restart 完整性校验:魔数 <span class="code">LammpS Restart</span>+>64KB,损坏逐个回退</li>
+        <li>存活探测=/proc 扫描(cmdline+lmp_mpi 且 cwd==目标),免疫观察者误判</li>
+        <li>RUN1500→RUN2000→RUN2500 链式发车 → Arrhenius 全链自动化</li></ul></div>
+      <div class="card"><h3>md-watchdog(死人开关 L1-L6)</h3><ul>
+        <li>L1-L5:编排器/监控流/守护/计算/看板 的 mtime 新鲜度被动检查</li>
+        <li><b>L6 Meta-Observer 自身</b>:健康报告停更>2h → 告警(自省链死人开关)</li></ul></div>
+      <div class="card green"><h3>Meta-Observer(cron */30)</h3><ul>
+        <li>元认知:知识矛盾/回滚率/策略库/崩溃模式/人工审计间隔 五维评估</li>
+        <li><b>物理 Veto</b>:物理维度问题一票否决降 RED,不被均值民主掉</li>
+        <li>RED → 30 秒可读介入请求(什么问题/为什么/建议做什么/不做会怎样)</li></ul></div>
+      <div class="card"><h3>budget_manager(资源预算)</h3><ul>
+        <li>四层:🟢自主 → 🟡标记 → 🔴需Meta批准 → ⚫<b>gate 硬拒发</b></li>
+        <li>口径 = case 累计墙钟/预期时长(可暂停/重置,人工分析期不计)</li></ul></div>
+      <div class="card"><h3>knowledge_distiller(cron 6:17)</h3><ul>
+        <li>同 kind 原子 ≥5 条 → 自动蒸馏 decision-tree 决策树原子</li>
+        <li>幂等护栏:已蒸馏 kind 跳过,防每日重复蒸馏原子爆炸</li></ul></div>
+      <div class="card"><h3>发车门加固(md-bin/gate)</h3><ul>
+        <li><b>variable shell 注入拦截</b>+include 读文件防御(V1 洞,实测拦截)</li>
+        <li>G3 并发锁:同一时刻只允许一个发车(flock)</li>
+        <li>预算 black 拒发 + red 警告留痕</li></ul></div>
+    </div>
+  </div>
+
+    <!-- 第8层 -->
+  <div class="layer">
+    <div class="layer-title"><div class="num">8</div><h2>质量与验收层(2026-09-19 上线)</h2><span class="desc">AI 验收双层体系 · 绝不野跑铁律 · 数据保护四件套 —— 系统可信度的独立裁判</span></div>
+    <div class="cards">
+      <div class="card"><h3>确定性验收套件(36 检查)</h3><ul>
+        <li><span class="code">md_agent_suite/</span> 四面:编排器+守护+看板 / 启动纪律+安全 / web UI+插件 / 算例材料+实况</li>
+        <li>stdlib-only,cron 06:23 日跑,报告落 <span class="code">reports/</span>,exit code=FAIL 数</li>
+        <li>分工实证:套件守已知面回归,探测枚举未知面,用户管语义/物理判断</li></ul></div>
+      <div class="card"><h3>LLM 探测层(红队)</h3><ul>
+        <li><span class="code">probe/BRIEF.md</span> 章程,以攻击者视角枚举套件未编码的面</li>
+        <li>首轮斩获 F1-F7 七项(裁决器提权链×2/看板日志泄漏/队列竞态×2/进程查活/配置面)</li>
+        <li>全部修复+回归钉死进套件</li></ul></div>
+      <div class="card red"><h3>绝不野跑铁律(编码)</h3><ul>
+        <li>任何 MD 进程必须经 <span class="code">launch_agent_gate</span> 上轨并被领养</li>
+        <li>套件 <span class="code">no_wild_runs</span> 硬 FAIL:managed-aware(在轨=adopted_pids∪待领养队列),合法运行不误报</li></ul></div>
+      <div class="card"><h3>数据保护四件套</h3><ul>
+        <li><span class="code">trash_mv.sh</span> 72h 缓刑区 + <span class="code">predelete_check.sh</span> 四问闸</li>
+        <li>cases 数据真身与代码分家(mdsim-data/cases/ 永不进快照树)</li>
+        <li>DONE 归档 chattr+i 不可变 · 任何删除必走闸(09-19 误删 4.2G 后立规)</li></ul></div>
+      <div class="card"><h3>工具清单铁律 + goal-sync</h3><ul>
+        <li>preset 注入【本机环境清单】:凡工具需求先查表,本机有的绝不下载</li>
+        <li>moltemplate 2.22.5 系统部署(/usr/local/bin/moltemplate.sh,自带力场库)</li>
+        <li><span class="code">dsh-goal-sync</span> 插件:GoalBar 进度条看板 API 自动刷新,零 token</li></ul></div>
+    </div>
+  </div>
+
+
+  <div class="layer" style="margin-top:34px">
+    <div class="layer-title"><div class="num">★</div><h2>一页纸:一次修复的完整数据流</h2></div>
+    <div class="flowbar">
+      <span class="step">用户:"修复 gentle_compress"</span> →
+      <span class="step">dsh 读四真相源 + log.lammps</span> →
+      <span class="step">确诊:原子 1755/1798 相距 0.28Å 库仑炸弹</span> →
+      <span class="step">subagent 蜂群四路联网搜证</span> →
+      <span class="step">AI 比选(机理+置信度,过程可见)</span> →
+      <span class="step">讲后果 → 用户确认(或自动审批)</span> →
+      <span class="step">sim_exec 审计通道执行 trial1</span> →
+      <span class="step">monitor_agent 盯曲线:净电荷 15.62→0.15,温度平滑</span> →
+      <span class="step">判【成】+ 修复日志.md 记一笔</span> →
+      <span class="step">汇总表 + 下一步建议</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="l-blue">入口/通用</span><span class="l-purple">对话脑</span><span class="l-green">只读真相源/专科手/进化层</span><span class="l-orange">写门/领域系统</span><span class="l-red">计算层(高危)</span>
+  </div>
+</div>
+</body>
+</html>

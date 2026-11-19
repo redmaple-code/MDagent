@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "bio.local-connector.v1",
+  "allowedOrigin": "https://dsh.example.invalid",
+  "port": 18773,
+  "targets": [{
+    "targetId": "registered-hpc-target",
+    "hostKeyAlias": "registered-hpc-target",
+    "connection": {
+      "schemaVersion": "bio.ssh-connection.v1",
+      "hostAlias": "my-hpc",
+      "configFile": "/absolute/path/to/ssh_config",
+      "knownHosts": "/absolute/path/to/known_hosts",
+      "projectsRoot": "/absolute/hpc/bio-projects",
+      "releaseRoot": "/absolute/hpc/bio-release",
+      "python": "/absolute/hpc/modeling/bin/python"
+    }
+  }]
+}

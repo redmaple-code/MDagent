@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>任务轨迹 · MD Exp</title>
+<style>
+  :root{--brand:#4176e6;--brand-50:#eef3fd;--text:#1f2329;--text-2:#646a73;--border:#dee0e3;
+        --ok:#22c55e;--bad:#ef4444;--amber:#f59e0b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f6f7;color:var(--text);padding:20px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:18px;margin-bottom:4px}
+  .sub{color:var(--text-2);font-size:12px;margin-bottom:16px}
+  a.back{color:var(--brand);text-decoration:none;font-size:12px}
+  .panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .panel h2{font-size:13px;color:var(--text-2);margin-bottom:10px}
+  .qbar{display:flex;gap:8px;margin-bottom:6px}
+  .qbar input{flex:1;border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:13px}
+  .qbar button{border:0;background:var(--brand);color:#fff;border-radius:8px;padding:7px 16px;font-size:13px;cursor:pointer}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+  th{color:var(--text-2);font-weight:500}
+  tr.click{cursor:pointer}
+  tr.click:hover{background:var(--brand-50)}
+  .tl{list-style:none}
+  .tl li{display:flex;gap:10px;padding:7px 4px;border-bottom:1px solid var(--border);font-size:12px;align-items:baseline}
+  .tl .time{color:var(--text-2);white-space:nowrap;font-family:ui-monospace,monospace;font-size:11px}
+  .badge{display:inline-block;min-width:74px;text-align:center;padding:1px 8px;border-radius:10px;font-size:11px;color:#fff;white-space:nowrap}
+  .b-pipeline{background:var(--brand)}
+  .b-orchestrator{background:var(--amber)}
+  .b-strategy{background:#7c3aed}
+  .b-friction{background:var(--bad)}
+  .empty{color:var(--text-2);font-size:12px;padding:10px 4px}
+  .num-bad{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧭 任务轨迹 <a class="back" href="/workbench">← 工作台</a> <a class="back" href="/">状态面板</a> <a class="back" href="/pages/metrics.html">📈 记分卡</a></h1>
+  <div class="sub">任务(case)时间线 = pipeline 事件 + orchestrator 日志 + 策略决策 · 会话轨迹 = friction 轮级摩擦 · 30 秒自动刷新 · <span id="ts"></span></div>
+
+  <div class="panel">
+    <h2>按任务查询(case_id)</h2>
+    <div class="qbar">
+      <input id="taskInput" placeholder="输入 case_id,如 run3-crosslink">
+      <button id="taskBtn">查轨迹</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>会话摩擦总览(dsh 交互侧,点击行看轮级轨迹)</h2>
+    <div id="sessions"><div class="empty">加载中…</div></div>
+  </div>
+
+  <div class="panel">
+    <h2 id="tlTitle">时间线</h2>
+    <ul class="tl" id="timeline"><li class="empty">输入 case_id 或点击上方会话行</li></ul>
+  </div>
+</div>
+<script>
+'use strict';
+/* 2026-09-15 语法降级(同 graph 页):const/箭头/async-await/模板串/URLSearchParams/trim 全部去掉,
+   fetch→XHR,加 onerror 红条——旧内核(Chrome<80/360兼容模式)白屏根治。 */
+window.onerror=function(msg,src,line){
+  var b=document.getElementById('errbar');
+  if(!b){b=document.createElement('div');b.id='errbar';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99;background:#ef4444;color:#fff;'+
+      'font-size:13px;padding:8px 14px;font-family:sans-serif';
+    (document.body||document.documentElement).appendChild(b);}
+  b.textContent='⚠ 页面脚本出错: '+msg+' (行 '+line+') —— 请截图反馈,或切浏览器"极速模式"/换现代浏览器';
+  return false;};
+function getJSON(url,cb){
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    if(x.status===200){try{cb(JSON.parse(x.responseText));}catch(e){
+      window.onerror('数据解析失败: '+e.message,url,0);}}
+    else{window.onerror('接口 '+url+' 返回 '+x.status,url,0);}};
+  x.send(null);}
+// 与 index.html 同纪律:所有日志/注册表来源字段一律 esc 后再拼 HTML
+var ESC_MAP={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return ESC_MAP[c];});}
+function trim(s){return String(s).replace(/^\s+|\s+$/g,'');}
+var curTask='',curSession='';
+
+function fmtT(epoch){return epoch?new Date(epoch*1000).toLocaleString():'—';}
+function badge(src){return '<span class="badge b-'+esc(src)+'">'+esc(src)+'</span>';}
+function hot(v){return v>0?'<span class="num-bad">'+v+'</span>':'0';}
+
+function load(){
+  var qs=curTask?('?task='+encodeURIComponent(curTask))
+        :curSession?('?session='+encodeURIComponent(curSession)):'';
+  getJSON('/api/trajectory'+qs,function(d){
+    document.getElementById('ts').textContent='更新于 '+new Date(d.ts*1000).toLocaleTimeString();
+
+    var box=document.getElementById('sessions');
+    var sessions=d.sessions||[];
+    if(!sessions.length){
+      box.innerHTML='<div class="empty">暂无 friction 数据(dsh-md-friction 插件采集,跑几轮 dsh 会话后出现)</div>';
+    }else{
+      var h='<table><tr><th>会话</th><th>轮数</th><th>打断</th><th>工具错误</th><th>否决</th><th>重试</th><th>最后活动</th></tr>';
+      for(var i=0;i<sessions.length;i++){
+        var s=sessions[i];
+        h+='<tr class="click" data-sid="'+esc(s.session)+'"><td>'+esc(s.session.slice(0,18))+'</td><td>'+s.turns+'</td>'
+         +'<td>'+hot(s.interrupts)+'</td><td>'+hot(s.tool_errors)+'</td><td>'+hot(s.denials)+'</td>'
+         +'<td>'+s.retries+'</td><td>'+esc(fmtT(s.last))+'</td></tr>';
+      }
+      box.innerHTML=h+'</table>';
+      var rows=box.querySelectorAll('tr.click');
+      for(var r=0;r<rows.length;r++){
+        rows[r].addEventListener('click',function(){
+          curSession=this.getAttribute('data-sid');curTask='';load();});
+      }
+    }
+
+    var tl=document.getElementById('timeline');
+    var title=document.getElementById('tlTitle');
+    if(curTask||curSession){
+      title.textContent='时间线:'+(curTask||curSession);
+      var items=d.items||[];
+      if(!items.length){
+        tl.innerHTML='<li class="empty">该对象暂无轨迹记录</li>';
+      }else{
+        var h2='';
+        for(var j=0;j<items.length;j++){
+          var it=items[j];
+          h2+='<li><span class="time">'+esc(it.time||fmtT(it.ts))+'</span>'+badge(it.src)+'<span>'+esc(it.text)+'</span></li>';
+        }
+        tl.innerHTML=h2;
+      }
+    }
+  });
+}
+
+document.getElementById('taskBtn').addEventListener('click',function(){
+  curTask=trim(document.getElementById('taskInput').value);curSession='';load();
+});
+document.getElementById('taskInput').addEventListener('keydown',function(e){
+  e=e||window.event;
+  if(e.key==='Enter'||e.keyCode===13){curTask=trim((e.target||e.srcElement).value);curSession='';load();}
+});
+function qsParam(name){
+  var m=location.search.match(new RegExp('[?&]'+name+'=([^&]*)'));
+  return m?decodeURIComponent(m[1].replace(/\+/g,' ')):'';
+}
+curTask=qsParam('task');curSession=qsParam('session');
+if(curTask)document.getElementById('taskInput').value=curTask;
+load();setInterval(load,30000);
+</script>
+</body>
+</html>

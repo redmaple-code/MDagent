@@ -1,0 +1,24 @@
+{
+  "name": "dsh-goal-sync",
+  "version": "1.0.0",
+  "description": "GoalBar auto-refresh: derives the goal objective progress bar from the live orchestrator board API and commits ctx.goals.edit on change (timer + turn/end triggers, zero model tokens).",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml"
+  ],
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*"
+  }
+}

@@ -1,0 +1,37 @@
+# Copy to .github/workflows/ubuntu-installer.yml to enable repository CI.
+name: Ubuntu installer source checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  installer:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    env:
+      MDSIM_DATA_ROOT: ${{ runner.temp }}/mdagent-test-data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install configuration test dependencies
+        run: python -m pip install PyYAML==6.0.3 jsonschema==4.25.1
+      - name: Validate shell syntax and read-only preview
+        run: |
+          bash -n install.sh scripts/install_runtime.sh scripts/setup.sh run-dsh.sh
+          bash install.sh --kit /company/agent_deploy_kit --data-root /tmp/mdagent-installer-plan --plan
+          test ! -e /tmp/mdagent-installer-plan
+      - name: Run installer and packaging regressions
+        run: |
+          python -m unittest discover -s tests -p 'test_install*.py'
+          python -m unittest discover -s tests -p test_setup_sh.py
+          python -m unittest discover -s tests -p test_prepare_kit.py
+          python -m unittest discover -s tests -p test_dsh_defaults.py
+          python -m unittest tests.test_tagging.TestTagging
+      # Static/fixture checks only. This job does not install the complete agent,
+      # hold private kit credentials, request an LLM answer, or submit a job.

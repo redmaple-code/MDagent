@@ -1,0 +1,17 @@
+{
+  "_comment": "GROMACS 等外部运行的扫描根。复制为 monitor_roots.json 后按本机实际目录改 path;换机器只改这个文件,不动代码。也可用环境变量 MONITOR_ROOTS_FILE 指向别的路径。~ 会自动展开;目录不存在或 enabled=false 的条目会被跳过。",
+  "roots": [
+    {
+      "path": "/tmp/mdruns",
+      "type": "gromacs",
+      "label": "示例:水凝胶复现",
+      "enabled": true
+    },
+    {
+      "path": "~/mdruns",
+      "type": "gromacs",
+      "label": "示例:家目录下的运行",
+      "enabled": false
+    }
+  ]
+}

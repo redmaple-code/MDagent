@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "bio.workflow.v1",
+  "domain": "bio-openmm",
+  "workflowId": "bio-validation-protein-benzene",
+  "revision": 1,
+  "title": "Protein external benzene engineering case",
+  "decisionSummary": "Benzene neutral singlet outside chain A at 8 Angstrom gap; ff14SB/GAFF2/abcg2/TIP3P padding 10 Angstrom. Placement is not docking or binding.",
+  "inputs": [
+    {
+      "id": "protein",
+      "role": "structure",
+      "path": "protein.pdb",
+      "byteSize": 2751,
+      "sha256": "c2d834d984b79a27339ea2847cf3b5fe1f0e15ce848f8e2ce4ae73269455cecb"
+    }
+  ],
+  "stages": [
+    {
+      "id": "prepare",
+      "title": "prepare",
+      "kind": "prepare",
+      "dependsOn": [],
+      "resources": {
+        "location": "local",
+        "platform": "CPU",
+        "cpuThreads": 1,
+        "wallTimeSeconds": 300,
+        "maxOutputBytes": 67108864
+      },
+      "parameters": {
+        "preparation": {
+          "mode": "amber-protein-ligand",
+          "forceField": "ff14SB-gaff2-tip3p",
+          "toolchainSha256": "4cc564c9d0e426acf664c0d0ac61bd2afb0e296ee7d84cf0f5e3801a8abbfdbf",
+          "proteinChains": [
+            "A"
+          ],
+          "missingResidues": "complete-standard",
+          "histidines": [],
+          "seed": 713,
+          "ligand": {
+            "smiles": "c1ccccc1",
+            "netCharge": 0,
+            "multiplicity": 1,
+            "chargeMethod": "abcg2",
+            "chargeRationale": "Approved engineering test of the existing native ff14SB/GAFF2 abcg2 profile.",
+            "placement": {
+              "mode": "outside-protein-positive-x",
+              "gapAngstrom": 8
+            }
+          },
+          "solvent": {
+            "mode": "tip3p-box",
+            "paddingAngstrom": 10,
+            "ionicStrengthMolar": 0,
+            "neutralize": true
+          }
+        },
+        "system": {
+          "nonbondedMethod": "PME",
+          "nonbondedCutoffNm": 1,
+          "constraints": "HBonds",
+          "rigidWater": true,
+          "removeCMMotion": true
+        }
+      }
+    },
+    {
+      "id": "minimize",
+      "title": "minimize",
+      "kind": "minimize",
+      "dependsOn": [
+        "prepare"
+      ],
+      "resources": {
+        "location": "local",
+        "platform": "CPU",
+        "cpuThreads": 1,
+        "wallTimeSeconds": 120,
+        "maxOutputBytes": 67108864
+      },
+      "parameters": {
+        "minimization": {
+          "toleranceKjMolNm": 10,
+          "maxIterations": 100
+        }
+      }
+    },
+    {
+      "id": "validate",
+      "title": "validate",
+      "kind": "validate",
+      "dependsOn": [
+        "minimize"
+      ],
+      "resources": {
+        "location": "local",
+        "platform": "CPU",
+        "cpuThreads": 1,
+        "wallTimeSeconds": 60,
+        "maxOutputBytes": 67108864
+      },
+      "parameters": {
+        "validation": {
+          "finiteEnergy": true,
+          "finiteCoordinates": true
+        }
+      }
+    }
+  ]
+}

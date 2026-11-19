@@ -1,0 +1,20 @@
+# dsh-goal-sync bundle patch：目标进度条自动刷新。
+# 只 edit objective，永不碰 phase/blockedReason；内容不变不提交，防 revision 刷屏。
+- insert:
+    - id: dsh-goal-sync
+      name: 'dsh-goal-sync'
+      config:
+        marker: '标定收官'
+        statusUrl: 'http://127.0.0.1:8080/api/status?token=<REDACTED-TOKEN>'
+        intervalMs: 120000
+        minEditIntervalMs: 90000
+        fetchTimeoutMs: 3000
+        suffix: '→ PRJ-SYS-A% 标定收官'
+        debug: true
+        slots:
+          - { n: '①', name: 'S2', state: '✅' }
+          - { n: '②', name: 'RUN1500', state: '✅' }
+          - { n: '③', name: 'RUN2000', case: 'RUN2000', plannedEnd: 1150000 }
+          - { n: '④', name: 'RUN2500', case: 'RUN2500' }
+          - { n: '⑤', name: 'E_MD', state: '⬜' }
+          - { n: '⑥', name: '报告', state: '⬜' }

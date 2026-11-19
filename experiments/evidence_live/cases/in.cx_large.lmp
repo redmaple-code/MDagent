@@ -1,0 +1,29 @@
+# 大规模产线运行(2048 原子):NVT 熔化 → NPT 平衡 → RDF 采样;dt 经 -var dt 传入
+variable dtv index ${dt}
+units real
+boundary p p p
+atom_style atomic
+lattice fcc 5.31
+region box block 0 8 0 8 0 8
+create_box 1 box
+create_atoms 1 box
+mass 1 39.948
+pair_style lj/cut 8.5
+pair_coeff 1 1 0.2381 3.405
+neighbor 2.0 bin
+velocity all create 90.0 202610 mom yes rot no dist gaussian
+timestep ${dtv}
+fix 1 all nvt temp 90.0 90.0 100.0
+thermo 2000
+thermo_style custom step temp pe etotal press density vol
+thermo_modify format float %.10g
+run 20000
+unfix 1
+fix 2 all npt temp 90.0 90.0 100.0 iso 1.0 1.0 1000.0
+run 60000
+compute myrdf all rdf 120 cutoff 8.5
+fix rdfout all ave/time 50 100 5000 c_myrdf[*] file rdf_large.dat mode vector
+run 10000
+print "EVLIVE_DEN_FINAL $(density)"
+print "EVLIVE_TEND $(temp)"
+print "EVLIVE_DONE ok"

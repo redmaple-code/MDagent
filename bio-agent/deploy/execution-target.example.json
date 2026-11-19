@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "bio.execution-target.v1",
+  "tenantId": "replace-tenant",
+  "nodeId": "n_replace-node",
+  "targetId": "replace-compute",
+  "targetRevision": 1,
+  "hostIdentitySha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "uid": 1000,
+  "python": "/REPLACE_EXISTING_COMPUTE_ENV/bin/python",
+  "projectsRoot": "/REPLACE_COMPUTE_USER/bio-agent/projects",
+  "releaseRoot": "/REPLACE_COMPUTE_USER/bio-agent/releases/REPLACE_RELEASE",
+  "resourcePolicy": {
+    "quotaRoot": "/REPLACE_SHARED_COMPUTE_ACCOUNT/bio-resource-pool",
+    "cpuThreads": 8,
+    "maxConcurrentJobs": 1,
+    "gpuDevices": [],
+    "maxOutputBytes": 10737418240
+  }
+}

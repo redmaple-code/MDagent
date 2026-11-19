@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>云端智能体 · 对话</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f5f6f7; --border:rgba(0,0,0,.1); --border-soft:#ebedf0;
+    --text:#0f1115; --text-2:#61666b; --text-3:#81868c;
+    --brand:#4176e6; --brand-50:#edf3fe; --green:#22c55e;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  html,body{margin:0;height:100%;font-family:var(--font);background:var(--panel);color:var(--text)}
+  #app{display:flex;flex-direction:column;height:100%}
+  #head{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--bg);
+        border-bottom:1px solid var(--border-soft);font-size:12.5px;color:var(--text-2);flex-shrink:0;flex-wrap:wrap}
+  #head b{color:var(--text);font-size:13.5px}
+  #head .dot{width:8px;height:8px;border-radius:50%;background:#9aa0a6;display:inline-block}
+  #head .dot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+  #head input{padding:4px 8px;border:1px solid var(--border-soft);border-radius:6px;font-size:12.5px;font-family:var(--font)}
+  #head .btn{padding:4px 12px;border-radius:7px;border:1px solid var(--brand);background:var(--bg);
+             color:var(--brand);font-size:12.5px;cursor:pointer}
+  #head .btn:hover{background:var(--brand-50)}
+  #cfg{display:none;gap:6px;align-items:center;width:100%;padding-top:6px}
+  #cfg input{flex:1;min-width:120px}
+  #log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:92%;padding:9px 13px;border-radius:10px;font-size:13.5px;line-height:1.65;
+       white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .msg.user{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:3px}
+  .msg.agent{align-self:flex-start;background:var(--bg);border:1px solid var(--border-soft);border-bottom-left-radius:3px}
+  .msg.sys{align-self:center;background:transparent;color:var(--text-3);font-size:12px;box-shadow:none;padding:2px}
+  #inputbar{display:flex;gap:8px;padding:10px 14px;background:var(--bg);border-top:1px solid var(--border-soft);flex-shrink:0}
+  #msg{flex:1;padding:9px 12px;border:1px solid var(--border-soft);border-radius:9px;font-size:13.5px;
+       font-family:var(--font);resize:none;height:42px;box-sizing:border-box}
+  #send{padding:0 20px;border-radius:9px;border:0;background:var(--brand);color:#fff;font-size:14px;cursor:pointer}
+  #send:disabled{opacity:.5;cursor:default}
+  #writecard{position:fixed;right:16px;bottom:16px;width:430px;max-height:50vh;overflow:auto;background:var(--bg);
+             border:1px solid var(--border-soft);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.25);
+             z-index:99;font-size:13px;display:none}
+  #writecard .wc-head{padding:8px 12px;font-weight:600;border-bottom:1px solid var(--border-soft)}
+  #writecard .wc-item{padding:8px 12px;border-bottom:1px dashed var(--border-soft)}
+  #writecard .wc-path{font-family:monospace;word-break:break-all;margin:4px 0}
+  #writecard .wc-preview{font-family:monospace;font-size:12px;color:var(--text-2);white-space:pre-wrap;
+                         word-break:break-all;background:var(--panel);border-radius:6px;padding:6px;margin:4px 0}
+  #writecard button{margin-right:8px;padding:3px 14px;border-radius:6px;border:1px solid;cursor:pointer;background:transparent}
+  .wc-ok{color:#16a34a;border-color:#16a34a}
+  .wc-no{color:#dc2626;border-color:#dc2626}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="head">
+    <span class="dot" id="online-dot"></span><b>云端智能体</b>
+    <span id="usage">—</span>
+    <span>项目:</span><input id="project" value="default" style="width:110px" title="同项目内上下文连续">
+    <button class="btn" id="cfg-btn">⚙ 云端配置</button>
+    <div id="cfg">
+      <input id="cfg-server" placeholder="服务器 https://…/mdagent">
+      <input id="cfg-token" placeholder="token (mda_…,已存可不填)" type="password">
+      <input id="cfg-root" placeholder="开放给智能体的本地目录">
+      <button class="btn" id="cfg-save">保存</button>
+    </div>
+  </div>
+  <div id="log"></div>
+  <div id="inputbar">
+    <textarea id="msg" placeholder="和云端智能体对话…(Enter 发送,Shift+Enter 换行)"></textarea>
+    <button id="send">发送</button>
+  </div>
+</div>
+<div id="writecard">
+  <div class="wc-head">✍️ 云端请求写本地文件 · <span id="wc-count">0</span> 条待批(批准才落盘;100s 不批自动拒绝)</div>
+  <div id="wc-list"></div>
+</div>
+<script>
+(function(){
+  const $=function(id){return document.getElementById(id)};
+  const log=$('log'),msg=$('msg'),send=$('send');
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function add(cls,text){
+    const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;
+    log.appendChild(d);log.scrollTop=log.scrollHeight;return d;
+  }
+  async function j(method,url,body){
+    const r=await fetch(url,{method:method,cache:'no-store',
+      headers:body?{'Content-Type':'application/json'}:undefined,
+      body:body?JSON.stringify(body):undefined});
+    const d=await r.json().catch(function(){return {error:'HTTP '+r.status};});
+    if(!r.ok&&!d.error)d.error=d.detail||('HTTP '+r.status);
+    return d;
+  }
+
+  // ── 配置 ──
+  $('cfg-btn').addEventListener('click',function(){
+    const c=$('cfg');c.style.display=c.style.display==='flex'?'none':'flex';
+  });
+  async function loadCfg(){
+    const d=await j('GET','/api/cloud/config');
+    $('cfg-server').value=d.server||'';
+    $('cfg-root').value=d.root||'';
+    $('online-dot').className='dot'+(d.online?' on':'');
+    $('online-dot').title=d.online?'文件桥在线(智能体可读写你本地开放目录)':'桥离线';
+    if(d.configured)add('sys','云端已配置:'+d.server+' · 开放目录 '+d.root+(d.online?' · 桥在线':' · 桥离线'));
+    else{add('sys','还没配置云端——点右上角 ⚙ 填服务器和 token(找管理员要)');$('cfg').style.display='flex';}
+  }
+  $('cfg-save').addEventListener('click',async function(){
+    const d=await j('POST','/api/cloud/config',{server:$('cfg-server').value,token:$('cfg-token').value,root:$('cfg-root').value});
+    if(d.error){add('sys','保存失败: '+d.error);return;}
+    $('cfg-token').value='';$('cfg').style.display='none';
+    add('sys','已保存并连接 '+d.server+'(token 不回显)');
+    tickUsage();
+  });
+
+  // ── 对话 ──
+  let busy=false;
+  async function doSend(){
+    const text=msg.value.trim();if(!text||busy)return;
+    busy=true;send.disabled=true;
+    add('user',text);msg.value='';
+    const thinking=add('sys','思考中…');
+    try{
+      const r=await j('POST','/api/cloud/chat',{project:$('project').value.trim()||'default',message:text});
+      if(r.error||!r.job_id){thinking.textContent='提交失败: '+(r.error||JSON.stringify(r));return;}
+      // 轮询取结果
+      for(;;){
+        await new Promise(function(rs){setTimeout(rs,5000);});
+        const s=await j('GET','/api/cloud/job?id='+encodeURIComponent(r.job_id));
+        if(s.error){thinking.textContent='查询失败: '+s.error;break;}
+        if(s.status==='done'){thinking.remove();add('agent',s.reply||'(空回复)');tickUsage();break;}
+        if(s.status==='error'){thinking.textContent='云端出错: '+(s.error||'?');break;}
+        thinking.textContent='思考中…('+(s.status||'queued')+')';
+      }
+    }catch(e){thinking.textContent='网络错误: '+e;}
+    busy=false;send.disabled=false;msg.focus();
+  }
+  send.addEventListener('click',doSend);
+  msg.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}});
+
+  // ── 用量 ──
+  async function tickUsage(){
+    const d=await j('GET','/api/cloud/usage');
+    if(d.error){$('usage').textContent='用量: —';return;}
+    $('usage').textContent='用量 '+(d.chats_24h!=null?d.chats_24h:(d.chats||'?'))+'/'+d.limit_per_hour+' 每小时'
+      +(d.bridge_online?' · 桥在线':'');
+    $('online-dot').className='dot'+(d.bridge_online?' on':'');
+  }
+
+  // ── 写批准卡(仿 exec_gate 审批卡) ──
+  const card=$('writecard'),list=$('wc-list'),cnt=$('wc-count');
+  async function wcTick(){
+    let d;
+    try{d=await j('GET','/api/cloud/pending_writes');}catch(e){card.style.display='none';return;}
+    const items=d.items||[];
+    if(!items.length){card.style.display='none';return;}
+    card.style.display='block';cnt.textContent=items.length;
+    list.innerHTML=items.map(function(i){
+      return '<div class="wc-item"><div>云端智能体请求写入:</div>'
+        +'<div class="wc-path">'+esc(i.path)+' ('+i.bytes+' 字节)</div>'
+        +'<div class="wc-preview">'+esc(i.preview||'')+'</div>'
+        +'<div><button class="wc-ok" data-id="'+esc(i.op_id)+'" data-dec="approve">批准写入</button>'
+        +'<button class="wc-no" data-id="'+esc(i.op_id)+'" data-dec="deny">拒绝</button></div></div>';
+    }).join('');
+  }
+  list.addEventListener('click',async function(e){
+    const b=e.target.closest('button');if(!b)return;
+    b.disabled=true;
+    const r=await j('POST','/api/cloud/write_resolve',{op_id:b.dataset.id,decision:b.dataset.dec});
+    if(r.error)alert('裁决失败: '+r.error);
+    wcTick();
+  });
+
+  loadCfg();tickUsage();
+  setInterval(wcTick,4000);setInterval(tickUsage,30000);
+  msg.focus();
+})();
+</script>
+</body>
+</html>

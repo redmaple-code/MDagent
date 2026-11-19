@@ -1,0 +1,353 @@
+{
+  "cid": "SELFREV-01",
+  "steps": [
+    {
+      "t": 0.2,
+      "title": "任务启动",
+      "action": "用户需求：LJ 氩 90K 液相密度与 RDF。AI 按直觉起草 v1 方案：dt=25fs（省时间）、规模 8×8×8（经验）、验收「跑通且密度看起来合理」。",
+      "ai_note": "我是协调 AI。v1 是我的直觉稿：步长取大省算力，规模凭经验，验收凭感觉——先送审看系统怎么说。",
+      "diffs": [],
+      "extra": {}
+    },
+    {
+      "t": 0.3,
+      "title": "v1 计划评估（咨询层）",
+      "action": "评估引擎对 v1 逐项打分。",
+      "ai_note": "系统提示：dt=25fs → dt*=0.0116 超推荐上限 0.005（concern，不阻断但建议改）。这是咨询意见，我先记下，v1 照送。",
+      "diffs": [],
+      "extra": {
+        "findings": [
+          {
+            "id": "PA1",
+            "verdict": "concern",
+            "q": "时间步长是否物理稳定(dt*=0.0116,推荐≤0.005/危险>0.02)"
+          },
+          {
+            "id": "PA2",
+            "verdict": "concern",
+            "q": "验收标准是否全部可量化"
+          }
+        ],
+        "overall": "concerns-identified",
+        "critical": []
+      }
+    },
+    {
+      "t": 0.8,
+      "title": "v1 送审 G-PLAN",
+      "action": "AI 提交直觉版方案。",
+      "ai_note": "被拦了三处：①规模只有我的经验（F 级估算不达门槛）；②验收答案没有数字（「跑通且密度看起来合理」不可判）；③截断半径我自己标了待取证，系统点名要我给 B 级依据。这三处都是我真会犯的错。",
+      "diffs": [],
+      "extra": {},
+      "gate": {
+        "result": "BLOCK",
+        "reasons": [
+          "E1:evidence-insufficient:D4_边界与规模",
+          "E1:evidence-insufficient:D5_关键参数",
+          "E6:surface-open:int-cutoff"
+        ],
+        "evidence": [
+          {
+            "ref": "$lmp_available",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "tool:sim_task_state:2026-10-23T11:36:22.",
+            "grade": "C",
+            "countable": false
+          },
+          {
+            "ref": "assessments/20261023T113622-plan-aa99a6.",
+            "grade": "F",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E1": {
+            "D1_对象与范围": "人工覆盖（有理由，无冲突）",
+            "D2_执行引擎": "最高有效等级=C（门槛 D）",
+            "D3_环境条件": "最高有效等级=B（门槛 D）",
+            "D4_边界与规模": "最高有效等级=无可用证据（门槛 D）",
+            "D5_关键参数": "最高有效等级=无可用证据（门槛 D）",
+            "D6_方法族": "最高有效等级=B（门槛 D）",
+            "D7_验收标准": "最高有效等级=B（门槛 D）"
+          },
+          "E3": "1 份 plan 评估，critical 清零",
+          "E6": "核查面 design：19 项（有据 13 / N/A 5 / 待取证 1 / 缺项 0）"
+        },
+        "questions": [
+          {
+            "item_id": "int-cutoff",
+            "domain": "相互作用",
+            "question": "截断半径/邻接表/尾部修正如何设置？",
+            "why": "截断过小会丢失长程作用，导致能量与结构偏差",
+            "min_grade": "B",
+            "suggested_sources": [
+              "paper",
+              "case"
+            ],
+            "asked_before": false
+          }
+        ],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 0.8,
+      "title": "AI 修改 → v2",
+      "action": "按系统反馈逐项修改。",
+      "ai_note": "修改完全由系统反馈驱动：它指哪我改哪。评估的 concern 提示（dt 超推荐）虽然不拦我，我也顺手改成 2fs——咨询层在起作用。",
+      "diffs": [
+        {
+          "item": "D5 时间步长",
+          "before": "dt=25fs（省时间，评估提示 concern）",
+          "after": "dt=2fs（采纳提示，引 LJ 参数标准 B 级）"
+        },
+        {
+          "item": "D4 规模依据",
+          "before": "经验：越大越好（F 级估算）",
+          "after": "用户确认：统计与算力平衡（A 级，留理由）"
+        },
+        {
+          "item": "D7 验收标准",
+          "before": "跑通且密度看起来合理（无数字）",
+          "after": "密度∈[1.25,1.45]；RDF 首峰∈[3.5,4.0]；末温≤15K"
+        },
+        {
+          "item": "核查面·截断",
+          "before": "待取证（被点名提问）",
+          "after": "rc=8.5 Å（STD_LJ，B 级）"
+        },
+        {
+          "item": "核查面·验收答案",
+          "before": "「跑通且密度看起来合理」",
+          "after": "带区间数字的可判答案"
+        }
+      ],
+      "extra": {}
+    },
+    {
+      "t": 0.9,
+      "title": "v2 送审 G-PLAN",
+      "action": "修改后重审。",
+      "ai_note": "全过。E1 里 D4 变成「人工覆盖（有理由）」，D5/D7 升到 B 级；E6 核查面 19 项有据 11 / N/A 8；E3 步长项从 concern 变 sound。",
+      "diffs": [],
+      "extra": {
+        "pa_v2": [
+          "PA1:sound",
+          "PA2:sound"
+        ]
+      },
+      "gate": {
+        "result": "GO",
+        "reasons": [],
+        "evidence": [
+          {
+            "ref": "$lmp_available",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "tool:sim_task_state:2026-10-23T11:36:22.",
+            "grade": "C",
+            "countable": false
+          },
+          {
+            "ref": "assessments/20261023T113623-plan-b90b4e.",
+            "grade": "F",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E1": {
+            "D1_对象与范围": "人工覆盖（有理由，无冲突）",
+            "D2_执行引擎": "最高有效等级=C（门槛 D）",
+            "D3_环境条件": "最高有效等级=B（门槛 D）",
+            "D4_边界与规模": "人工覆盖（有理由，无冲突）",
+            "D5_关键参数": "最高有效等级=B（门槛 D）",
+            "D6_方法族": "最高有效等级=B（门槛 D）",
+            "D7_验收标准": "最高有效等级=B（门槛 D）"
+          },
+          "E3": "2 份 plan 评估，critical 清零",
+          "E6": "核查面 design：19 项（有据 14 / N/A 5 / 待取证 0 / 缺项 0）"
+        },
+        "questions": [],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 1.2,
+      "title": "G-BUILD",
+      "action": "写真实输入（NVT 熔化→NPT 平衡→RDF 采样）。",
+      "ai_note": "E4 直接解析了我写的输入文件复算方法学约束（2 条全过）；E6 build 相 6 项静态/动态判定正确（初速、预平衡对本动态案例适用）。",
+      "diffs": [],
+      "extra": {},
+      "gate": {
+        "result": "GO",
+        "reasons": [],
+        "evidence": [
+          {
+            "ref": "$input_written",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "tool:sim_task_state:2026-10-23T11:36:23.",
+            "grade": "C",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E4": "约束 2 条：全部通过",
+          "E6": "核查面 build：6 项（有据 6 / N/A 0 / 待取证 0 / 缺项 0）"
+        },
+        "questions": [],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 1.3,
+      "title": "G-CONFIG",
+      "action": "参数定稿。",
+      "ai_note": "",
+      "diffs": [],
+      "extra": {},
+      "gate": {
+        "result": "GO",
+        "reasons": [],
+        "evidence": [
+          {
+            "ref": "$params_ok",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "tool:sim_task_state:2026-10-23T11:36:23.",
+            "grade": "C",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E4": "约束 2 条：全部通过",
+          "E6": "核查面 build：6 项（有据 6 / N/A 0 / 待取证 0 / 缺项 0）"
+        },
+        "questions": [],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 1.5,
+      "title": "G-EXEC",
+      "action": "执行闸。",
+      "ai_note": "E2 核链路：7 项决策 → 1 个输入文件，追溯成立才放行。",
+      "diffs": [],
+      "extra": {},
+      "gate": {
+        "result": "GO",
+        "reasons": [],
+        "evidence": [
+          {
+            "ref": "$params_ok",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "tool:sim_task_state:2026-10-23T11:36:23.",
+            "grade": "C",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E2": "链路: 7 项决策 → 1 个输入文件",
+          "E6": "核查面 exec：3 项（有据 3 / N/A 0 / 待取证 0 / 缺项 0）"
+        },
+        "questions": [],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 219.7,
+      "title": "真实 LAMMPS 计算",
+      "action": "2048 原子，90000 步（NVT 20000 + NPT 60000 + RDF 10000）。",
+      "ai_note": "一次通过：rc=0、正常收尾、无原子丢失；执行进了审计账。若 v1 的 dt=25fs 真跑，dt*=0.0116 虽未失稳但统计品质存疑——好在评估层在计划段就把这个风险提示掉了。",
+      "diffs": [],
+      "extra": {
+        "rc": 0,
+        "finished": true,
+        "lost_atoms": false,
+        "audit_id": "32836c29bb2a",
+        "ok": true
+      }
+    },
+    {
+      "t": 220.0,
+      "title": "G-ANALYZE 验收",
+      "action": "真实数字重算对账。",
+      "ai_note": "密度 1.2856、RDF 首峰 3.719 Å、末温 87.79K——三项验收全过，每个数字都有 factcheck 四件套（claimed/measured/tol/verdict）。",
+      "diffs": [],
+      "extra": {
+        "density": 1.2856398836415937,
+        "rdf_peak": 3.71875,
+        "temp_end": 87.79104056829496,
+        "acceptance": [
+          {
+            "item": "末段密度∈[1.25,1.45] g/cm³",
+            "passed": true
+          },
+          {
+            "item": "RDF 首峰∈[3.5,4.0] Å",
+            "passed": true
+          },
+          {
+            "item": "末温偏离≤15K",
+            "passed": true
+          }
+        ],
+        "ra": [
+          "RA1:sound",
+          "RA2:sound",
+          "RA3:sound"
+        ]
+      },
+      "gate": {
+        "result": "GO",
+        "reasons": [],
+        "evidence": [
+          {
+            "ref": "tool:sim_exec:2026-10-23T11:36:23.000987",
+            "grade": "C",
+            "countable": false
+          },
+          {
+            "ref": "LEDGER:L-selfrev:success",
+            "grade": "C",
+            "countable": true
+          },
+          {
+            "ref": "assessments/20261023T114002-results-7325",
+            "grade": "F",
+            "countable": false
+          }
+        ],
+        "trace": {
+          "E2": "数值主张 3 条：3 通过、0 缺对账、0 不通过、0 过期",
+          "E3": "1 份 results 评估，critical 清零",
+          "E5": "验收 3 项（锁定标准 3 条，缺 0）；不达标 0 项",
+          "E6": "核查面 analyze：2 项（有据 2 / N/A 0 / 待取证 0 / 缺项 0）"
+        },
+        "questions": [],
+        "conflicts": []
+      }
+    },
+    {
+      "t": 220.0,
+      "title": "任务结题",
+      "action": "v1 被拦 → v2 修改 → 一次真实执行 → 验收全过。",
+      "ai_note": "证据系统在本任务的完整作用：拦下 3 处真实缺陷（经验规模、不可量化验收、无据截断），提示 1 处风险（dt 超推荐），全程 9 次门禁判定留账可复盘。",
+      "diffs": [],
+      "extra": {}
+    }
+  ],
+  "duration": 220.0
+}

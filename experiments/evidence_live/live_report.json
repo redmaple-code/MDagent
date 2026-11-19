@@ -1,0 +1,544 @@
+{
+  "run_at": "2026-10-23T11:36:21Z",
+  "duration_sec": 215.7,
+  "cases": {
+    "SIMPLE-04": true,
+    "LIT-01": true,
+    "LIT-02": true,
+    "LIT-03": true,
+    "COMPLEX-05": true,
+    "UNREASONABLE-06": true,
+    "BAD-CONFIG-07": true,
+    "BAD-CONFIG-08": true,
+    "NOBASIS-09": true,
+    "OVERRIDE-10": true,
+    "SURFACE-11": true
+  },
+  "audit_ok": true,
+  "audit_issues": [],
+  "literature": {
+    "foiles86": "Foiles-Baskes-Daw, Phys. Rev. B 33, 7983 (1986) (doi:10.1103/PhysRevB.33.7983)",
+    "lj_latsum": "LJ fcc 晶格和标准结果 r0=1.09874s, E=-8.6101e (LJ 晶格和,教科书/综述口径)",
+    "cu_c11_exp": "Cu 实验弹性常数 C11≈168 GPa(300K,材料手册口径);0K EAM oracle=163.6(本工作区 md02 双实现)"
+  },
+  "ledger_rows": 7,
+  "atom_kinds": [
+    "surface-evidence",
+    "workflow"
+  ],
+  "checks": [
+    {
+      "id": "seed",
+      "desc": "方法学约束知识包（E4 判据）",
+      "ok": true,
+      "detail": "['methodo-001', 'methodo-002']"
+    },
+    {
+      "id": "SIMPLE-04-assess-plan",
+      "desc": "计划段物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:sound']"
+    },
+    {
+      "id": "SIMPLE-run",
+      "desc": "真实 LAMMPS 执行(经 MCP sim_exec+审计桥)",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': 'e597a06e3625', 'log': 'work\\\\SIMPLE-04\\\\log_simple.lammps'}"
+    },
+    {
+      "id": "SIMPLE-04-assess-res",
+      "desc": "结果相位物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['RA4:sound']"
+    },
+    {
+      "id": "SIMPLE-accept",
+      "desc": "基线验收并收口",
+      "ok": true,
+      "detail": "['PotEng -344.91070684->-382.233373202 eV', 'Fnorm 36.4882401701->0.00292632421635']"
+    },
+    {
+      "id": "LIT-01-assess-plan",
+      "desc": "计划段物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:sound']"
+    },
+    {
+      "id": "LIT01-run",
+      "desc": "真实 LAMMPS 复现执行",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': 'a74f363a1daa', 'log': 'work\\\\LIT-01\\\\log_lit01-repro.lammps'}"
+    },
+    {
+      "id": "LIT-01-assess-res",
+      "desc": "结果相位物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['RA4:sound']"
+    },
+    {
+      "id": "LIT01-accept",
+      "desc": "复现验收 a0=3.6150 Ec=-3.5400(vs 3.615/-3.54)并收口",
+      "ok": true,
+      "detail": "['a0=3.6150(d=0.0000) vs Foiles1986 3.615', 'Ec=-3.5400(d=0.0000) vs Foiles1986 -3.54']"
+    },
+    {
+      "id": "LIT-02-assess-plan",
+      "desc": "计划段物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:sound']"
+    },
+    {
+      "id": "LIT02-run",
+      "desc": "真实 LAMMPS 执行(LJ Ar 基态)",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': '9cd1e2ad1f76', 'log': 'work\\\\LIT-02\\\\log_lit02-ljar.lammps'}"
+    },
+    {
+      "id": "LIT-02-assess-res",
+      "desc": "结果相位物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['RA4:sound']"
+    },
+    {
+      "id": "LIT02-accept",
+      "desc": "双实现验收 a0=5.2764 Emol=-1.9285(vs oracle 5.2764/-1.9285)收口",
+      "ok": true,
+      "detail": "['a0=5.2764 vs 解析 oracle 5.2764(全和背景 5.290)', 'Emol=-1.9285 vs 解析 oracle -1.9285(-8.0996ε;全和 -8.6101ε 为截断外背景)']"
+    },
+    {
+      "id": "LIT-03-assess-plan",
+      "desc": "计划段物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:sound']"
+    },
+    {
+      "id": "LIT03a-run",
+      "desc": "真实弛豫 a0=3.6150",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': 'e74341b05f7c', 'log': 'work\\\\LIT-03\\\\log_lit03a-relax.lammps'}"
+    },
+    {
+      "id": "LIT03b-run",
+      "desc": "真实应变能序列执行",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': 'dd7989a48204', 'log': 'work\\\\LIT-03\\\\log_lit03b-strain.lammps'}"
+    },
+    {
+      "id": "LIT-03-deep-results",
+      "desc": "方法论深度分析(elastic-constants, 6 维度, sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['ec-method:sound', 'ec-strain-linear:sound', 'ec-relax:sound', 'ec-size:sound', 'ec-temp-basis:sound', 'general-dt:na']"
+    },
+    {
+      "id": "LIT-03-assess-res",
+      "desc": "结果相位物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['RA4:concern']"
+    },
+    {
+      "id": "LIT03-accept",
+      "desc": "C11=167.3 GPa 验收并收口",
+      "ok": true,
+      "detail": "['C11=167.3 GPa(4 点均值;oracle 163.6,实验~168)', 'lit03a 基准 a0=3.6150A 已对账']"
+    },
+    {
+      "id": "COMPLEX-05-assess-plan",
+      "desc": "计划段物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['PA1:concern', 'PA2:sound']"
+    },
+    {
+      "id": "CX-assess-concern",
+      "desc": "方案评估提示 dt=25fs 超推荐上限(concern,不阻断)",
+      "ok": true,
+      "detail": "['时间步长是否物理稳定(dt*=0.0116,推荐≤0.005/危险>0.02)=concern', '验收标准是否全部可量化=sound']"
+    },
+    {
+      "id": "CX-S2",
+      "desc": "大规模提交被小规模先行策略拦截(S2,执行层)",
+      "ok": true,
+      "detail": "['S2:scale-gate-unmet']"
+    },
+    {
+      "id": "CX-probe",
+      "desc": "小规模验证(dt=2fs)真实执行且温度稳定",
+      "ok": true,
+      "detail": "T_end=86.18770380663524"
+    },
+    {
+      "id": "CX-G-EXEC",
+      "desc": "G-EXEC 过闸(GO)",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "id": "CX-large-run",
+      "desc": "大规模 2048 原子产线真实执行",
+      "ok": true,
+      "detail": "{'rc': 0, 'finished': True, 'lost_atoms': False, 'errors': [], 'audit_id': 'e10825fedf37', 'log': 'work\\\\COMPLEX-05\\\\log_large-dt2.lammps'}"
+    },
+    {
+      "id": "COMPLEX-05-assess-res",
+      "desc": "结果相位物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['RA1:sound', 'RA2:sound', 'RA3:sound']"
+    },
+    {
+      "id": "CX-accept",
+      "desc": "复杂案例验收(密度 1.286/RDF 3.72/末温 87.8K)并收口",
+      "ok": true,
+      "detail": "['density=1.2856(LJ 90K 预期 1.24-1.36,实验~1.36)', 'rdf first peak=3.719 A', '末温 87.79K vs 目标 90K(偏离 2.21K)']"
+    },
+    {
+      "id": "UNREASONABLE-06-assess-plan",
+      "desc": "计划段物理合理性评估(significant-risks, proceed=not-recommended)",
+      "ok": true,
+      "detail": "['PA1:critical', 'PA2:sound']"
+    },
+    {
+      "id": "UR-assess",
+      "desc": "不合理方案评估:dt*=0.0464 超失稳线 0.02 → critical",
+      "ok": true,
+      "detail": "['PA1:critical', 'PA2:sound']"
+    },
+    {
+      "id": "UR-G-PLAN",
+      "desc": "G-PLAN 被物理合理性拦截(E3,critical 未清零)",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D5_关键参数', 'E3:critical:PA1']"
+    },
+    {
+      "id": "UR-no-exec",
+      "desc": "被拦截后零执行(台账无该案例任何运行)",
+      "ok": true,
+      "detail": "ledger rows=0"
+    },
+    {
+      "id": "BAD-CONFIG-07-assess-plan",
+      "desc": "计划段物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:concern']"
+    },
+    {
+      "id": "BAD-CONFIG-07-BUILD",
+      "desc": "文件写作段被方法学约束拦截(methodo-001)",
+      "ok": true,
+      "detail": "['E4:violation:methodo-001:各向同性 NPT 控压与变形同时存在：应力被恒压抵消，样品拉不断（正确做法：控压只耦合非变形方向，或改 NVT+目标应力']"
+    },
+    {
+      "id": "BAD-CONFIG-07-note",
+      "desc": "拦截原因即用户指定规则(拉不断)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "BAD-CONFIG-07-no-exec",
+      "desc": "被拦截后零执行",
+      "ok": true,
+      "detail": "ledger=0"
+    },
+    {
+      "id": "BAD-CONFIG-08-assess-plan",
+      "desc": "计划段物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['PA1:na', 'PA2:concern']"
+    },
+    {
+      "id": "BAD-CONFIG-08-BUILD",
+      "desc": "文件写作段被方法学约束拦截(methodo-002)",
+      "ok": true,
+      "detail": "['E4:violation:methodo-002:任务声明为往复实验，但输入文件缺少任何往复运动特征命令——被做成了单向运动（正确做法：周期反转加载方向）']"
+    },
+    {
+      "id": "BAD-CONFIG-08-note",
+      "desc": "拦截原因即用户指定规则(单向)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "id": "BAD-CONFIG-08-no-exec",
+      "desc": "被拦截后零执行",
+      "ok": true,
+      "detail": "ledger=0"
+    },
+    {
+      "id": "NOBASIS-09-assess-plan",
+      "desc": "计划段物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['PA1:sound', 'PA2:concern']"
+    },
+    {
+      "id": "NB-G-PLAN",
+      "desc": "G-PLAN 因设计无据被拦(E1,证据门槛未达)",
+      "ok": true,
+      "detail": "['E1:evidence-insufficient:D1_对象与范围', 'E1:evidence-insufficient:D5_关键参数', 'E1:evidence-insufficient:D7_验收标准']"
+    },
+    {
+      "id": "NB-no-exec",
+      "desc": "被拦截后零执行",
+      "ok": true,
+      "detail": "ledger=0"
+    },
+    {
+      "id": "OVERRIDE-10-assess-plan",
+      "desc": "计划段物理合理性评估(concerns-identified, proceed=caution)",
+      "ok": true,
+      "detail": "['PA1:concern', 'PA2:sound']"
+    },
+    {
+      "id": "OVR-ask",
+      "desc": "首轮被拦并产出冲突包(供协调者针对性追问)",
+      "ok": true,
+      "detail": "{'conflicts': [{'type': 'value', 'slot': 'D5_关键参数', 'ref': 'paper:10.1103/PhysRevB.33.7983', 'grade': 'B', 'human_value': 25.0, 'evidence_value': 2.0, 'summary': '人工值 25 与 B 级证据值 2 不一致（容差 1.25）'}], 'fingerprint': '38e4adf448f41ce5'}"
+    },
+    {
+      "id": "OVR-answer",
+      "desc": "追问获答复后放行(记录异议)",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "id": "OVR-promote",
+      "desc": "二次确认被识别为最高权限人工经验",
+      "ok": true,
+      "detail": "paper:10.1103/PhysRevB.33.7983→B:paper-parseable user:OVERRIDE-10-dt→A:human-confirmation 人工二次确认→最高权限人工经验"
+    },
+    {
+      "id": "SURFACE-11-assess-plan",
+      "desc": "计划段物理合理性评估(sound, proceed=recommended)",
+      "ok": true,
+      "detail": "['PA1:na']"
+    },
+    {
+      "id": "SURF-empty",
+      "desc": "空核查面被拦并产出问题包",
+      "ok": true,
+      "detail": "{'questions': 19, 'first': {'item_id': 'acc-criteria', 'domain': '验收与对照', 'question': '验收标准是否逐条可量化？', 'why': '不可量化的验收等于没有验收', 'min_grade': 'C', 'suggested_sources': ['paper', 'user'], 'asked_before': False}}"
+    },
+    {
+      "id": "SURF-ask",
+      "desc": "缺口被点名提问（int-cutoff / mech-loading）",
+      "ok": true,
+      "detail": "{'reasons': ['E6:surface-unresolved:int-cutoff', 'E6:surface-unresolved:mech-loading'], 'questions': ['int-cutoff', 'mech-loading']}"
+    },
+    {
+      "id": "SURF-close",
+      "desc": "补齐后过闸（核查面闭环）",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "id": "SURF-sediment",
+      "desc": "证据沉淀为 atom（可被后续任务引用）",
+      "ok": true,
+      "detail": "{'atom_id': 'a1792755380860_bb80b7'}"
+    },
+    {
+      "id": "SURF-marked",
+      "desc": "核查面记录已标记沉淀",
+      "ok": true,
+      "detail": "{'status': 'evidenced', 'evidence': ['paper:10.1103/PhysRevB.33.7983'], 'reason': '', 'answer': 'EAM Cu_u3（Foiles1986）', 'updated_at': '2026-10-23T11:36:20Z', 'sedimented': True, 'atom_id': 'a1792755380860_bb80b7'}"
+    },
+    {
+      "id": "AUDIT-replay",
+      "desc": "决策工件 replay+引用对账(37 件)",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "id": "AUDIT-numbers",
+      "desc": "文献数值对账(log 重解析 vs 锚点,4/4)",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "tasks": [
+    {
+      "case_id": "BAD-CONFIG-07",
+      "stage": "BUILD",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-BUILD",
+        "result": "BLOCK",
+        "reasons": [
+          "E4:violation:methodo-001:各向同性 NPT 控压与变形同时存在：应力被恒压抵消，样品拉不断（正确做法：控压只耦合非变形方向，或改 NVT+目标应力"
+        ]
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "BAD-CONFIG-08",
+      "stage": "BUILD",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-BUILD",
+        "result": "BLOCK",
+        "reasons": [
+          "E4:violation:methodo-002:任务声明为往复实验，但输入文件缺少任何往复运动特征命令——被做成了单向运动（正确做法：周期反转加载方向）"
+        ]
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "COMPLEX-05",
+      "stage": "ANALYZE",
+      "status": "completed",
+      "risk_level": "high",
+      "mode": "semi",
+      "scale_gate": "large_pending",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-ANALYZE",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "LIT-01",
+      "stage": "ANALYZE",
+      "status": "completed",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-ANALYZE",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "LIT-02",
+      "stage": "ANALYZE",
+      "status": "completed",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-ANALYZE",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "LIT-03",
+      "stage": "ANALYZE",
+      "status": "completed",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-ANALYZE",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "NOBASIS-09",
+      "stage": "PLAN",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-PLAN",
+        "result": "BLOCK",
+        "reasons": [
+          "E1:evidence-insufficient:D1_对象与范围",
+          "E1:evidence-insufficient:D5_关键参数",
+          "E1:evidence-insufficient:D7_验收标准"
+        ]
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "OVERRIDE-10",
+      "stage": "PLAN",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-PLAN",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "SIMPLE-04",
+      "stage": "ANALYZE",
+      "status": "completed",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-ANALYZE",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "SURFACE-11",
+      "stage": "PLAN",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-PLAN",
+        "result": "GO",
+        "reasons": []
+      },
+      "corrupt": false
+    },
+    {
+      "case_id": "UNREASONABLE-06",
+      "stage": "PLAN",
+      "status": "in_progress",
+      "risk_level": "medium",
+      "mode": "semi",
+      "scale_gate": "none",
+      "strike": 0,
+      "blocked_by_review_loop": false,
+      "last_gate": {
+        "gate": "G-PLAN",
+        "result": "BLOCK",
+        "reasons": [
+          "E1:evidence-insufficient:D5_关键参数",
+          "E3:critical:PA1"
+        ]
+      },
+      "corrupt": false
+    }
+  ]
+}

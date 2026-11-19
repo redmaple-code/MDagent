@@ -1,0 +1,8 @@
+# dsh-md-trace bundle patch：全工具账本。
+# ⚠ bundles 数组里必须排在 dsh-md-ops-gate 之前 —— ops-gate 命中时返回 {kind:'ask'}
+#   而不调 next()，排在它后面的 pre-execute 钩子可能拿不到该次调用。
+- insert:
+    - id: dsh-md-trace
+      name: 'dsh-md-trace'
+      config:
+        logPath: '/var/log/mdsim/trace.jsonl'

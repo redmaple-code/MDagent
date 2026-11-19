@@ -1,0 +1,36 @@
+# 凭证 / 密钥 —— 绝不入库
+.dsh/
+mdsim-data/
+mcp/md_config.json
+push/push_config.json
+
+# 依赖 / 运行时产物
+node_modules/
+/node_modules
+__pycache__/
+*.pyc
+*.log
+*.out
+dashboard/monitor_roots.json
+dashboard/gmx_adopted.json
+
+# Bio deployment state, environments and results (source fixtures are tracked).
+bio-agent/deploy/dist/
+bio-agent/deploy/evidence/
+bio-agent/projects/
+bio-agent/validation/local-*/
+bio-agent/validation/task-*/
+bio-agent/.venv/
+bio-agent/env/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+.credentials.yaml
+.credentials.yml
+*.pem
+*.key
+
+# 证据系统实弹运行产物（可重生成，不入库）
+experiments/evidence_live/live_data/
+experiments/evidence_live/kit_local/logs/
+experiments/evidence_live/smoke_data/

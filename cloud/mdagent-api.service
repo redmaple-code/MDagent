@@ -1,0 +1,19 @@
+[Unit]
+Description=mdagent-api 多租户 MD 智能体 API
+After=network.target
+
+[Service]
+Type=simple
+Environment=MDAGENT_HOME=/opt/mdagent
+Environment=MDAGENT_NODE=/opt/node22/bin/node
+Environment=MDAGENT_MAX_CONCURRENT=2
+Environment=MDAGENT_JOB_TIMEOUT=900
+Environment=MDAGENT_MIN_FREE_MB=300
+ExecStart=/usr/bin/python3.11 -m uvicorn cloud.app:app --app-dir /opt/mdagent/code --host 127.0.0.1 --port 8090 --no-access-log
+Restart=always
+RestartSec=3
+MemoryMax=1G
+OOMPolicy=stop
+
+[Install]
+WantedBy=multi-user.target

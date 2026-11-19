@@ -1,0 +1,7 @@
+{
+  "name": "mdagent-bio-visualization", "version": "0.1.0", "private": true, "type": "module",
+  "scripts": {"build": "vite build"},
+  "dependencies": {"molstar": "5.13.1"},
+  "devDependencies": {"vite": "8.2.2"},
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>进化图谱 · GARGANTUA</title>
+<style>
+  /* ── 设计语言借自「变幻视界」:纯黑底 / Geist Mono / 发丝线 / 橙点 accent ── */
+  @font-face{
+    font-family:"Geist Mono";
+    src:url("./fonts/GeistMono-Variable.woff2") format("woff2-variations");
+    font-weight:100 900;font-style:normal;font-display:swap;
+  }
+  :root{
+    --bg:#000;
+    --fg:#f4f1ee;
+    --dim:rgba(244,241,238,.56);
+    --dimmer:rgba(244,241,238,.34);
+    --hair:rgba(244,241,238,.14);
+    --accent:rgb(255,122,47);
+    --f-mono:"Geist Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,"PingFang SC","Noto Sans SC",monospace;
+    --pad:clamp(20px,4.4vw,64px);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
+    font-family:var(--f-mono);overflow:hidden;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  ::selection{background:var(--accent);color:#000}
+  button{font-family:inherit}
+  #gl,#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #cv{cursor:grab}
+  #cv.dragging{cursor:grabbing}
+
+  /* 可读性压暗:左侧文字区 + 上下沿(参考页 fx-scrim) */
+  .fx-scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(100deg,rgba(0,0,0,.66) 0%,rgba(0,0,0,.30) 26%,rgba(0,0,0,0) 52%),
+      linear-gradient(to bottom,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 18%),
+      linear-gradient(to top,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 22%)}
+  /* 发丝边框:整页读作一块仪表板 */
+  .fx-grain{position:fixed;inset:clamp(10px,1.5vw,20px);z-index:6;pointer-events:none;
+    border:1px solid rgba(244,241,238,.07);mix-blend-mode:screen}
+
+  /* ── chrome 顶栏 ── */
+  .chrome{position:fixed;top:0;left:0;right:0;z-index:8;display:flex;align-items:center;
+    justify-content:space-between;padding:clamp(18px,2.6vw,34px) var(--pad);
+    font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    mix-blend-mode:difference}
+  .brand{display:inline-flex;align-items:center;gap:11px;color:var(--fg)}
+  .brand-mark{width:11px;height:11px;border-radius:50%;background:#000;
+    box-shadow:0 0 0 1.5px var(--accent),0 0 14px 1px var(--accent)}
+  .brand-name{letter-spacing:.22em}
+  .brand-sub{color:var(--dimmer);letter-spacing:.18em;margin-left:2px}
+  .chrome-meta{display:inline-flex;align-items:center;gap:14px;color:var(--dim)}
+  .chrome-meta .sep{color:var(--dimmer)}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);
+    animation:pulse 2.6s var(--ease) infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .cbtn{background:none;border:1px solid var(--hair);border-radius:100px;
+    color:var(--dim);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    padding:6px 14px;cursor:pointer;
+    transition:color .4s var(--ease),border-color .4s var(--ease)}
+  .cbtn:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ── 右侧 rail:视角章节 ── */
+  .rail{position:fixed;right:var(--pad);top:50%;transform:translateY(-50%);z-index:8;
+    display:flex;flex-direction:column;align-items:flex-end;gap:15px;padding-right:22px;
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+  .rail-item{display:inline-flex;align-items:baseline;gap:12px;color:var(--dimmer);
+    cursor:pointer;transition:color .5s var(--ease);user-select:none}
+  .rail-item b{font-weight:400;opacity:0;transform:translateX(8px);
+    transition:opacity .5s var(--ease),transform .5s var(--ease)}
+  .rail-item i{font-style:normal;font-variant-numeric:tabular-nums}
+  .rail-item:hover{color:var(--dim)}
+  .rail-item:hover b{opacity:.7;transform:none}
+  .rail-item.is-on{color:var(--accent)}
+  .rail-item.is-on b{opacity:1;transform:none}
+  .rail-line{position:absolute;right:0;top:2px;bottom:2px;width:1px;
+    background:rgba(244,241,238,.16);overflow:hidden}
+  .rail-fill{position:absolute;inset:0 0 auto 0;height:100%;background:var(--accent);
+    transform:scaleY(0);transform-origin:top;transition:transform .8s var(--ease)}
+
+  /* ── 左下 HUD ── */
+  .hud{position:fixed;left:var(--pad);bottom:calc(clamp(22px,3.2vw,40px) + 46px);z-index:8;
+    display:grid;gap:3px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--dimmer);pointer-events:none}
+  .hud-row{display:grid;grid-template-columns:52px auto}
+  .hud-row i{font-style:normal}
+  .hud-row b{font-weight:400;color:var(--dim);font-variant-numeric:tabular-nums}
+
+  /* ── 左:进化管线 ── */
+  #pipe{position:fixed;left:var(--pad);top:clamp(86px,12vh,130px);z-index:7;width:228px;
+    user-select:none;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    max-height:calc(100% - 300px);overflow:auto;scrollbar-width:none}
+  #pipe::-webkit-scrollbar{display:none}
+  #pipe h4{margin:0 0 4px;font-size:9.5px;letter-spacing:.24em;color:var(--dimmer);
+    font-weight:400}
+  #pipe .stage{display:flex;align-items:center;gap:10px;padding:9px 2px;cursor:pointer;
+    border-bottom:1px solid var(--hair);transition:color .4s var(--ease)}
+  #pipe .stage:hover{color:var(--fg)}
+  #pipe .stage .pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;
+    box-shadow:0 0 8px currentColor}
+  #pipe .stage .nm{flex:1;color:var(--dim)}
+  #pipe .stage:hover .nm{color:var(--fg)}
+  #pipe .stage .ct{color:var(--fg);opacity:.85;font-variant-numeric:tabular-nums}
+  #pipe .stage.off{opacity:.3}
+  #pipe .arrow{color:var(--dimmer);font-size:9px;padding:3px 0 3px 12px;letter-spacing:.2em}
+  #feed{margin-top:14px}
+  #feed .fi{padding:8px 0 8px 10px;cursor:pointer;color:var(--dim);
+    border-left:1px solid rgba(255,122,47,.4);margin:2px 0;
+    transition:color .4s var(--ease),border-color .4s var(--ease)}
+  #feed .fi:hover{color:var(--fg);border-left-color:var(--accent)}
+  #feed .fi .ft{font-size:9px;color:var(--dimmer);margin-top:3px;letter-spacing:.1em}
+
+  /* ── 右:详情 ── */
+  #detail{position:fixed;right:calc(var(--pad) + 44px);top:clamp(86px,12vh,130px);z-index:7;
+    width:330px;max-height:calc(100% - 260px);overflow:auto;display:none;
+    padding:2px 4px 10px 16px;border-left:1px solid var(--hair);scrollbar-width:none}
+  #detail::-webkit-scrollbar{display:none}
+  #detail h3{margin:0 0 6px;font-size:clamp(15px,1.3vw,20px);font-weight:200;
+    letter-spacing:-.01em;word-break:break-all;color:var(--fg);line-height:1.3}
+  #detail .sub{color:var(--accent);font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;margin-bottom:14px}
+  #detail pre{white-space:pre-wrap;word-break:break-all;margin:0;
+    padding:10px 0;font-size:11px;line-height:1.6;max-height:220px;overflow:auto;
+    color:var(--dim);border-top:1px solid var(--hair);font-family:var(--f-mono)}
+  #detail b{display:block;font-weight:400;font-size:9px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--dimmer);margin:14px 0 0}
+  #detail .close{position:absolute;top:0;right:0;cursor:pointer;color:var(--dimmer);
+    font-size:11px;letter-spacing:.1em;transition:color .4s var(--ease)}
+  #detail .close:hover{color:var(--accent)}
+
+  /* ── 底:时间轴 ── */
+  #timeline{position:fixed;left:0;right:0;bottom:0;z-index:8;height:46px;
+    display:flex;align-items:center;gap:18px;padding:0 var(--pad);
+    border-top:1px solid var(--hair);
+    background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0));
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  #tl-play{background:none;border:none;color:var(--fg);font-size:9.5px;
+    letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:0;
+    transition:color .4s var(--ease);white-space:nowrap}
+  #tl-play:hover{color:var(--accent)}
+  #tl-range{flex:1;appearance:none;-webkit-appearance:none;height:1px;
+    background:rgba(244,241,238,.18);outline:none;cursor:pointer}
+  #tl-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;
+    width:9px;height:9px;border-radius:50%;background:#000;
+    box-shadow:0 0 0 1.5px var(--accent),0 0 10px 1px var(--accent)}
+  #tl-range::-moz-range-thumb{width:9px;height:9px;border-radius:50%;background:#000;
+    border:none;box-shadow:0 0 0 1.5px var(--accent),0 0 10px 1px var(--accent)}
+  #tl-label{font-variant-numeric:tabular-nums;color:var(--dimmer);
+    min-width:170px;text-align:right;white-space:nowrap}
+  #tl-live{color:var(--dimmer);white-space:nowrap}
+
+  .vhint{position:fixed;right:var(--pad);bottom:calc(clamp(22px,3.2vw,40px) + 46px);
+    z-index:4;color:var(--dimmer);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;text-align:right;line-height:1.9;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<canvas id="cv"></canvas>
+<div class="fx-scrim"></div>
+<div class="fx-grain"></div>
+
+<header class="chrome">
+  <span class="brand">
+    <span class="brand-mark"></span>
+    <span class="brand-name">进化图谱</span>
+    <span class="brand-sub">GARGANTUA</span>
+  </span>
+  <div class="chrome-meta">
+    <span class="dot"></span><span>WebGL</span><span class="sep">/</span><span>实时</span>
+    <span class="sep">/</span>
+    <button class="cbtn" id="btn-quality">画质 · 标准</button>
+    <button class="cbtn" id="btn-relayout">重排</button>
+    <button class="cbtn" id="btn-refresh">刷新</button>
+  </div>
+</header>
+
+<nav class="rail" id="rail">
+  <a class="rail-item is-on" data-i="0"><i>00</i><b>电影</b></a>
+  <a class="rail-item" data-i="1"><i>01</i><b>侧视</b></a>
+  <a class="rail-item" data-i="2"><i>02</i><b>俯视</b></a>
+  <a class="rail-item" data-i="3"><i>03</i><b>近景</b></a>
+  <span class="rail-line"><span class="rail-fill" id="railFill"></span></span>
+</nav>
+
+<div class="hud">
+  <div class="hud-row"><i>视角</i><b id="hud-view">电影</b></div>
+  <div class="hud-row"><i>节点</i><b id="hud-nodes">—</b></div>
+  <div class="hud-row"><i>蒸馏</i><b id="hud-dist">—</b></div>
+  <div class="hud-row"><i>融合</i><b id="hud-fuse">—</b></div>
+  <div class="hud-row"><i>层级</i><b id="hud-lv">—</b></div>
+  <div class="hud-row"><i>帧</i><b id="hud-fps">—</b></div>
+</div>
+
+<div id="pipe"></div>
+<div id="detail"><span class="close" id="detail-x">✕</span><h3 id="d-title"></h3><div class="sub" id="d-sub"></div><div id="d-body"></div></div>
+
+<div id="timeline">
+  <button id="tl-play">▶ 播放进化</button>
+  <input type="range" id="tl-range" min="0" max="1000" value="1000">
+  <span id="tl-label">全部</span>
+  <span id="tl-live"></span>
+</div>
+
+<div class="vhint">拖动 = 环绕 · 滚轮 = 距离<br>拖节点 = 改轨道 · 点击 = 详情 · 双击 = 复位<br>— 玫瑰虚线 = 融合(旧知坠入新核) · 金线 = 蒸馏链<br>时间轴回放 = L1 摩擦 → 融合断裂 → L3 蒸馏/赴考 —</div>
+
+<script>
+'use strict';
+/* ES5 语法基线(2026-09-13 起):不用 ?? / ** / async-await / 箭头 / 模板串 / fetch——
+   旧内核浏览器解析即白屏。GLSL 写在字符串里,不受此限。 */
+/* 2026-09-18 GARGANTUA 重构(参考月之暗面黑洞光线追踪页):
+   底层 WebGL 全屏 fragment shader 实时积分 Schwarzschild 光线弯曲——
+   事件视界纯黑、光子环、吸积盘多次穿越、程序化星空+银河、Doppler 增亮、
+   引力红移、盘面湍流、ACES、晕影、胶片颗粒;叠加 2D 图谱层:
+   原子在吸积盘面开普勒公转并内旋坠入视界(经验被吸收),
+   蒸馏产物(知识卡片/行为策略)从两极喷流诞生、升入成果环不再回落——
+   坠入=吸收,喷流=蒸馏,时间轴回放=进化过程。
+   2026-09-18 再重构:UI 语言换成「变幻视界」——纯黑/Geist Mono/发丝线/橙点。 */
+window.onerror=function(msg,src,line){
+  var b=document.getElementById('errbar');
+  if(!b){b=document.createElement('div');b.id='errbar';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99;background:#ef4444;color:#fff;'+
+      'font-size:13px;padding:8px 14px;font-family:sans-serif';
+    (document.body||document.documentElement).appendChild(b);}
+  b.textContent='⚠ 页面脚本出错: '+msg+' (行 '+line+') —— 请截图反馈';
+  return false;};
+function getJSON(url,cb){
+  var x=new XMLHttpRequest();
+  x.open('GET',url,true);
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+    if(x.status===200){try{cb(JSON.parse(x.responseText));}catch(e){
+      window.onerror('数据解析失败: '+e.message,url,0);}}
+    else{window.onerror('接口 '+url+' 返回 '+x.status,url,0);}};
+  x.send(null);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+/* ═══════════════ 第一层:WebGL 黑洞(GARGANTUA) ═══════════════ */
+var GLC=document.getElementById('gl');
+var GL=GLC.getContext('webgl',{alpha:false,antialias:false})||
+       GLC.getContext('experimental-webgl',{alpha:false,antialias:false});
+var GL_OK=false, glProg=null, glU={};
+
+var VERT='attribute vec2 aP;void main(){gl_Position=vec4(aP,0.0,1.0);}';
+var FRAG=[
+'precision highp float;',
+'uniform vec2 uRes;uniform float uTime;',
+'uniform vec3 uPos,uFwd,uRight,uUp;uniform float uFov;uniform float uDbg;',
+'float hash13(vec3 p){p=fract(p*0.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}',
+'float hash12(vec2 p){vec3 p3=fract(vec3(p.xyx)*0.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}',
+'float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);',
+' float a=hash12(i),b=hash12(i+vec2(1.0,0.0)),c=hash12(i+vec2(0.0,1.0)),d=hash12(i+vec2(1.0,1.0));',
+' return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}',
+'float fbm(vec2 p){float v=0.0,a=0.5;for(int i=0;i<4;i++){v+=a*noise2(p);p*=2.03;a*=0.55;}return v;}',
+/* 程序化星空 + 银河带 */
+'vec3 stars(vec3 d){',
+' vec3 col=vec3(0.0);',
+' float band=exp(-pow(abs(dot(d,normalize(vec3(0.28,1.0,0.18)))),2.0)*7.0);',
+' col+=vec3(0.09,0.11,0.19)*band*(0.8+0.6*fbm(d.xz*3.0+d.y));',
+' vec3 g=d*80.0;vec3 id=floor(g);vec3 f=fract(g);',
+' float h=hash13(id);',
+' vec3 sp=vec3(hash13(id+1.3),hash13(id+2.7),hash13(id+4.1));',
+' float sd=length(f-sp);',
+' float star=smoothstep(0.12,0.0,sd)*step(0.86,h);',
+' float tw=0.65+0.35*sin(uTime*(1.0+h*3.0)+h*40.0);',
+' col+=star*tw*mix(vec3(0.85,0.9,1.0),vec3(1.0,0.9,0.75),hash13(id+7.7))*(0.5+0.8*hash13(id+9.1));',
+' return col;}',
+'vec3 aces(vec3 x){return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.0,1.0);}',
+'void main(){',
+' vec2 uv=(gl_FragCoord.xy*2.0-uRes)/uRes.y;',
+' vec3 v=normalize(uFwd+uFov*(uv.x*uRight+uv.y*uUp));',
+' vec3 p=uPos;',
+' vec3 col=vec3(0.0);float trans=1.0;',
+' float mr=1e9;float captured=0.0;float ncross=0.0;',
+' for(int i=0;i<160;i++){',
+'   float r2=dot(p,p);',
+'   if(r2<1.0){captured=1.0;break;}',
+'   if(r2>900.0)break;',
+'   if(r2<mr)mr=r2;',
+'   vec3 hv=cross(p,v);float h2=dot(hv,hv);',
+'   float r=sqrt(r2);',
+/* 自适应步长:远处大步快逃,临近视界极细步(阴影边缘锐利化的关键) */
+'   float dt=0.14*clamp((r-0.9)*0.55,0.16,2.6);',
+'   dt*=0.75+0.5*hash12(gl_FragCoord.xy);',
+'   v=normalize(v-(1.5*h2*p/(r2*r2*r))*dt);',
+'   vec3 pn=p+v*dt;',
+/* 吸积盘穿越(y=0 平面,半径 3.0~7.0,可多次穿越) */
+'   if(p.y*pn.y<0.0){',
+'     float tc=p.y/(p.y-pn.y);',
+'     vec3 hp=mix(p,pn,tc);',
+'     float hr=length(hp.xz);',
+'     if(hr>3.0&&hr<7.0){',
+'       float ang=atan(hp.z,hp.x);',
+'       float n=fbm(vec2(ang*3.0+hr*1.6-uTime*0.4,hr*2.3-uTime*0.12));',
+/* 内缘亮环 + 向外指数衰减(薄盘),光学厚:一次穿越近乎全吸收,环路不再叠加发白 */
+'       float dens=exp(-(hr-3.4)*0.5)*smoothstep(2.98,3.5,hr);',
+'       dens*=0.35+0.95*n;',
+'       float t=clamp(3.0/hr-0.32,0.0,1.0);',
+'       vec3 dc=mix(vec3(0.9,0.28,0.03),vec3(1.0,0.72,0.42),t*t);',
+'       dc=mix(dc,vec3(1.05,1.0,0.92),pow(t,8.0));',
+'       vec3 vel=normalize(vec3(-hp.z,0.0,hp.x));',
+'       float dop=1.0/(1.0-0.6*dot(vel,-v));',
+'       float boost=min(pow(max(dop,0.05),2.5),3.5);',
+'       float rs=sqrt(max(0.04,1.0-1.0/hr));',
+'       col+=trans*dc*(dens*boost*rs*0.62);',
+'       trans*=clamp(1.0-dens*1.8,0.0,1.0);',
+'       ncross+=1.0;',
+'     }',
+'   }',
+'   p=pn;',
+'   if(trans<0.02)break;',
+' }',
+' if(captured<0.5&&sqrt(mr)<1.9)captured=1.0;',   // 光子球附近打转=物理上已被俘获(b<b_crit),归入阴影
+' vec3 colPre=col;',
+/* 引力红移压暗:贴近视界的所有光(含盘面积累)被时间 dilation 拖黑 */
+' float trap=smoothstep(3.0,1.3,sqrt(mr));',
+' float dim=0.92*trap;',
+' if(ncross>0.5)dim*=0.4;',   // 近侧盘面在阴影前方:保留它的光(GARGANTUA 标志性横带)
+' col*=1.0-dim;',
+' if(captured<0.5)col+=trans*stars(v);',
+/* 光子环:细丝亮环(高斯,亚像素级) + 外围软辉 —— 只加在逃脱的擦边光线上 */
+' if(captured<0.5){',
+' float mr1=sqrt(mr);',
+' float ring=exp(-max(mr1-1.02,0.0)*60.0);',
+' float edge=exp(-pow((mr1-1.035)*130.0,2.0));',
+' col+=vec3(1.0,0.86,0.62)*ring*0.35;',
+' col+=vec3(1.08,1.0,0.88)*edge*0.9;',
+' col+=vec3(0.5,0.75,1.0)*exp(-max(mr1-1.06,0.0)*60.0)*0.12;',
+' col+=vec3(1.0,0.6,0.25)*exp(-mr1*0.55)*0.022;',
+' }',
+/* ACES + 晕影 + 胶片颗粒 */
+' col=aces(col*1.05);',
+' col*=1.0-0.32*dot(uv*0.62,uv*0.62);',
+' col+=(hash12(gl_FragCoord.xy+fract(uTime)*371.0)*2.0-1.0)*0.016;',
+' col=pow(max(col,0.0),vec3(0.4545));',
+' if(uDbg>0.5){',
+'   if(uDbg<1.5)col=vec3(clamp((sqrt(mr)-1.0)/6.0,0.0,1.0));',
+'   else if(uDbg<2.5)col=vec3(clamp(ncross/8.0,0.0,1.0));',
+'   else if(uDbg<3.5)col=vec3(captured,trans,0.0);',
+'   else if(uDbg<5.5)col=vec3(uv.x*0.5+0.5,uv.y*0.5+0.5,step(0.03,length(uv)));',
+'   else if(uDbg<6.5)col=vec3(clamp(length(uPos)/12.0,0.0,1.0),clamp(uFov,0.0,1.0),clamp(length(uFwd),0.0,1.0));',
+'   else col=vec3(clamp(length(colPre)*0.2,0.0,1.0));',
+' }',
+' gl_FragColor=vec4(col,1.0);',
+'}'].join('\n');
+
+function glShader(type,src){
+  var s=GL.createShader(type);GL.shaderSource(s,src);GL.compileShader(s);
+  if(!GL.getShaderParameter(s,GL.COMPILE_STATUS)){
+    window.onerror('WebGL shader 编译失败: '+GL.getShaderInfoLog(s),'gl',0);return null;}
+  return s;}
+function glInit(){
+  if(!GL)return;
+  var vs=glShader(GL.VERTEX_SHADER,VERT),fs=glShader(GL.FRAGMENT_SHADER,FRAG);
+  if(!vs||!fs)return;
+  glProg=GL.createProgram();
+  GL.attachShader(glProg,vs);GL.attachShader(glProg,fs);GL.linkProgram(glProg);
+  if(!GL.getProgramParameter(glProg,GL.LINK_STATUS)){
+    window.onerror('WebGL link 失败: '+GL.getProgramInfoLog(glProg),'gl',0);return;}
+  GL.useProgram(glProg);
+  var buf=GL.createBuffer();
+  GL.bindBuffer(GL.ARRAY_BUFFER,buf);
+  GL.bufferData(GL.ARRAY_BUFFER,new Float32Array([-1,-1, 3,-1, -1,3]),GL.STATIC_DRAW);
+  var loc=GL.getAttribLocation(glProg,'aP');
+  GL.enableVertexAttribArray(loc);
+  GL.vertexAttribPointer(loc,2,GL.FLOAT,false,0,0);
+  var names=['uRes','uTime','uPos','uFwd','uRight','uUp','uFov','uDbg'];
+  for(var i=0;i<names.length;i++)glU[names[i]]=GL.getUniformLocation(glProg,names[i]);
+  GL_OK=true;}
+
+/* 相机:绕原点轨道,始终盯黑洞(屏幕中心=黑洞,2D 图层因此永远对齐) */
+var CAM={yaw:0.9,pitch:0.42,dist:9.2,auto:true,fov:0.62};
+var QUALITY=[['流畅',0.5],['标准',0.75],['影院',1.0]];
+var QIDX=1;
+function camBasis(){
+  var cp=Math.cos(CAM.pitch),sp=Math.sin(CAM.pitch);
+  var pos=[CAM.dist*cp*Math.sin(CAM.yaw),CAM.dist*sp,CAM.dist*cp*Math.cos(CAM.yaw)];
+  var f=[-pos[0],-pos[1],-pos[2]];var fl=Math.sqrt(f[0]*f[0]+f[1]*f[1]+f[2]*f[2]);
+  f=[f[0]/fl,f[1]/fl,f[2]/fl];
+  var r=[f[2],0,-f[0]];var rl=Math.sqrt(r[0]*r[0]+r[2]*r[2])||1;
+  r=[r[0]/rl,0,r[2]/rl];
+  var u=[r[1]*f[2]-r[2]*f[1],r[2]*f[0]-r[0]*f[2],r[0]*f[1]-r[1]*f[0]];
+  return {pos:pos,f:f,r:r,u:u,incl:sp};}
+function drawGL(now){
+  if(!GL_OK)return;
+  var scale=QUALITY[QIDX][1]*Math.min(2,window.devicePixelRatio||1);
+  var w=Math.round(GLC.clientWidth*scale),h=Math.round(GLC.clientHeight*scale);
+  if(w<2||h<2)return;
+  if(GLC.width!==w||GLC.height!==h){GLC.width=w;GLC.height=h;GL.viewport(0,0,w,h);}
+  var b=camBasis();
+  GL.uniform2f(glU.uRes,w,h);
+  GL.uniform1f(glU.uTime,(now-TIME0)/1000);
+  GL.uniform3f(glU.uPos,b.pos[0],b.pos[1],b.pos[2]);
+  GL.uniform3f(glU.uFwd,b.f[0],b.f[1],b.f[2]);
+  GL.uniform3f(glU.uRight,b.r[0],b.r[1],b.r[2]);
+  GL.uniform3f(glU.uUp,b.u[0],b.u[1],b.u[2]);
+  GL.uniform1f(glU.uFov,CAM.fov);
+  var dbg=0;var mh=/[#&]dbg(\d)/.exec(location.hash||'');if(mh)dbg=+mh[1];
+  if(dbg>=1){CAM.auto=false;CAM.yaw=0.9;CAM.pitch=0.42;}   // 调试模式:钉死相机
+  GL.uniform1f(glU.uDbg,dbg);
+  GL.drawArrays(GL.TRIANGLES,0,3);}
+
+/* ═══════════════ 第二层:图谱(2D 叠加) ═══════════════ */
+var CV=document.getElementById('cv'),CTX=CV.getContext('2d');
+var TYPE_STYLE={
+  atom:{c:'#6ea8ff',r:5,name:'atom 观测',plane:'disk'},
+  scenario:{c:'#fbbf24',r:10,name:'场景',plane:'disk'},
+  sop:{c:'#34d399',r:9,name:'SOP',plane:'disk'},
+  proposal:{c:'#a78bfa',r:8,name:'提案',plane:'disk'},
+  strategy:{c:'#2dd4bf',r:9,name:'恢复策略',plane:'disk'},
+  attempt:{c:'#5b6478',r:3.5,name:'恢复尝试',plane:'disk'},
+  adjustment:{c:'#f87171',r:7,name:'演化压制',plane:'disk'},
+  note:{c:'#38bdf8',r:7,name:'研判笔记',plane:'disk'},
+  case:{c:'#f472b6',r:11,name:'case 作业',plane:'disk'},
+  card:{c:'#ffd28a',r:8,name:'蒸馏卡片',plane:'polar'},
+  bstrat:{c:'#f0abfc',r:8,name:'行为策略',plane:'polar'},
+  exam:{c:'#9ca3af',r:8,name:'考场裁决',plane:'polar'},
+  corpus:{c:'#f97316',r:12,name:'外部语料源',plane:'polar'},
+  extcat:{c:'#fb923c',r:6,name:'语料类别',plane:'polar'}
+};
+var RESULT_COLOR={APPLIED:'#34d399',AUTO_APPLIED:'#34d399',REJECTED:'#f87171',
+                  success:'#34d399',fail:'#f87171',pending:'#5b6478',DRAFT:'#5b6478'};
+var EDGE_GOLD={'蒸馏':1,'升华':1,'蒸馏生效':1,'赴考':1,'供弹':1};   // 蒸馏链+外部供弹=accent 橙
+var EDGE_FUSE={'融合':1};   // 融合边=虚线玫瑰,旧知识坠入新核(merge)
+var NODES=[],EDGES=[],NODE_BY_ID={},HIDDEN_TYPES={attempt:1};  // 尝试流水默认收起(可在左侧点开)
+var W=0,H=0;
+var dragNode=null,hoverNode=null,selected=null,camDrag=null,moved=false;
+var TL={min:0,max:0,cut:Infinity,playing:false,timer:null};
+var TIME0=Date.now();
+var DBG_V=(/[#&](?:dbg\d|noov)/.test(location.hash||''))?1:0;  // 调试/裸 shader 视图时隐藏 2D 层
+var BH={x:0,y:0,R:60};
+var KEPLER_K=520,INSPIRAL=1.9;
+
+function squash(){var b=camBasis();var s=Math.abs(b.incl);return s<0.18?0.18:s;}
+function poleC(){var b=camBasis();
+  return [BH.x, BH.y-BH.R*2.05*Math.max(0.25,Math.abs(b.incl))];}
+function maxOrbit(){return Math.max(170,Math.min(W,H)/2-26);}
+
+function resize(){W=window.innerWidth;H=window.innerHeight;
+  var DPR=window.devicePixelRatio||1;
+  CV.width=Math.round(W*DPR);CV.height=Math.round(H*DPR);
+  CTX.setTransform(DPR,0,0,DPR,0,0);
+  BH.x=W/2;BH.y=H/2+6;
+  // 视界半径与世界坐标对齐:world 1.0 ≈ (H/2)/(fov*dist) px
+  BH.R=Math.max(34,Math.min(90,(H/2)/(CAM.fov*CAM.dist)));
+  if(!GL_OK)document.body.style.background=
+    'radial-gradient(ellipse at 50% 52%,#120a04 0%,#000 55%)';}
+window.addEventListener('resize',resize);
+
+function nodeColor(n){
+  if(n.result&&RESULT_COLOR[n.result])return RESULT_COLOR[n.result];
+  if(n.type==='atom'){
+    if(n.distilled)return '#ffd28a';      // 蒸馏融合核:金核
+    if(nodeLevel(n)===1)return '#fb7185'; // L1 摩擦原子:玫瑰(将被融合吸收)
+  }
+  return (TYPE_STYLE[n.type]||{}).c||'#5b6478';}
+function nodeRadius(n){var r=(TYPE_STYLE[n.type]||{}).r||6;
+  if(n.type==='strategy')r=7+Math.min(7,(n.detail.uses||0));
+  if(n.type==='scenario')r=8+Math.min(5,(n.detail.count||0)/3);
+  if(n.type==='atom'&&n.distilled)r=r*1.5;
+  return r;}
+/* L1=摩擦观测 L2=沉淀经验 L3=蒸馏/考场(2026-09-19 进化语义) */
+function nodeLevel(n){if(n.level)return n.level;
+  if(n.type==='card'||n.type==='bstrat'||n.type==='exam')return 3;
+  if(n.type==='scenario'||n.type==='proposal'||n.type==='note')return 2;
+  return 0;}
+function hiddenKey(n){return n.type==='atom'?('atom@'+nodeLevel(n)):n.type;}
+function hasType(t){return Object.prototype.hasOwnProperty.call(HIDDEN_TYPES,t);}
+function nodeTs(n){if(n.ts==null)return null;
+  return typeof n.ts==='number'?n.ts:Date.parse(n.ts)/1000;}
+/* 节点三态:unborn(时间轴未到) / ghost(被融合吸收,断链残影) / alive */
+function nodeState(n){
+  var t=nodeTs(n);if(t!=null&&t>TL.cut)return 'unborn';
+  var d=n.dead_ts;
+  if(d!=null){var ds=typeof d==='number'?d:Date.parse(d)/1000;
+    if(isFinite(ds)&&ds<=TL.cut)return 'ghost';}
+  return 'alive';}
+function visible(n){if(HIDDEN_TYPES[hiddenKey(n)]||hasType(n.type))return false;
+  return nodeState(n)!=='unborn';}
+function fmtT(t){var d=new Date(t*1000);
+  function p(x){return ('0'+x).slice(-2);}
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
+
+/* 轨道:disk 节点绕黑洞盘面(带 squash),polar 节点(蒸馏产物)绕极点上空成果环 */
+function toXY(n){
+  var o=n.orbit;
+  if(n.plane==='polar'){var pc=poleC();
+    return [pc[0]+o.r*Math.cos(o.th), pc[1]+o.r*0.42*Math.sin(o.th)];}
+  var sq=squash();
+  return [BH.x+o.r*Math.cos(o.th), BH.y+o.r*sq*Math.sin(o.th)];}
+function spawnOrbit(n,outer){
+  var R;
+  if(n.plane==='polar'){
+    R=BH.R*2.6+Math.random()*Math.max(60,maxOrbit()*0.55);
+    n.orbit={r:outer?BH.R*0.4:R,th:Math.random()*6.283,targetR:R};
+  }else{
+    R=outer?(maxOrbit()*(0.8+Math.random()*0.2))
+            :(BH.R*1.6+Math.random()*(maxOrbit()-BH.R*1.6));
+    n.orbit={r:R,th:Math.random()*6.283,targetR:R};
+  }
+  n.fade=outer?0:1;n.dead=false;}
+
+function load(manual){
+  getJSON('/api/graph',function(g){
+    var old={};NODES.forEach(function(n){old[n.id]=n.orbit?n:null;});
+    var firstEver=NODES.length===0;
+    NODES=g.nodes.map(function(nd){
+      var c={};for(var k in nd){if(Object.prototype.hasOwnProperty.call(nd,k))c[k]=nd[k];}
+      c.plane=(TYPE_STYLE[c.type]||{}).plane||'disk';
+      if(old[c.id]){c.orbit=old[c.id].orbit;c.fade=old[c.id].fade;c.dead=old[c.id].dead;
+        c.wasVisible=old[c.id].wasVisible;}
+      else{spawnOrbit(c,!firstEver);}
+      var p=toXY(c);c.x=p[0];c.y=p[1];
+      return c;});
+    NODE_BY_ID={};NODES.forEach(function(n){NODE_BY_ID[n.id]=n;});
+    EDGES=g.edges.filter(function(e){return NODE_BY_ID[e.from]&&NODE_BY_ID[e.to];});
+    document.getElementById('hud-nodes').textContent=
+      g.stats.atoms+' 原子 · '+NODES.length+' 节点 · '+EDGES.length+' 边';
+    document.getElementById('hud-dist').textContent=
+      (g.stats.cards||0)+' 卡片 · '+(g.stats.bstrats||0)+' 行为策略';
+    document.getElementById('hud-fuse').textContent=
+      (g.stats.fused||0)+' 融合 · '+(g.stats.exams||0)+' 考场';
+    document.getElementById('hud-lv').textContent=
+      'L1 '+(g.stats.l1||0)+' · L2 '+(g.stats.l2||0)+' · L3 '+(g.stats.l3||0);
+    var ts=NODES.map(function(n){return n.ts;}).filter(function(t){return t!=null;})
+      .map(function(t){return typeof t==='number'?t:Date.parse(t)/1000;})
+      .filter(function(t){return isFinite(t);});
+    if(ts.length){TL.min=Math.min.apply(null,ts);TL.max=Math.max.apply(null,ts);
+      document.getElementById('tl-live').textContent=fmtT(TL.min)+' ~ '+fmtT(TL.max);}
+    else{TL.min=TL.max=0;document.getElementById('tl-live').textContent='暂无时间数据';}
+    renderPipe();applyCut();
+  });
+}
+
+/* ── 左侧面板:进化管线(L1→L2→L3 分层)+ 最近蒸馏 ── */
+var PIPE_STAGES=[
+  ['corpus','L0 · 外部语料','corpus',0],
+  ['extcat','L0 · 语料类别','extcat',0],
+  ['atom@1','L1 · 摩擦观测','atom',1],
+  ['atom@2','L2 · 经验原子','atom',2],
+  ['scenario','L2 · 场景聚类','scenario',0],
+  ['proposal','L2 · 演化提案','proposal',0],
+  ['note','L2 · 研判笔记','note',0],
+  ['atom@3','L3 · 蒸馏融合核','atom',3],
+  ['card','L3 · 蒸馏卡片','card',0],
+  ['bstrat','L3 · 行为策略','bstrat',0],
+  ['exam','L3 · 考场裁决','exam',0],
+  ['strategy','恢复策略','strategy',0],
+  ['sop','SOP','sop',0],
+  ['case','case 作业','case',0]];
+function renderPipe(){
+  var el=document.getElementById('pipe');
+  var html='<h4>进化管线 / EVOLUTION PIPELINE</h4>';
+  var counts={};
+  NODES.forEach(function(n){
+    var k=hiddenKey(n);counts[k]=(counts[k]||0)+1;});
+  var lastLv=0;
+  for(var i=0;i<PIPE_STAGES.length;i++){
+    var key=PIPE_STAGES[i][0],nm=PIPE_STAGES[i][1],t=PIPE_STAGES[i][2],lv=PIPE_STAGES[i][3];
+    if(!counts[key])continue;
+    var s=TYPE_STYLE[t];
+    if(lv&&lastLv&&lv!==lastLv)html+='<div class="arrow">▼ 升级</div>';
+    if(lv)lastLv=lv;
+    html+='<div class="stage'+(HIDDEN_TYPES[key]?' off':'')+'" data-t="'+key+'">'+
+      '<span class="pdot" style="background:'+s.c+';color:'+s.c+'"></span>'+
+      '<span class="nm">'+nm+'</span><span class="ct">'+counts[key]+'</span></div>';}
+  // 最近蒸馏(卡片+行为策略按时间倒序)
+  var dist=NODES.filter(function(n){return n.plane==='polar'&&nodeTs(n);})
+    .sort(function(a,b){return nodeTs(b)-nodeTs(a);}).slice(0,6);
+  if(dist.length){
+    html+='<div id="feed"><h4>最近蒸馏 / DISTILLED</h4>';
+    for(var j=0;j<dist.length;j++){var n=dist[j];
+      html+='<div class="fi" data-id="'+esc(n.id)+'">'+
+        '<div>'+esc(n.label.slice(0,30))+'</div>'+
+        '<div class="ft">'+fmtT(nodeTs(n))+' · '+esc((TYPE_STYLE[n.type]||{}).name||'')+'</div></div>';}
+    html+='</div>';}
+  el.innerHTML=html;
+  var st=el.querySelectorAll('.stage');
+  for(var k=0;k<st.length;k++){st[k].onclick=function(){
+    var tt=this.getAttribute('data-t');
+    if(hasType(tt))delete HIDDEN_TYPES[tt];else HIDDEN_TYPES[tt]=1;
+    renderPipe();};}
+  var fi=el.querySelectorAll('.fi');
+  for(var m=0;m<fi.length;m++){fi[m].onclick=function(){
+    var n=NODE_BY_ID[this.getAttribute('data-id')];
+    if(n){selected=n;showDetail(n);}};}}
+
+function edgeTs(e){if(e.ts==null)return null;
+  return typeof e.ts==='number'?e.ts:Date.parse(e.ts)/1000;}
+/* 边生灭(联系的产生与断裂):两端未生→无;edge.ts 未到→无;
+   端点被融合成 ghost 后普通边断裂;融合/蒸馏链边是合并记忆,长存 */
+function edgeOn(e,a,b){
+  if(nodeState(a)==='unborn'||nodeState(b)==='unborn')return false;
+  var t=edgeTs(e);if(t!=null&&isFinite(t)&&t>TL.cut)return false;
+  if(!EDGE_FUSE[e.label]&&!EDGE_GOLD[e.label]){
+    if(nodeState(a)==='ghost'||nodeState(b)==='ghost')return false;}
+  return true;}
+
+/* ── 轨道力学 tick ── */
+var lastT=0;
+function tick(now){
+  var dt=Math.min(0.05,(now-lastT)/1000)||0.016;lastT=now;
+  if(CAM.auto){CAM.yaw+=dt*0.028;
+    CAM.pitch+= (0.42+0.14*Math.sin((now-TIME0)/9000)-CAM.pitch)*dt*0.4;}
+  for(var q=0;q<NODES.length;q++){var n=NODES[q];if(n.dead)continue;
+    if(n===dragNode)continue;
+    var o=n.orbit;
+    if(n.plane==='polar'){
+      // 蒸馏诞生:从中心沿极轴向外推,到位后稳定公转(不回落)
+      if(o.r<o.targetR){o.r+=(o.targetR-o.r)*dt*1.6+8*dt;}
+      o.th+=0.10*dt;
+    }else{
+      var om=KEPLER_K/Math.pow(o.r,1.5);
+      if(om>0.9)om=0.9;
+      o.th+=om*dt;
+      o.r-=INSPIRAL*dt*(0.6+0.4*Math.sin(o.th*3));
+      if(o.r<BH.R+nodeRadius(n)*0.5){           // 坠入视界:湮灭+外围重生
+        n.fade-=dt*2.2;
+        if(n.fade<=0){spawnOrbit(n,true);}
+      }else if(n.fade<1){n.fade=Math.min(1,n.fade+dt*1.2);}
+    }
+    var p=toXY(n);n.x=p[0];n.y=p[1];
+  }
+  // 生灭渐变:节点三态(unborn 0/ghost 0.3/alive 1) + 边产生/断裂
+  for(var q3=0;q3<NODES.length;q3++){var n3=NODES[q3];
+    var st3=nodeState(n3);
+    var tgt3=st3==='unborn'?0:(st3==='ghost'?0.3:1);
+    if(n3.vA==null)n3.vA=tgt3;
+    n3.vA+=(tgt3-n3.vA)*Math.min(1,dt*3.5);}
+  for(var q4=0;q4<EDGES.length;q4++){var e4=EDGES[q4];
+    var a4=NODE_BY_ID[e4.from],b4=NODE_BY_ID[e4.to];
+    var t4=(a4&&b4&&edgeOn(e4,a4,b4))?1:0;
+    if(e4.vA==null)e4.vA=t4;
+    e4.vA+=(t4-e4.vA)*Math.min(1,dt*3.5);}
+}
+
+/* ── 引力透镜光线(2D 层):a→b 二次贝塞尔,控制点被黑洞拉弯 ── */
+function lensPts(ax,ay,bx,by,out){
+  var mx=(ax+bx)/2,my=(ay+by)/2;
+  var vx=mx-BH.x,vy=my-BH.y,d=Math.sqrt(vx*vx+vy*vy)||1;
+  var pull=Math.min(130,8200/(d+50));
+  var cx=mx-vx/d*pull,cy=my-vy/d*pull;
+  var N=16,hor=BH.R*1.04,sq=squash();
+  for(var i=0;i<=N;i++){var t=i/N,u=1-t;
+    var x=u*u*ax+2*u*t*cx+t*t*bx,y=u*u*ay+2*u*t*cy+t*t*by;
+    var dx=x-BH.x,dy=(y-BH.y)/sq,dd=Math.sqrt(dx*dx+dy*dy)||0.01;
+    if(dd<hor){x=BH.x+dx/dd*hor;y=BH.y+dy/dd*hor*sq;}
+    out.push(x,y);}}
+
+function draw(now){
+  CTX.clearRect(0,0,W,H);
+  if(DBG_V)return;
+  var i,e,a,b;
+  /* 边:透镜弯曲光线;蒸馏链 accent 橙;融合=玫瑰虚线(旧知坠入新核) */
+  var pts=[];
+  for(var q=0;q<EDGES.length;q++){e=EDGES[q];a=NODE_BY_ID[e.from];b=NODE_BY_ID[e.to];
+    if(!a||!b||!visible(a)||!visible(b)||a.dead||b.dead)continue;
+    var va=e.vA==null?1:e.vA;if(va<0.03)continue;
+    pts.length=0;lensPts(a.x,a.y,b.x,b.y,pts);
+    var gold=EDGE_GOLD[e.label]?1:0,fuse=EDGE_FUSE[e.label]?1:0;
+    CTX.globalAlpha=va;
+    CTX.beginPath();CTX.moveTo(pts[0],pts[1]);
+    for(i=2;i<pts.length;i+=2)CTX.lineTo(pts[i],pts[i+1]);
+    if(fuse){CTX.setLineDash([5,4]);
+      CTX.strokeStyle='rgba(251,113,133,.5)';CTX.lineWidth=1.2;}
+    else{CTX.strokeStyle=gold?'rgba(255,122,47,.22)':'rgba(244,241,238,.07)';
+      CTX.lineWidth=gold?1.1:1;}
+    CTX.stroke();
+    if(fuse)CTX.setLineDash([]);
+    CTX.globalAlpha=1;}
+  /* 光子脉冲(加色发光):沿边跑的高能光点;融合脉冲=玫瑰,旧→新 */
+  CTX.globalCompositeOperation='lighter';
+  for(var q2=0;q2<EDGES.length;q2++){e=EDGES[q2];a=NODE_BY_ID[e.from];b=NODE_BY_ID[e.to];
+    if(!a||!b||!visible(a)||!visible(b)||a.dead||b.dead)continue;
+    var va2=e.vA==null?1:e.vA;if(va2<0.5)continue;
+    var gold2=EDGE_GOLD[e.label]?1:0,fuse2=EDGE_FUSE[e.label]?1:0;
+    var ph=((now-TIME0)/(gold2?1800:2600)+(q2%17)*0.061)%1;
+    var px=a.x+(b.x-a.x)*ph,py=a.y+(b.y-a.y)*ph;
+    CTX.fillStyle=fuse2?'rgba(255,140,170,.6)':
+      (gold2?'rgba(255,150,80,.55)':'rgba(220,230,245,.22)');
+    CTX.beginPath();CTX.arc(px,py,fuse2?2.1:(gold2?1.9:1.3),0,6.284);CTX.fill();}
+  CTX.globalCompositeOperation='source-over';
+  CTX.lineWidth=1;
+  /* 节点(普通混合;标签白名单,防文字叠成白团) */
+  var LABEL_TYPES={sop:1,case:1};   // 常态只标单例节点;其余悬停/选中才标(文字不糊屏)
+  for(var w=0;w<NODES.length;w++){var n=NODES[w];if(!visible(n)||n.dead)continue;
+    var ghost=nodeState(n)==='ghost';
+    var nva=n.vA==null?1:n.vA;
+    var r=nodeRadius(n)*(ghost?0.62:1),c=nodeColor(n),f=(n.fade==null?1:n.fade)*nva;
+    var isAtom=(n.type==='atom');               // 原子海降噪:小/淡,让场景与蒸馏产物凸显
+    var core=isAtom&&n.distilled;               // 蒸馏融合核:放大发光
+    var rr=(isAtom&&!core)?r*0.55:r;
+    var glow=CTX.createRadialGradient(n.x,n.y,0,n.x,n.y,rr*(isAtom?1.8:2.6));
+    glow.addColorStop(0,c+(isAtom?'22':'30'));glow.addColorStop(1,c+'00');
+    CTX.globalAlpha=f*(isAtom?0.55:0.85)*(ghost?0.5:1);
+    CTX.fillStyle=glow;CTX.beginPath();CTX.arc(n.x,n.y,rr*(isAtom?1.8:2.6),0,6.284);CTX.fill();
+    CTX.beginPath();CTX.arc(n.x,n.y,rr*0.62,0,6.284);CTX.fillStyle=c;CTX.fill();
+    if(n.plane==='polar'){                        // 蒸馏产物/考场:双环标记
+      CTX.beginPath();CTX.arc(n.x,n.y,r*0.62+2.5,0,6.284);
+      CTX.strokeStyle=c;CTX.lineWidth=1;CTX.stroke();}
+    else if(core){                                // 融合核:金色实环
+      CTX.beginPath();CTX.arc(n.x,n.y,rr*0.62+2.5,0,6.284);
+      CTX.strokeStyle='rgba(255,210,138,.8)';CTX.lineWidth=1;CTX.stroke();}
+    else if(ghost){                               // 被吸收残影:玫瑰虚线环(断链遗骸)
+      CTX.beginPath();CTX.arc(n.x,n.y,rr*0.62+2.5,0,6.284);
+      CTX.setLineDash([2,3]);
+      CTX.strokeStyle='rgba(251,113,133,.55)';CTX.lineWidth=1;CTX.stroke();
+      CTX.setLineDash([]);}
+    else if(n.orbit.r<BH.R*1.7){                  // 临近视界:引力拉亮
+      CTX.beginPath();CTX.arc(n.x,n.y,r*0.62+1.5,0,6.284);
+      CTX.strokeStyle='rgba(255,230,180,.7)';CTX.lineWidth=1;CTX.stroke();}
+    CTX.globalAlpha=1;
+    if(n===selected||n===hoverNode){CTX.beginPath();CTX.arc(n.x,n.y,r+3.5,0,6.284);
+      CTX.strokeStyle=c;CTX.lineWidth=1.5;CTX.stroke();CTX.lineWidth=1;}
+    if(LABEL_TYPES[n.type]||core||n===hoverNode||n===selected){
+      var fs='10px "Geist Mono",ui-monospace,Consolas,monospace';
+      var ly=n.y+r+12;
+      CTX.font=fs;CTX.textAlign='center';
+      CTX.lineWidth=3;CTX.strokeStyle='rgba(0,0,0,.85)';
+      CTX.strokeText(n.label.slice(0,18),n.x,ly);
+      CTX.fillStyle='rgba(244,241,238,'+(0.92*f).toFixed(3)+')';
+      CTX.fillText(n.label.slice(0,18),n.x,ly);
+      CTX.lineWidth=1;}}
+}
+
+var FPS_N=0,FPS_T=0;
+function loop(now){
+  now=now||Date.now();
+  tick(now);drawGL(now);draw(now);
+  FPS_N++;if(now-FPS_T>1000){
+    document.getElementById('hud-fps').textContent=FPS_N+' FPS · '+QUALITY[QIDX][0];
+    FPS_N=0;FPS_T=now;}
+  requestAnimationFrame(loop);}
+
+/* ── 交互:节点拖动 / 相机环绕 / 拾取 ── */
+function pick(mx,my){
+  var sq=squash(),best=null,bd=1e9;
+  for(var i=0;i<NODES.length;i++){var n=NODES[i];if(!visible(n)||n.dead)continue;
+    var d=(n.x-mx)*(n.x-mx)+(n.y-my)*(n.y-my),r=nodeRadius(n)+7;
+    if(d<r*r&&d<bd){bd=d;best=n;}}return best;}
+function evPos(e){var r=CV.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
+CV.addEventListener('mousedown',function(e){var p=evPos(e);moved=false;
+  dragNode=pick(p[0],p[1]);
+  if(dragNode){CV.classList.add('dragging');}
+  else camDrag={x:p[0],y:p[1],yaw:CAM.yaw,pitch:CAM.pitch};});
+window.addEventListener('mouseup',function(){
+  if(dragNode){// 松手:以落点重定轨道
+    var sq=squash();
+    if(dragNode.plane==='polar'){var pc=poleC();
+      var dx=dragNode.x-pc[0],dy=(dragNode.y-pc[1])/0.42;
+      dragNode.orbit={r:Math.max(BH.R*1.8,Math.sqrt(dx*dx+dy*dy)),th:Math.atan2(dy,dx),
+        targetR:Math.max(BH.R*1.8,Math.sqrt(dx*dx+dy*dy))};
+    }else{
+      var dx2=dragNode.x-BH.x,dy2=(dragNode.y-BH.y)/sq;
+      var rr=Math.sqrt(dx2*dx2+dy2*dy2);
+      if(rr<BH.R*1.4)rr=BH.R*1.4;
+      dragNode.orbit={r:rr,th:Math.atan2(dy2,dx2),targetR:rr};}
+    dragNode=null;}
+  camDrag=null;CV.classList.remove('dragging');});
+CV.addEventListener('mousemove',function(e){var p=evPos(e);
+  if(dragNode){dragNode.x=p[0];dragNode.y=p[1];moved=true;}
+  else if(camDrag){
+    CAM.yaw=camDrag.yaw+(p[0]-camDrag.x)*0.005;
+    CAM.pitch=Math.max(-1.35,Math.min(1.45,camDrag.pitch+(p[1]-camDrag.y)*0.004));
+    CAM.auto=false;moved=true;}
+  else hoverNode=pick(p[0],p[1]);});
+CV.addEventListener('dblclick',function(){CAM.auto=true;});   // 双击回电影镜头
+CV.addEventListener('wheel',function(e){
+  CAM.dist=Math.max(4.2,Math.min(14,CAM.dist+(e.deltaY>0?0.6:-0.6)));
+  resize();e.preventDefault();},{passive:false});
+CV.addEventListener('click',function(e){if(moved)return;
+  var p=evPos(e);selected=pick(p[0],p[1]);showDetail(selected);});
+
+function showDetail(n){var d=document.getElementById('detail');
+  if(!n){d.style.display='none';return;}
+  d.style.display='block';
+  document.getElementById('d-title').textContent=n.label;
+  var tn=(TYPE_STYLE[n.type]||{}).name||n.type;
+  var t=nodeTs(n);
+  document.getElementById('d-sub').textContent=tn+(n.result?(' · '+n.result):'')+(t?(' · '+fmtT(t)):'');
+  var html='';
+  if(n.sublabel)html+='<pre>'+esc(n.sublabel)+'</pre>';
+  var det=n.detail||{};
+  if(det.rule)html+='<b>规则</b><pre>'+esc(det.rule)+'</pre>';
+  if(det.fact)html+='<pre>'+esc(det.fact)+'</pre>';
+  if(det.facts&&det.facts.length)html+='<b>蒸馏事实</b><pre>'+det.facts.map(esc).join('\n---\n')+'</pre>';
+  if(det.examples&&det.examples.length)html+='<b>样例</b><pre>'+det.examples.map(esc).join('\n---\n')+'</pre>';
+  if(det.refs&&det.refs.length)html+='<b>引用</b><pre>'+det.refs.map(esc).join('\n')+'</pre>';
+  if(det.reason)html+='<b>原因</b><pre>'+esc(det.reason)+'</pre>';
+  if(det.axes){
+    var ax=[];for(var ak in det.axes){
+      if(!Object.prototype.hasOwnProperty.call(det.axes,ak))continue;
+      var av=det.axes[ak];
+      if(Object.prototype.toString.call(av)==='[object Array]'){
+        if(av.length)ax.push(ak+': '+av.join(', '));}
+      else if(av)ax.push(ak+': '+av);}
+    if(det.axes.exam_ready!=null)ax.push('exam_ready: '+det.axes.exam_ready);
+    if(ax.length)html+='<b>三轴标签</b><pre>'+esc(ax.join('\n'))+'</pre>';}
+  if(det.superseded_by)html+='<b>已融合(被吸收)</b><pre>→ '+esc(det.superseded_by)+
+    (det.supersede_reason?('\n'+esc(det.supersede_reason)):'')+
+    (det.superseded_at?('\n@ '+fmtT(typeof det.superseded_at==='number'?det.superseded_at:
+      Date.parse(det.superseded_at)/1000)):'')+'</pre>';
+  if(n.type==='exam'&&det.seen){
+    var ho=det.holdout||{};
+    html+='<b>考场成绩</b><pre>状态 '+esc(det.status||'')+
+      ' · 题库 '+esc(det.history_rows==null?'-':det.history_rows)+' 行 / 考资 '+
+      esc(det.exam_ready==null?'-':det.exam_ready)+' 原子'+
+      '\nseen(时序前80%): 开火 '+esc(det.seen.fires)+' · 命中 '+esc(det.seen.hits)+
+      ' · 命中率 '+esc(det.seen.hit_rate)+' · 误报率 '+esc(det.seen.fp_rate)+
+      '\nholdout(后20%): 开火 '+esc(ho.fires)+' · 命中 '+esc(ho.hits)+'</pre>';}
+  if(det.eval_counts&&det.eval_counts.length)
+    html+='<b>后验计数</b><pre>'+det.eval_counts.join(' → ')+'</pre>';
+  var rest={};for(var k in det){if(Object.prototype.hasOwnProperty.call(det,k))rest[k]=det[k];}
+  delete rest.fact;delete rest.facts;delete rest.examples;delete rest.refs;
+  delete rest.reason;delete rest.rule;delete rest.eval_counts;
+  delete rest.axes;delete rest.superseded_by;delete rest.supersede_reason;
+  delete rest.superseded_at;delete rest.seen;delete rest.holdout;delete rest.graduation_hint;
+  var rk=[];for(var k2 in rest){if(Object.prototype.hasOwnProperty.call(rest,k2))rk.push(k2);}
+  if(rk.length)html+='<pre>'+esc(JSON.stringify(rest,null,1))+'</pre>';
+  document.getElementById('d-body').innerHTML=html;}
+document.getElementById('detail-x').onclick=function(){selected=null;showDetail(null);};
+
+/* ── 时间轴回放(进化过程) ── */
+var RANGE=document.getElementById('tl-range'),LBL=document.getElementById('tl-label');
+function applyCut(){
+  if(+RANGE.value>=1000){TL.cut=Infinity;LBL.textContent='全部 ('+NODES.length+' 节点)';}
+  else{TL.cut=TL.min+(TL.max-TL.min)*(+RANGE.value/1000);
+    LBL.textContent=fmtT(TL.cut)+' · '+NODES.filter(visible).length+' 节点';}
+  NODES.forEach(function(n){
+    n.wasVisible=visible(n);});
+  // rail 进度线 = 时间轴回放进度
+  var rf=document.getElementById('railFill');
+  if(rf)rf.style.transform='scaleY('+(+RANGE.value/1000)+')';}
+RANGE.addEventListener('input',function(){stopPlay();applyCut();});
+function stopPlay(){TL.playing=false;if(TL.timer)clearInterval(TL.timer);TL.timer=null;
+  document.getElementById('tl-play').textContent='▶ 播放进化';}
+document.getElementById('tl-play').onclick=function(){
+  if(TL.playing){stopPlay();return;}
+  if(TL.max<=TL.min)return;
+  TL.playing=true;RANGE.value=0;applyCut();
+  document.getElementById('tl-play').textContent='⏸ 暂停';
+  TL.timer=setInterval(function(){var v=+RANGE.value+8;
+    if(v>=1000){v=1000;stopPlay();}
+    RANGE.value=v;applyCut();},80);};
+
+/* ── 视角预设(rail 章节) / 画质 ── */
+var VIEWS=[['电影',9.2,0.42,true],['侧视',10.5,0.09,false],
+           ['俯视',12.0,1.25,false],['近景',6.0,0.34,false]];
+var VIDX=0;
+function applyView(){var v=VIEWS[VIDX];
+  CAM.dist=v[1];CAM.pitch=v[2];CAM.auto=v[3];
+  document.getElementById('hud-view').textContent=v[0];
+  var items=document.querySelectorAll('.rail-item');
+  for(var i=0;i<items.length;i++)
+    items[i].className='rail-item'+(i===VIDX?' is-on':'');
+  resize();}
+var RAIL_ITEMS=document.querySelectorAll('.rail-item');
+for(var ri=0;ri<RAIL_ITEMS.length;ri++){(function(idx){
+  RAIL_ITEMS[idx].onclick=function(){VIDX=idx;applyView();};})(ri);}
+function applyQuality(){
+  document.getElementById('btn-quality').textContent='画质 · '+QUALITY[QIDX][0];}
+document.getElementById('btn-quality').onclick=function(){
+  QIDX=(QIDX+1)%QUALITY.length;applyQuality();};
+document.addEventListener('keydown',function(e){
+  if(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  var k=e.key;
+  if(k>='1'&&k<='4'){VIDX=+k-1;applyView();}
+  else if(k==='q'||k==='Q'){QIDX=(QIDX+1)%QUALITY.length;applyQuality();}
+  else if(k===' '){document.getElementById('tl-play').click();e.preventDefault();}});
+document.getElementById('btn-relayout').onclick=function(){
+  NODES.forEach(function(n){spawnOrbit(n,false);n.fade=1;n.dead=false;});};
+document.getElementById('btn-refresh').onclick=function(){load(true);};
+
+/* ── 启动 ── */
+glInit();resize();applyCut();load(true);
+requestAnimationFrame(loop);
+setInterval(load,30000);
+</script>
+</body>
+</html>

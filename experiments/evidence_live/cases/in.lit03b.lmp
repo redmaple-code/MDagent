@@ -1,0 +1,30 @@
+# C11 应变能法:单轴 [100] 应变序列(含零应变基线),能量-应变二次关系
+# C11 = 2*dE/(V*eps^2);a0 由 in.lit03a 弛豫结果经 -var a0val 传入
+variable a0v index ${a0val}
+units metal
+boundary p p p
+atom_style atomic
+lattice fcc ${a0v}
+region box block 0 3 0 3 0 3
+create_box 1 box
+create_atoms 1 box
+mass 1 63.546
+pair_style eam
+pair_coeff * * Cu_u3.eam
+thermo 200
+thermo_style custom step pe fnorm
+thermo_modify format float %.15g
+variable xlo0 equal $(xlo)
+variable xhi0 equal $(xhi)
+variable vol0 equal $(vol)
+print "EVLIVE_VOL0 $(v_vol0)"
+variable s index 1000 1004 996 1008 992
+label LOOP
+change_box all x scale $(v_s/1000.0) remap
+minimize 1.0e-14 1.0e-14 500 5000
+variable inv equal 1.0/${s}
+print "EVLIVE_STR_${s} $(pe)"
+change_box all x final ${xlo0} ${xhi0} remap units box
+next s
+jump SELF LOOP
+print "EVLIVE_DONE ok"

@@ -1,0 +1,486 @@
+{
+  "recorded_date": "2026-10-24",
+  "repository": "AetherMindHarness/MDagent",
+  "source_baseline": "c1547239567f5f2e0ca879342c05dd4625e83752",
+  "scope": "Documentation merge record only; no product tests rerun, repairs, merges or deployment",
+  "tool": {
+    "upstream": "https://github.com/redmaplewww/project-to-act",
+    "commit": "caf1f0d4e5a705fc3e01d22fce2984422036f0e6",
+    "script": "project-to-act/scripts/init_project_management.py",
+    "script_sha256": "efa8de742e1d4738e58bd1d0fa75b079d6a301b5c7ebb15aa6194b28ce4d0925"
+  },
+  "audits": [
+    {
+      "action": "--validate",
+      "strict": false,
+      "exit_code": 0,
+      "result": {
+        "valid": true,
+        "strict_valid": true,
+        "schema_version": 2,
+        "mode": "managed",
+        "errors": [],
+        "warnings": [
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_PROGRESS.md",
+            "count": 1
+          },
+          {
+            "code": "COMPLETED_FEATURE_NOT_ACCEPTED",
+            "message": "已完成功能尚未通过验收",
+            "file": "PROJECT_FEATURES.md",
+            "ids": [
+              "F-009",
+              "F-010",
+              "F-014"
+            ]
+          },
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_ACCEPTANCE.md",
+            "count": 2
+          }
+        ],
+        "metrics": {
+          "PROJECT_OVERVIEW.md": {
+            "bytes": 15652,
+            "lines": 113,
+            "h2_count": 7
+          },
+          "PROJECT_PROGRESS.md": {
+            "bytes": 28111,
+            "lines": 89,
+            "h2_count": 4
+          },
+          "PROJECT_VERSIONS.md": {
+            "bytes": 4931,
+            "lines": 56,
+            "h2_count": 4
+          },
+          "PROJECT_FEATURES.md": {
+            "bytes": 13140,
+            "lines": 58,
+            "h2_count": 3
+          },
+          "PROJECT_ACCEPTANCE.md": {
+            "bytes": 37513,
+            "lines": 99,
+            "h2_count": 5
+          }
+        },
+        "issues": []
+      }
+    },
+    {
+      "action": "--audit",
+      "strict": false,
+      "exit_code": 0,
+      "result": {
+        "valid": true,
+        "strict_valid": true,
+        "schema_version": 2,
+        "mode": "managed",
+        "errors": [],
+        "warnings": [
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_PROGRESS.md",
+            "count": 1
+          },
+          {
+            "code": "COMPLETED_FEATURE_NOT_ACCEPTED",
+            "message": "已完成功能尚未通过验收",
+            "file": "PROJECT_FEATURES.md",
+            "ids": [
+              "F-009",
+              "F-010",
+              "F-014"
+            ]
+          },
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_ACCEPTANCE.md",
+            "count": 2
+          }
+        ],
+        "metrics": {
+          "PROJECT_OVERVIEW.md": {
+            "bytes": 15652,
+            "lines": 113,
+            "h2_count": 7
+          },
+          "PROJECT_PROGRESS.md": {
+            "bytes": 28111,
+            "lines": 89,
+            "h2_count": 4
+          },
+          "PROJECT_VERSIONS.md": {
+            "bytes": 4931,
+            "lines": 56,
+            "h2_count": 4
+          },
+          "PROJECT_FEATURES.md": {
+            "bytes": 13140,
+            "lines": 58,
+            "h2_count": 3
+          },
+          "PROJECT_ACCEPTANCE.md": {
+            "bytes": 37513,
+            "lines": 99,
+            "h2_count": 5
+          }
+        }
+      }
+    },
+    {
+      "action": "--audit",
+      "strict": true,
+      "exit_code": 1,
+      "result": {
+        "valid": true,
+        "strict_valid": false,
+        "schema_version": 2,
+        "mode": "managed",
+        "errors": [],
+        "warnings": [
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_PROGRESS.md",
+            "count": 1
+          },
+          {
+            "code": "COMPLETED_FEATURE_NOT_ACCEPTED",
+            "message": "已完成功能尚未通过验收",
+            "file": "PROJECT_FEATURES.md",
+            "ids": [
+              "F-009",
+              "F-010",
+              "F-014"
+            ]
+          },
+          {
+            "code": "LONG_TABLE_CELL",
+            "message": "存在超过 500 字符的表格单元",
+            "file": "PROJECT_ACCEPTANCE.md",
+            "count": 2
+          }
+        ],
+        "metrics": {
+          "PROJECT_OVERVIEW.md": {
+            "bytes": 15652,
+            "lines": 113,
+            "h2_count": 7
+          },
+          "PROJECT_PROGRESS.md": {
+            "bytes": 28111,
+            "lines": 89,
+            "h2_count": 4
+          },
+          "PROJECT_VERSIONS.md": {
+            "bytes": 4931,
+            "lines": 56,
+            "h2_count": 4
+          },
+          "PROJECT_FEATURES.md": {
+            "bytes": 13140,
+            "lines": 58,
+            "h2_count": 3
+          },
+          "PROJECT_ACCEPTANCE.md": {
+            "bytes": 37513,
+            "lines": 99,
+            "h2_count": 5
+          }
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check": "--validate strict=False",
+      "passed": true,
+      "detail": "exit=0; warnings=3; expected strict warning exit retained"
+    },
+    {
+      "check": "--audit strict=False",
+      "passed": true,
+      "detail": "exit=0; warnings=3; expected strict warning exit retained"
+    },
+    {
+      "check": "--audit strict=True",
+      "passed": true,
+      "detail": "exit=1; warnings=3; expected strict warning exit retained"
+    },
+    {
+      "check": "no_new_warning_categories",
+      "passed": true,
+      "detail": "Existing long table cells and historical completed-but-unaccepted features remain; strict mode is not clean"
+    },
+    {
+      "check": "historical_warning_ids",
+      "passed": true,
+      "detail": "F-013/F-016 now marked unmerged; F-015 source merged with product acceptance pending"
+    },
+    {
+      "check": "recorded_baseline",
+      "passed": true,
+      "detail": "Documentation branch started at recorded main"
+    },
+    {
+      "check": "pr_2_merge_is_ancestor",
+      "passed": true,
+      "detail": "a5136091e33a84e464475620c5edd7786800d9a4"
+    },
+    {
+      "check": "pr_3_merge_is_ancestor",
+      "passed": true,
+      "detail": "c1547239567f5f2e0ca879342c05dd4625e83752"
+    },
+    {
+      "check": "pr_4_merge_is_ancestor",
+      "passed": true,
+      "detail": "6a6ade5b53bc00d624dbfad296625e1c9a7471a3"
+    },
+    {
+      "check": "pr_6_merge_is_ancestor",
+      "passed": true,
+      "detail": "96188d38adf52ca77b6735d8947b600a5f8bacc8"
+    },
+    {
+      "check": "merge_order",
+      "passed": true,
+      "detail": "#6 precedes #3 as first parent"
+    },
+    {
+      "check": "pr5_unmerged_snapshot",
+      "passed": true,
+      "detail": "Point-in-time API snapshot only; dirty conflict state retained"
+    },
+    {
+      "check": "version_unchanged",
+      "passed": true,
+      "detail": "No product version or release created"
+    },
+    {
+      "check": "audit_report_byte_preserved",
+      "passed": true,
+      "detail": "Archived without editing or upgrading evidence claims"
+    },
+    {
+      "check": "recorded_hash_MDagent代码审查报告_2026-10-24.md",
+      "passed": true,
+      "detail": "SHA-256 matches archived bytes"
+    },
+    {
+      "check": "recorded_hash_合并事实_20261024.json",
+      "passed": true,
+      "detail": "SHA-256 matches archived bytes"
+    },
+    {
+      "check": "indexed_autolammps-功能说明文档.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_MDagent代码审查报告_2026-10-24.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_合并事实_20261024.json",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_合并记录_20261024.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_审计_双门功能事实核查与漏洞清单_20261018.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_核查_前置双门功能性核查_20261022.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_设计_前置双门功能设计定稿_v1.0.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统交接文档_v1.0.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统开发手册_v1.0.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统接入设计文档_v1.0.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统接入设计文档_v2.0.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统精简建议_v3.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统规则阶段绑定矩阵_v0.1.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_证据系统重构_五规则与证据分级_v2.2.md",
+      "passed": true,
+      "detail": "Existing local detailed document remains indexed"
+    },
+    {
+      "check": "indexed_validation_manifest",
+      "passed": true,
+      "detail": "Validation manifest indexed; self-hash intentionally excluded"
+    },
+    {
+      "check": "current_path_install.sh",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "current_path_scripts",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "current_path_docs/迁移安装指南_UBUNTU.md",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "current_path_evolution",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "current_path_mcp/md_mcp.py",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "current_path_experiments/evidence_live",
+      "passed": true,
+      "detail": "Verified new current-feature reference"
+    },
+    {
+      "check": "history_preserved_PROJECT_PROGRESS.md_进度历史",
+      "passed": true,
+      "detail": "31 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_FEATURES.md_功能变更历史",
+      "passed": true,
+      "detail": "16 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_VERSIONS.md_版本历史",
+      "passed": true,
+      "detail": "6 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_OVERVIEW.md_路线变更记录",
+      "passed": true,
+      "detail": "17 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_ACCEPTANCE.md_证据索引",
+      "passed": true,
+      "detail": "28 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_ACCEPTANCE.md_Gate 记录",
+      "passed": true,
+      "detail": "15 historical table lines retained without rewriting"
+    },
+    {
+      "check": "history_preserved_PROJECT_ACCEPTANCE.md_验收记录",
+      "passed": true,
+      "detail": "18 historical table lines retained without rewriting"
+    },
+    {
+      "check": "documentation_only_scope",
+      "passed": true,
+      "detail": "Only ledger and documentation artifacts changed; no business code, workflow or deployment"
+    },
+    {
+      "check": "secret_pattern_scan",
+      "passed": true,
+      "detail": "No known credential token or private-key patterns in changed documents; no raw logs copied"
+    },
+    {
+      "check": "git_diff_check",
+      "passed": true,
+      "detail": "No whitespace errors"
+    }
+  ],
+  "documents": {
+    ".project-to-act/PROJECT_ACCEPTANCE.md": {
+      "bytes": 37513,
+      "sha256": "a3f742b4ecf6034bd31b0c3aef35b75da562cc94d1b5c1eb67e3a0529eca3a0d"
+    },
+    ".project-to-act/PROJECT_FEATURES.md": {
+      "bytes": 13140,
+      "sha256": "79ca00bf3a9dc64a1ca7dbb4412be97dd8ba4b2b4e0f35873890a9545c0535e2"
+    },
+    ".project-to-act/PROJECT_OVERVIEW.md": {
+      "bytes": 15652,
+      "sha256": "59b9bac2f1ea26848c082362f974345671da1abea3c7b0b1ae7cc59d2706104b"
+    },
+    ".project-to-act/PROJECT_PROGRESS.md": {
+      "bytes": 28111,
+      "sha256": "498725942a59ced2c382b3e6eb8f3102af1c0cae99bd1c81d8dee62196a94df1"
+    },
+    ".project-to-act/PROJECT_VERSIONS.md": {
+      "bytes": 4931,
+      "sha256": "fe8a75421720465f1bc708ab5caca93f10f6a369ed9e8523396750517d5e646c"
+    },
+    ".project-to-act/docs/MDagent代码审查报告_2026-10-24.md": {
+      "bytes": 15150,
+      "sha256": "5a9e55b238e1fbefdc7bd8f227263a1316b35436ff93f14e3192d0217dff4915"
+    },
+    ".project-to-act/docs/README.md": {
+      "bytes": 11545,
+      "sha256": "70f7a0c635efed85a1433a9bf8fdcc83ae65c65e225a5e7b39f5b09cb0f86fe3"
+    },
+    ".project-to-act/docs/合并事实_20261024.json": {
+      "bytes": 3733,
+      "sha256": "4acca7c69df753458816078021abb703b07591aed17f45687e327c54ced01bb4"
+    },
+    ".project-to-act/docs/合并记录_20261024.md": {
+      "bytes": 7949,
+      "sha256": "c451144ef0203ad703565482bd0441fc3a89849b9bef5885f7f08c002331f47d"
+    }
+  },
+  "freshness": "These checks bind this documentation change and the recorded source baseline, not future revisions",
+  "limitations": [
+    "Strict audit exits 1 for retained historical warnings; not strict-clean",
+    "Historical external workspace paths are provenance pointers, excluded from current local reachability",
+    "Original raw audit logs remain outside the repository; report is byte-preserved",
+    "Manifest excludes its own hash and commit hash to avoid self-reference; Git commit binds all files"
+  ]
+}
